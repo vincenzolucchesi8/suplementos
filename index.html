@@ -344,8 +344,8 @@ const RING_CIRC = 339.29;
 // Se llenan al crear el proyecto. Si quedan vacios, el tablero funciona
 // igual en modo local (solo este dispositivo). El merge usa la ultima
 // escritura por toma, asi nunca se pierde una marca entre celular y laptop.
-const SUPABASE_URL = '';   // ej: https://abcd1234.supabase.co
-const SUPABASE_KEY = '';   // anon public key
+const SUPABASE_URL = 'https://ypjyybbtwfwfdlbgikbu.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlwanl5YmJ0d2Z3ZmRsYmdpa2J1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3Mjk2NzAsImV4cCI6MjA5NzMwNTY3MH0.bLuAVTavc_KZvNGNEaJjucd5PRzWcjOvIKSSTFWhfRk';
 const SYNC_ID = 'vinz';    // fila unica del usuario
 const cloudOn = () => !!(SUPABASE_URL && SUPABASE_KEY);
 
@@ -535,7 +535,7 @@ function reiniciar(){
     else location.reload();
   }
 }
-document.getElementById('ver').textContent = 'Versión 3 · ' + HOY;
+document.getElementById('ver').textContent = 'Versión 4 · ' + HOY;
 render();
 fullSync();
 </script>
