@@ -274,7 +274,7 @@
     </div>
   </div>
 
-  <footer>Elaborado por Vinz Lucchesi<span class="ver" id="ver"></span></footer>
+  <footer>Elaborado por Vinz Lucchesi<span class="ver" id="ver"></span><span class="ver" id="syncTag"></span></footer>
 </div>
 
 <script>
@@ -340,6 +340,95 @@ const notas = {
 
 const RING_CIRC = 339.29;
 
+// ---------- Sincronizacion entre dispositivos (Supabase) ----------
+// Se llenan al crear el proyecto. Si quedan vacios, el tablero funciona
+// igual en modo local (solo este dispositivo). El merge usa la ultima
+// escritura por toma, asi nunca se pierde una marca entre celular y laptop.
+const SUPABASE_URL = '';   // ej: https://abcd1234.supabase.co
+const SUPABASE_KEY = '';   // anon public key
+const SYNC_ID = 'vinz';    // fila unica del usuario
+const cloudOn = () => !!(SUPABASE_URL && SUPABASE_KEY);
+
+const DKEY = /^\d{4}-\d{2}-\d{2}:/;
+const metaLoad = () => { try { return JSON.parse(localStorage.getItem('__sync_meta')||'{}'); } catch(e){ return {}; } };
+const metaSave = m => localStorage.setItem('__sync_meta', JSON.stringify(m));
+
+// Marca/desmarca una toma + sella la hora + agenda sync
+function setMark(key, val){
+  localStorage.setItem(key, val);
+  const m = metaLoad(); m[key] = Date.now(); metaSave(m);
+  schedulePush();
+}
+
+// Estado local como { key: {v:'1'|'0', t:epoch} }
+function localState(){
+  const m = metaLoad(); const out = {};
+  new Set([...Object.keys(localStorage).filter(k=>DKEY.test(k)), ...Object.keys(m)]).forEach(k=>{
+    out[k] = { v: localStorage.getItem(k)==='1' ? '1':'0', t: m[k]||1 };
+  });
+  return out;
+}
+// Merge por ultima escritura (mayor t gana)
+function mergeStates(a, b){
+  const out = {};
+  new Set([...Object.keys(a), ...Object.keys(b)]).forEach(k=>{
+    const x=a[k], y=b[k];
+    out[k] = (!y || (x && x.t>=y.t)) ? x : y;
+  });
+  return out;
+}
+function applyState(s){
+  const m = metaLoad();
+  Object.entries(s).forEach(([k,info])=>{
+    if(info.v==='1') localStorage.setItem(k,'1'); else localStorage.removeItem(k);
+    m[k] = info.t;
+  });
+  metaSave(m);
+}
+
+async function cloudPull(){
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/estado?id=eq.${SYNC_ID}&select=data`, {
+    headers:{ apikey:SUPABASE_KEY, Authorization:`Bearer ${SUPABASE_KEY}` }
+  });
+  if(!r.ok) throw new Error('pull '+r.status);
+  const rows = await r.json();
+  return (rows[0] && rows[0].data) || {};
+}
+async function cloudPush(state){
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/estado`, {
+    method:'POST',
+    headers:{ apikey:SUPABASE_KEY, Authorization:`Bearer ${SUPABASE_KEY}`,
+      'Content-Type':'application/json', Prefer:'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify([{ id:SYNC_ID, data:state, updated_at:new Date().toISOString() }])
+  });
+  if(!r.ok) throw new Error('push '+r.status);
+}
+
+let pushTimer=null, syncing=false;
+function schedulePush(){
+  if(!cloudOn()){ setStatus('local'); return; }
+  clearTimeout(pushTimer);
+  pushTimer = setTimeout(fullSync, 1200);
+}
+async function fullSync(){
+  if(!cloudOn()){ setStatus('local'); return; }
+  if(syncing) return;
+  syncing=true; setStatus('sync');
+  try{
+    const remote = await cloudPull();
+    const merged = mergeStates(localState(), remote);
+    applyState(merged);
+    await cloudPush(merged);
+    setStatus('ok'); render();
+  }catch(e){ setStatus('err'); }
+  finally{ syncing=false; }
+}
+function setStatus(s){
+  const el=document.getElementById('syncTag'); if(!el) return;
+  el.textContent = { local:'Solo este dispositivo', sync:'Sincronizando…',
+    ok:'Sincronizado entre tus dispositivos', err:'Sin conexion · guardado local' }[s] || '';
+}
+
 function render(){
   document.getElementById('fecha').textContent = new Date().toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long'});
   document.getElementById('dia').textContent = diaPrograma;
@@ -360,7 +449,7 @@ function render(){
       const on = localStorage.getItem(key)==='1';
       const el = document.createElement('div');
       el.className = 'item'+(on?' on':'');
-      el.onclick = ()=>{ localStorage.setItem(key, on?'0':'1'); render(); };
+      el.onclick = ()=>{ setMark(key, on?'0':'1'); render(); };
       el.innerHTML =
         `<div class="check"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>`+
         `<div class="info"><div class="name">${it.name}</div><div class="dose">${it.dose}</div></div>`+
@@ -434,17 +523,21 @@ function render(){
 
 function completarDia(){
   const plan = tomasDeHoy(diaPrograma);
-  plan.items.forEach(it=> localStorage.setItem(`${HOY}:${it.meal}:${it.id}`,'1'));
+  plan.items.forEach(it=> setMark(`${HOY}:${it.meal}:${it.id}`,'1'));
   render();
 }
 function reiniciar(){
-  if(confirm('Esto borra todo tu progreso guardado en este dispositivo. Seguro?')){
-    Object.keys(localStorage).forEach(k=>{ if(/^\d{4}-\d{2}-\d{2}:/.test(k)) localStorage.removeItem(k); });
-    location.reload();
+  if(confirm('Esto borra tu progreso en TODOS tus dispositivos. Seguro?')){
+    const m = metaLoad(); const now = Date.now();
+    Object.keys(localStorage).filter(k=>DKEY.test(k)).forEach(k=>{ localStorage.removeItem(k); m[k]=now; });
+    metaSave(m);
+    if(cloudOn()) fullSync().finally(()=>location.reload());
+    else location.reload();
   }
 }
-document.getElementById('ver').textContent = 'Versión 2 · ' + HOY;
+document.getElementById('ver').textContent = 'Versión 3 · ' + HOY;
 render();
+fullSync();
 </script>
 </body>
 </html>
