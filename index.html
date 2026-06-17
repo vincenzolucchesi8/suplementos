@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Protocolo de Suplementacion · Zentum</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -152,7 +155,27 @@
   .badge.on{background:var(--teal-soft);color:var(--teal-d);border-color:var(--teal-line)}
   .empty{font-size:12.5px;color:var(--txt3)}
 
+  /* Heatmap de consistencia */
+  .heat-stats{display:flex;gap:22px;margin-bottom:16px}
+  .heat-stat b{font-family:'Manrope',sans-serif;display:block;font-size:22px;font-weight:800;letter-spacing:-.5px;color:var(--navy);font-variant-numeric:tabular-nums}
+  .heat-stat span{font-size:10.5px;color:var(--txt3);font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+  .heat-scroll{overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+  .heat-grid{display:grid;grid-auto-flow:column;grid-template-rows:auto repeat(7,1fr);gap:5px;width:max-content}
+  .heat-wk{font-size:9px;font-weight:700;color:var(--txt3);text-align:center;letter-spacing:.2px}
+  .cell{width:17px;height:17px;border-radius:5px;background:#eef2f7;border:1px solid #e2e9f2;position:relative}
+  .cell.none{background:#fde7e7;border-color:#f6cccc}
+  .cell.partial{background:#fdeecb;border-color:#f3dca0}
+  .cell.full{background:var(--teal);border-color:var(--teal-d)}
+  .cell.today{box-shadow:0 0 0 2px var(--navy)}
+  .cell.future{background:#f3f6fa;border-color:#eaeff5}
+  .heat-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px}
+  .leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--txt2);font-weight:600}
+  .leg i{width:13px;height:13px;border-radius:4px;display:inline-block;border:1px solid rgba(0,0,0,.05)}
+  .leg .l-full{background:var(--teal)} .leg .l-partial{background:#fdeecb;border-color:#f3dca0}
+  .leg .l-none{background:#fde7e7;border-color:#f6cccc} .leg .l-future{background:#f3f6fa;border-color:#eaeff5}
+
   footer{text-align:center;color:#9aa7b8;font-size:11px;font-weight:500;margin-top:22px;letter-spacing:.3px}
+  footer .ver{display:block;margin-top:4px;color:#b8c2d0;font-size:10px}
 </style>
 </head>
 <body>
@@ -236,18 +259,29 @@
   </div>
 
   <div class="card">
-    <div class="card-h"><h2>Progreso</h2><span class="count" id="totalDias"></span></div>
-    <div class="badges" id="badges"></div>
+    <div class="card-h"><h2>Consistencia</h2><span class="count" id="totalDias"></span></div>
+    <div class="heat-stats">
+      <div class="heat-stat"><b id="hsAdh">0%</b><span>Adherencia</span></div>
+      <div class="heat-stat"><b id="hsRacha">0</b><span>Racha actual</span></div>
+      <div class="heat-stat"><b id="hsFull">0</b><span>Días completos</span></div>
+    </div>
+    <div class="heat-scroll"><div class="heat-grid" id="heatGrid"></div></div>
+    <div class="heat-legend">
+      <span class="leg"><i class="l-full"></i>Todo</span>
+      <span class="leg"><i class="l-partial"></i>Parcial</span>
+      <span class="leg"><i class="l-none"></i>Nada</span>
+      <span class="leg"><i class="l-future"></i>Próximo</span>
+    </div>
   </div>
 
-  <footer>Elaborado por Vinz Lucchesi</footer>
+  <footer>Elaborado por Vinz Lucchesi<span class="ver" id="ver"></span></footer>
 </div>
 
 <script>
-const HOY = new Date().toISOString().split('T')[0];
-if(!localStorage.getItem('inicio')) localStorage.setItem('inicio', HOY);
-const INICIO = localStorage.getItem('inicio');
-const diaPrograma = Math.floor((new Date(HOY) - new Date(INICIO)) / 86400000) + 1;
+// Dia 1 fijo del programa (igual que el recordatorio de Slack)
+const INICIO = '2026-06-17';
+const HOY = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Lima' });
+const diaPrograma = Math.floor((Date.parse(HOY + 'T00:00:00Z') - Date.parse(INICIO + 'T00:00:00Z')) / 86400000) + 1;
 const semana = Math.ceil(diaPrograma / 7);
 
 const IC_SUN = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
@@ -356,27 +390,60 @@ function render(){
     tl.appendChild(d);
   });
 
-  const cumplidos = JSON.parse(localStorage.getItem('cumplidos')||'[]');
-  document.getElementById('racha').textContent = cumplidos.length;
-  document.getElementById('totalDias').textContent = cumplidos.length ? `${cumplidos.length} dias` : '';
-  const badges = document.getElementById('badges');
-  if(!cumplidos.length){ badges.innerHTML='<span class="empty">Aun no marcas ningun dia como completo.</span>'; }
-  else{
-    badges.innerHTML = cumplidos.slice().sort().map(d=>{
-      const n = Math.floor((new Date(d)-new Date(INICIO))/86400000)+1;
-      return `<span class="badge on">Dia ${n}</span>`;
-    }).join('');
+  // ----- Consistencia (heatmap) -----
+  const PROG_DIAS = 84; // 12 semanas
+  function dsDia(d){ return new Date(Date.parse(INICIO+'T00:00:00Z')+(d-1)*86400000).toISOString().split('T')[0]; }
+  function estadoDia(d){
+    const items = tomasDeHoy(d).items;
+    const exp = items.length;
+    const tk = items.filter(it=>localStorage.getItem(`${dsDia(d)}:${it.meal}:${it.id}`)==='1').length;
+    return {exp, tk, full: exp>0 && tk===exp, partial: tk>0 && tk<exp};
   }
+
+  let fullCount=0;
+  for(let d=1; d<=diaPrograma && d<=PROG_DIAS; d++){ if(estadoDia(d).full) fullCount++; }
+  const dueSoFar = Math.max(0, Math.min(diaPrograma, PROG_DIAS));
+  const adh = dueSoFar>0 ? Math.round(fullCount/dueSoFar*100) : 0;
+  let streak=0;
+  let start = (diaPrograma>=1 && estadoDia(diaPrograma).full) ? diaPrograma : diaPrograma-1;
+  for(let d=start; d>=1 && estadoDia(d).full; d--) streak++;
+
+  document.getElementById('racha').textContent = fullCount;
+  document.getElementById('hsFull').textContent = fullCount;
+  document.getElementById('hsAdh').textContent = adh+'%';
+  document.getElementById('hsRacha').textContent = streak;
+  document.getElementById('totalDias').textContent = `${dueSoFar} de ${PROG_DIAS} días`;
+
+  const semanas = Math.ceil(PROG_DIAS/7);
+  let html='';
+  for(let w=1; w<=semanas; w++){
+    html += `<div class="heat-wk">S${w}</div>`;
+    for(let pos=0; pos<7; pos++){
+      const d=(w-1)*7+pos+1;
+      if(d>PROG_DIAS){ html+='<div></div>'; continue; }
+      const ds=dsDia(d); const ddmm=ds.slice(8)+'/'+ds.slice(5,7);
+      if(d>diaPrograma){ html+=`<div class="cell future" title="Día ${d} · ${ddmm} · próximo"></div>`; continue; }
+      const s=estadoDia(d);
+      const cls = s.full?'full':(s.partial?'partial':'none');
+      const today = d===diaPrograma?' today':'';
+      html+=`<div class="cell ${cls}${today}" title="Día ${d} · ${ddmm} · ${s.tk} de ${s.exp} tomas"></div>`;
+    }
+  }
+  document.getElementById('heatGrid').innerHTML = html;
 }
 
 function completarDia(){
-  const cumplidos = JSON.parse(localStorage.getItem('cumplidos')||'[]');
-  if(!cumplidos.includes(HOY)){ cumplidos.push(HOY); localStorage.setItem('cumplidos', JSON.stringify(cumplidos)); }
+  const plan = tomasDeHoy(diaPrograma);
+  plan.items.forEach(it=> localStorage.setItem(`${HOY}:${it.meal}:${it.id}`,'1'));
   render();
 }
 function reiniciar(){
-  if(confirm('Esto borra tu fecha de inicio y todo el progreso. Seguro?')){ localStorage.clear(); location.reload(); }
+  if(confirm('Esto borra todo tu progreso guardado en este dispositivo. Seguro?')){
+    Object.keys(localStorage).forEach(k=>{ if(/^\d{4}-\d{2}-\d{2}:/.test(k)) localStorage.removeItem(k); });
+    location.reload();
+  }
 }
+document.getElementById('ver').textContent = 'Versión 2 · ' + HOY;
 render();
 </script>
 </body>
