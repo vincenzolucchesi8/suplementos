@@ -1,0 +1,17 @@
+{
+  "name": "Protocolo de Suplementación · Zentum",
+  "short_name": "Suplementos",
+  "description": "Seguimiento diario de tus suplementos del protocolo Longevity 01.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#eef2f8",
+  "theme_color": "#0fa589",
+  "lang": "es",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
