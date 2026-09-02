@@ -1,7 +1,7 @@
-// Service worker del tablero de suplementos.
+// Service worker del tablero de protocolo (suplementos + nutricion).
 // Estrategia: la pagina va por RED primero (siempre fresca; offline cae al cache).
 // Assets estaticos (fuentes, iconos) por cache primero. Supabase NUNCA se cachea.
-const CACHE = 'suplementos-v6';
+const CACHE = 'suplementos-v7';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './icon-180.png'];
 
 self.addEventListener('install', e => {
