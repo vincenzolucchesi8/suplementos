@@ -217,16 +217,22 @@ function construir() {
       let cena;
       if (d.cena.tipo === 'omelette') {
         const om = pick(P.OMELETTES);
-        cena = { tipo: 'omelette', protK: 'huevos', titulo: om.t, detalle: om.d, ing: om.ing };
+        cena = { tipo: 'omelette', protK: 'huevos', titulo: om.t, corto: om.corto, detalle: om.d, ing: om.ing,
+                 partes: { omelette: { id: om.id, titulo: om.t, corto: om.corto, detalle: om.d, ing: om.ing } } };
       } else {
         const protCen = sinRepetir(P.PROT_CEN.filter(p => p.k === d.cena.k), prevProtCen);
         prevProtCen = protCen;
         const verdCen = sinRepetir(P.VERDURAS, prevVerdCen); prevVerdCen = verdCen;
         cena = {
           tipo: 'plato', protK: d.cena.k,
-          titulo: protCen.t, verdura: verdCen.t, carbo: d.cenC.t,
+          titulo: protCen.t, corto: protCen.corto, verdura: verdCen.t, carbo: d.cenC.t,
           detalle: 'Sin grasa extra: basta el aceite de oliva de las verduras',
           ing: [...protCen.ing, ...verdCen.ing, ...d.cenC.ing],
+          partes: {
+            prot: { id: protCen.id, k: protCen.k, titulo: protCen.t, corto: protCen.corto, ing: protCen.ing },
+            verdura: { id: verdCen.id, titulo: verdCen.t, ing: verdCen.ing },
+            carbo: { id: d.cenC.id, k: d.cenC.k, titulo: d.cenC.t, ing: d.cenC.ing },
+          },
         };
       }
 
@@ -237,12 +243,18 @@ function construir() {
       dias.push({
         dia: numDia,
         semana: w + 1,
-        desayuno: { titulo: d.des.t, detalle: d.des.d, tags: d.des.tags, ing: d.des.ing },
+        desayuno: { id: d.des.id, titulo: d.des.t, detalle: d.des.d, tags: d.des.tags, ing: d.des.ing },
         mediaManana: { titulo: mm.t, ing: mm.ing },
         almuerzo: {
-          titulo: protAlm.t, protK: protAlm.k,
+          titulo: protAlm.t, corto: protAlm.corto, protK: protAlm.k,
           verdura: verdAlm.t, carbo: d.almC.t, carboK: d.almC.k, grasa: grasa.t,
           ing: [...protAlm.ing, ...verdAlm.ing, ...d.almC.ing, ...grasa.ing],
+          partes: {
+            prot: { id: protAlm.id, k: protAlm.k, titulo: protAlm.t, corto: protAlm.corto, ing: protAlm.ing },
+            verdura: { id: verdAlm.id, titulo: verdAlm.t, ing: verdAlm.ing },
+            carbo: { id: d.almC.id, k: d.almC.k, titulo: d.almC.t, ing: d.almC.ing },
+            grasa: { id: grasa.id, titulo: grasa.t, ing: grasa.ing },
+          },
         },
         merienda: { titulo: mer.t, ing: mer.ing },
         cena: { ...cena, carboK: d.cenC.k },
@@ -263,6 +275,13 @@ const salida = {
   cats: P.CATS,
   items: P.ITEMS,
   dias,
+  // Catalogo para el boton de cambiar plato: son las mismas opciones del plan
+  opciones: {
+    desayunos: P.DESAYUNOS.map(d => ({ id: d.id, titulo: d.t, detalle: d.d, tags: d.tags, ing: d.ing })),
+    protAlm: P.PROT_ALM.map(p => ({ id: p.id, k: p.k, titulo: p.t, corto: p.corto, ing: p.ing })),
+    protCen: P.PROT_CEN.map(p => ({ id: p.id, k: p.k, titulo: p.t, corto: p.corto, ing: p.ing })),
+    omelettes: P.OMELETTES.map(o => ({ id: o.id, titulo: o.t, corto: o.corto, detalle: o.d, ing: o.ing })),
+  },
 };
 fs.writeFileSync(path.join(__dirname, 'menu.json'), JSON.stringify(salida, null, 1), 'utf8');
 console.log('menu.json escrito con', dias.length, 'dias');

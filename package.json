@@ -1,0 +1,27 @@
+{
+  "name": "protocolo",
+  "version": "1.0.0",
+  "description": "Tablero personal de protocolo: suplementos, plan de comidas de 28 dias, peso y avisos push",
+  "main": "index.html",
+  "scripts": {
+    "menu": "node menu/construir.js",
+    "validar": "node menu/validar.js",
+    "build": "node menu/construir.js && node menu/validar.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vincenzolucchesi8/suplementos.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/vincenzolucchesi8/suplementos/issues"
+  },
+  "homepage": "https://github.com/vincenzolucchesi8/suplementos#readme",
+  "dependencies": {
+    "@vercel/blob": "^2.8.0",
+    "web-push": "^3.6.7"
+  }
+}

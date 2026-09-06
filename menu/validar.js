@@ -71,7 +71,7 @@ dias.forEach(d => {
 
   // 7. Carbo de la cena en porcion reducida
   if (d.cena.tipo === 'plato') {
-    const ok = /tres cuartos de taza de quinoa|media papa|tres cuartos de taza de noquis/i.test(d.cena.carbo || '');
+    const ok = /tres cuartos de taza de quinoa|media papa|tres cuartos de taza de ñoquis/i.test(d.cena.carbo || '');
     if (!ok) falla('Carbo reducido en la cena', `dia ${d.dia}: "${d.cena.carbo}"`);
   }
 

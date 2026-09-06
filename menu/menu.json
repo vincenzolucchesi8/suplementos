@@ -64,7 +64,7 @@
    "cat": "proteina"
   },
   "atun_lata": {
-   "n": "Atun al natural (lata)",
+   "n": "Atún al natural (lata)",
    "u": "lata",
    "cat": "proteina"
   },
@@ -74,7 +74,7 @@
    "cat": "proteina"
   },
   "jamon_lonchas": {
-   "n": "Jamon cocido en lonchas",
+   "n": "Jamón cocido en lonchas",
    "u": "lon",
    "cat": "proteina"
   },
@@ -129,7 +129,7 @@
    "cat": "verduras"
   },
   "rucula": {
-   "n": "Rucula",
+   "n": "Rúcula",
    "u": "porc",
    "cat": "verduras"
   },
@@ -139,7 +139,7 @@
    "cat": "verduras"
   },
   "brocoli": {
-   "n": "Brocoli",
+   "n": "Brócoli",
    "u": "porc",
    "cat": "verduras"
   },
@@ -159,7 +159,7 @@
    "cat": "verduras"
   },
   "esparrago": {
-   "n": "Esparragos",
+   "n": "Espárragos",
    "u": "porc",
    "cat": "verduras"
   },
@@ -179,12 +179,12 @@
    "cat": "verduras"
   },
   "champinon": {
-   "n": "Champinones",
+   "n": "Champiñones",
    "u": "porc",
    "cat": "verduras"
   },
   "palta": {
-   "n": "Palta pequena",
+   "n": "Palta pequeña",
    "u": "u",
    "cat": "verduras"
   },
@@ -194,7 +194,7 @@
    "cat": "verduras"
   },
   "limon": {
-   "n": "Limon",
+   "n": "Limón",
    "u": "u",
    "cat": "verduras"
   },
@@ -204,7 +204,7 @@
    "cat": "frutas"
   },
   "platano": {
-   "n": "Platano",
+   "n": "Plátano",
    "u": "u",
    "cat": "frutas"
   },
@@ -229,7 +229,7 @@
    "cat": "frutas"
   },
   "lucuma": {
-   "n": "Pulpa de lucuma",
+   "n": "Pulpa de lúcuma",
    "u": "porc",
    "cat": "frutas"
   },
@@ -254,7 +254,7 @@
    "cat": "abarrotes"
   },
   "papa": {
-   "n": "Papa pequena",
+   "n": "Papa pequeña",
    "u": "u",
    "cat": "abarrotes"
   },
@@ -264,7 +264,7 @@
    "cat": "abarrotes"
   },
   "noquis": {
-   "n": "Noquis",
+   "n": "Ñoquis",
    "u": "taza",
    "cat": "abarrotes"
   },
@@ -284,17 +284,17 @@
    "cat": "abarrotes"
   },
   "proteina": {
-   "n": "Proteina en polvo",
+   "n": "Proteína en polvo",
    "u": "scoop",
    "cat": "abarrotes"
   },
   "chia": {
-   "n": "Chia o linaza",
+   "n": "Chía o linaza",
    "u": "cda",
    "cat": "abarrotes"
   },
   "mani": {
-   "n": "Mantequilla de mani natural",
+   "n": "Mantequilla de maní natural",
    "u": "cdta",
    "cat": "abarrotes"
   },
@@ -329,8 +329,9 @@
    "dia": 1,
    "semana": 1,
    "desayuno": {
+    "id": "d_revueltos_pavo",
     "titulo": "Huevos revueltos con pavo",
-    "detalle": "3 huevos con 2 lonchas de pavo, media palta pequena y 1 fruta",
+    "detalle": "3 huevos con 2 lonchas de pavo, media palta pequeña y 1 fruta",
     "tags": [
      "huevos",
      "fruta"
@@ -355,7 +356,7 @@
     ]
    },
    "mediaManana": {
-    "titulo": "1 cafe o infusion con 1 trocito de chocolate >70%",
+    "titulo": "1 café o infusion con 1 trocito de chocolate >70%",
     "ing": [
      [
       "chocolate",
@@ -365,11 +366,12 @@
    },
    "almuerzo": {
     "titulo": "1 filete grande de jurel al horno",
+    "corto": "Jurel al horno",
     "protK": "pescado",
-    "verdura": "Esparragos y zanahoria al horno",
-    "carbo": "1 taza de noquis",
+    "verdura": "Espárragos y zanahoria al horno",
+    "carbo": "1 taza de ñoquis",
     "carboK": "otro",
-    "grasa": "Media palta pequena",
+    "grasa": "Media palta pequeña",
     "ing": [
      [
       "jurel",
@@ -395,10 +397,63 @@
       "palta",
       0.5
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_jurel",
+      "k": "pescado",
+      "titulo": "1 filete grande de jurel al horno",
+      "corto": "Jurel al horno",
+      "ing": [
+       [
+        "jurel",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_esparrago",
+      "titulo": "Espárragos y zanahoria al horno",
+      "ing": [
+       [
+        "esparrago",
+        1
+       ],
+       [
+        "zanahoria",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_ñoquis",
+      "k": "otro",
+      "titulo": "1 taza de ñoquis",
+      "ing": [
+       [
+        "noquis",
+        1
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_palta",
+      "titulo": "Media palta pequeña",
+      "ing": [
+       [
+        "palta",
+        0.5
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
-    "titulo": "Preentreno: jugo de lucuma con leche",
+    "titulo": "Preentreno: jugo de lúcuma con leche",
     "ing": [
      [
       "lucuma",
@@ -414,8 +469,9 @@
     "tipo": "plato",
     "protK": "pollo",
     "titulo": "2 filetes medianos de pollo sudados con tomate y cebolla",
-    "verdura": "Brocoli y zanahoria al vapor",
-    "carbo": "Media papa pequena sancochada",
+    "corto": "Pollo sudado con tomate y cebolla",
+    "verdura": "Brócoli y zanahoria al vapor",
+    "carbo": "Media papa pequeña sancochada",
     "detalle": "Sin grasa extra: basta el aceite de oliva de las verduras",
     "ing": [
      [
@@ -447,6 +503,57 @@
       0.5
      ]
     ],
+    "partes": {
+     "prot": {
+      "id": "p_pollo_sudado",
+      "k": "pollo",
+      "titulo": "2 filetes medianos de pollo sudados con tomate y cebolla",
+      "corto": "Pollo sudado con tomate y cebolla",
+      "ing": [
+       [
+        "pollo_filete",
+        2
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "cebolla",
+        0.5
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_brócoli",
+      "titulo": "Brócoli y zanahoria al vapor",
+      "ing": [
+       [
+        "brocoli",
+        1
+       ],
+       [
+        "zanahoria",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "cc_papa",
+      "k": "otro",
+      "titulo": "Media papa pequeña sancochada",
+      "ing": [
+       [
+        "papa",
+        0.5
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -458,8 +565,9 @@
    "dia": 2,
    "semana": 1,
    "desayuno": {
-    "titulo": "Batido de proteina con platano y mani",
-    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chia o linaza, 1 platano y 1 cdta de mantequilla de mani",
+    "id": "d_batido_plátano",
+    "titulo": "Batido de proteina con plátano y mani",
+    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chía o linaza, 1 plátano y 1 cdta de mantequilla de mani",
     "tags": [
      "proteina_polvo",
      "fruta"
@@ -497,7 +605,8 @@
     ]
    },
    "almuerzo": {
-    "titulo": "1 lata de atun al natural y 1 huevo cocido",
+    "titulo": "1 lata de atún al natural y 1 huevo cocido",
+    "corto": "Atún con huevo cocido",
     "protK": "atun",
     "verdura": "Coliflor al horno con hojas verdes",
     "carbo": "1 taza de frejol canario cocido",
@@ -532,7 +641,64 @@
       "aceituna",
       1
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_atun",
+      "k": "atun",
+      "titulo": "1 lata de atún al natural y 1 huevo cocido",
+      "corto": "Atún con huevo cocido",
+      "ing": [
+       [
+        "atun_lata",
+        1
+       ],
+       [
+        "huevo",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_coliflor",
+      "titulo": "Coliflor al horno con hojas verdes",
+      "ing": [
+       [
+        "coliflor",
+        1
+       ],
+       [
+        "lechuga",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_frejol",
+      "k": "menestras",
+      "titulo": "1 taza de frejol canario cocido",
+      "ing": [
+       [
+        "frejol",
+        1
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_aceitunas",
+      "titulo": "6 a 8 aceitunas",
+      "ing": [
+       [
+        "aceituna",
+        1
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
     "titulo": "1 fruta y 1 barrita de proteina",
@@ -551,8 +717,9 @@
     "tipo": "plato",
     "protK": "pollo",
     "titulo": "2 filetes medianos de pollo a la plancha",
+    "corto": "Pollo a la plancha",
     "verdura": "Zapallito italiano y vainitas salteados",
-    "carbo": "Tres cuartos de taza de noquis",
+    "carbo": "Tres cuartos de taza de ñoquis",
     "detalle": "Sin grasa extra: basta el aceite de oliva de las verduras",
     "ing": [
      [
@@ -576,6 +743,49 @@
       0.75
      ]
     ],
+    "partes": {
+     "prot": {
+      "id": "p_pollo_plancha",
+      "k": "pollo",
+      "titulo": "2 filetes medianos de pollo a la plancha",
+      "corto": "Pollo a la plancha",
+      "ing": [
+       [
+        "pollo_filete",
+        2
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_zapallito",
+      "titulo": "Zapallito italiano y vainitas salteados",
+      "ing": [
+       [
+        "zapallito",
+        1
+       ],
+       [
+        "vainita",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "cc_ñoquis",
+      "k": "otro",
+      "titulo": "Tres cuartos de taza de ñoquis",
+      "ing": [
+       [
+        "noquis",
+        0.75
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -592,6 +802,7 @@
    "dia": 3,
    "semana": 1,
    "desayuno": {
+    "id": "d_bowl_papaya",
     "titulo": "Bowl de yogurt proteico con granola y papaya",
     "detalle": "8 cdas de yogurt proteico, 3 cdas de granola y papaya picada",
     "tags": [
@@ -614,7 +825,7 @@
     ]
    },
    "mediaManana": {
-    "titulo": "1 trocito de chocolate >70% y 1 punado de frutos secos",
+    "titulo": "1 trocito de chocolate >70% y 1 puñado de frutos secos",
     "ing": [
      [
       "chocolate",
@@ -628,11 +839,12 @@
    },
    "almuerzo": {
     "titulo": "1 filete grande de res a la plancha",
+    "corto": "Res a la plancha",
     "protK": "carne",
     "verdura": "Ensalada de betarraga rallada, lechuga y pepino",
     "carbo": "Medio camote mediano al horno",
     "carboK": "otro",
-    "grasa": "Media palta pequena",
+    "grasa": "Media palta pequeña",
     "ing": [
      [
       "res_filete",
@@ -662,10 +874,67 @@
       "palta",
       0.5
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_res",
+      "k": "carne",
+      "titulo": "1 filete grande de res a la plancha",
+      "corto": "Res a la plancha",
+      "ing": [
+       [
+        "res_filete",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_betarraga",
+      "titulo": "Ensalada de betarraga rallada, lechuga y pepino",
+      "ing": [
+       [
+        "betarraga",
+        1
+       ],
+       [
+        "lechuga",
+        1
+       ],
+       [
+        "pepino",
+        0.5
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_camote",
+      "k": "otro",
+      "titulo": "Medio camote mediano al horno",
+      "ing": [
+       [
+        "camote",
+        0.5
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_palta",
+      "titulo": "Media palta pequeña",
+      "ing": [
+       [
+        "palta",
+        0.5
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
-    "titulo": "Preentreno: 1 platano",
+    "titulo": "Preentreno: 1 plátano",
     "ing": [
      [
       "platano",
@@ -677,7 +946,8 @@
     "tipo": "omelette",
     "protK": "huevos",
     "titulo": "Omelette de 3 huevos con zapallito y tomate",
-    "detalle": "Con media palta pequena. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+    "corto": "Omelette con zapallito y tomate",
+    "detalle": "Con media palta pequeña. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
     "ing": [
      [
       "huevo",
@@ -696,6 +966,32 @@
       0.5
      ]
     ],
+    "partes": {
+     "omelette": {
+      "id": "o_verduras",
+      "titulo": "Omelette de 3 huevos con zapallito y tomate",
+      "corto": "Omelette con zapallito y tomate",
+      "detalle": "Con media palta pequeña. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+      "ing": [
+       [
+        "huevo",
+        3
+       ],
+       [
+        "zapallito",
+        1
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "palta",
+        0.5
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -707,6 +1003,7 @@
    "dia": 4,
    "semana": 1,
    "desayuno": {
+    "id": "d_wrap_pollo",
     "titulo": "Wrap integral de pollo deshilachado",
     "detalle": "Con media palta, tomate en rodajas, lechuga, 1 punto de mayonesa light y 1 fruta",
     "tags": [
@@ -755,8 +1052,9 @@
    },
    "almuerzo": {
     "titulo": "1 filete grande de lomo a la plancha",
+    "corto": "Lomo a la plancha",
     "protK": "carne",
-    "verdura": "Ensalada de rucula, tomate cherry y pepino",
+    "verdura": "Ensalada de rúcula, tomate cherry y pepino",
     "carbo": "1 taza de lentejas cocidas",
     "carboK": "menestras",
     "grasa": "6 a 8 aceitunas",
@@ -789,10 +1087,67 @@
       "aceituna",
       1
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_lomo",
+      "k": "carne",
+      "titulo": "1 filete grande de lomo a la plancha",
+      "corto": "Lomo a la plancha",
+      "ing": [
+       [
+        "lomo_filete",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_rúcula",
+      "titulo": "Ensalada de rúcula, tomate cherry y pepino",
+      "ing": [
+       [
+        "rucula",
+        1
+       ],
+       [
+        "cherry",
+        1
+       ],
+       [
+        "pepino",
+        0.5
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_lentejas",
+      "k": "menestras",
+      "titulo": "1 taza de lentejas cocidas",
+      "ing": [
+       [
+        "lenteja",
+        1
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_aceitunas",
+      "titulo": "6 a 8 aceitunas",
+      "ing": [
+       [
+        "aceituna",
+        1
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
-    "titulo": "Preentreno: jugo de lucuma con leche",
+    "titulo": "Preentreno: jugo de lúcuma con leche",
     "ing": [
      [
       "lucuma",
@@ -808,8 +1163,9 @@
     "tipo": "plato",
     "protK": "pollo",
     "titulo": "2 filetes medianos de pollo sudados con tomate y cebolla",
+    "corto": "Pollo sudado con tomate y cebolla",
     "verdura": "Ensalada de betarraga rallada, lechuga y pepino",
-    "carbo": "Tres cuartos de taza de noquis",
+    "carbo": "Tres cuartos de taza de ñoquis",
     "detalle": "Sin grasa extra: basta el aceite de oliva de las verduras",
     "ing": [
      [
@@ -845,6 +1201,61 @@
       0.75
      ]
     ],
+    "partes": {
+     "prot": {
+      "id": "p_pollo_sudado",
+      "k": "pollo",
+      "titulo": "2 filetes medianos de pollo sudados con tomate y cebolla",
+      "corto": "Pollo sudado con tomate y cebolla",
+      "ing": [
+       [
+        "pollo_filete",
+        2
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "cebolla",
+        0.5
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_betarraga",
+      "titulo": "Ensalada de betarraga rallada, lechuga y pepino",
+      "ing": [
+       [
+        "betarraga",
+        1
+       ],
+       [
+        "lechuga",
+        1
+       ],
+       [
+        "pepino",
+        0.5
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "cc_ñoquis",
+      "k": "otro",
+      "titulo": "Tres cuartos de taza de ñoquis",
+      "ing": [
+       [
+        "noquis",
+        0.75
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -861,8 +1272,9 @@
    "dia": 5,
    "semana": 1,
    "desayuno": {
-    "titulo": "Batido de proteina con lucuma",
-    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chia o linaza y pulpa de lucuma al gusto",
+    "id": "d_batido_lúcuma",
+    "titulo": "Batido de proteina con lúcuma",
+    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chía o linaza y pulpa de lúcuma al gusto",
     "tags": [
      "proteina_polvo",
      "fruta"
@@ -887,7 +1299,7 @@
     ]
    },
    "mediaManana": {
-    "titulo": "1 trocito de chocolate >70% y 1 punado de frutos secos",
+    "titulo": "1 trocito de chocolate >70% y 1 puñado de frutos secos",
     "ing": [
      [
       "chocolate",
@@ -901,11 +1313,12 @@
    },
    "almuerzo": {
     "titulo": "1 filete grande de perico a la plancha",
+    "corto": "Perico a la plancha",
     "protK": "pescado",
     "verdura": "Zapallito italiano y vainitas salteados",
     "carbo": "Medio camote mediano al horno",
     "carboK": "otro",
-    "grasa": "Media palta pequena",
+    "grasa": "Media palta pequeña",
     "ing": [
      [
       "perico",
@@ -931,10 +1344,63 @@
       "palta",
       0.5
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_perico",
+      "k": "pescado",
+      "titulo": "1 filete grande de perico a la plancha",
+      "corto": "Perico a la plancha",
+      "ing": [
+       [
+        "perico",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_zapallito",
+      "titulo": "Zapallito italiano y vainitas salteados",
+      "ing": [
+       [
+        "zapallito",
+        1
+       ],
+       [
+        "vainita",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_camote",
+      "k": "otro",
+      "titulo": "Medio camote mediano al horno",
+      "ing": [
+       [
+        "camote",
+        0.5
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_palta",
+      "titulo": "Media palta pequeña",
+      "ing": [
+       [
+        "palta",
+        0.5
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
-    "titulo": "Preentreno: bowl de yogurt proteico con granola y medio platano",
+    "titulo": "Preentreno: bowl de yogurt proteico con granola y medio plátano",
     "ing": [
      [
       "yogurt_prot",
@@ -954,7 +1420,8 @@
     "tipo": "omelette",
     "protK": "huevos",
     "titulo": "Omelette de 3 huevos con zapallito y tomate",
-    "detalle": "Con media palta pequena. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+    "corto": "Omelette con zapallito y tomate",
+    "detalle": "Con media palta pequeña. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
     "ing": [
      [
       "huevo",
@@ -973,6 +1440,32 @@
       0.5
      ]
     ],
+    "partes": {
+     "omelette": {
+      "id": "o_verduras",
+      "titulo": "Omelette de 3 huevos con zapallito y tomate",
+      "corto": "Omelette con zapallito y tomate",
+      "detalle": "Con media palta pequeña. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+      "ing": [
+       [
+        "huevo",
+        3
+       ],
+       [
+        "zapallito",
+        1
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "palta",
+        0.5
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -984,6 +1477,7 @@
    "dia": 6,
    "semana": 1,
    "desayuno": {
+    "id": "d_bowl_manzana",
     "titulo": "Bowl de yogurt proteico con granola y manzana",
     "detalle": "8 cdas de yogurt proteico, 3 cdas de granola y 1 manzana picada",
     "tags": [
@@ -1006,7 +1500,7 @@
     ]
    },
    "mediaManana": {
-    "titulo": "1 fruta y 1 punado de frutos secos (12 a 15 unidades)",
+    "titulo": "1 fruta y 1 puñado de frutos secos (12 a 15 unidades)",
     "ing": [
      [
       "manzana",
@@ -1020,8 +1514,9 @@
    },
    "almuerzo": {
     "titulo": "2 filetes medianos de pollo a la plancha",
+    "corto": "Pollo a la plancha",
     "protK": "pollo",
-    "verdura": "Ensalada de rucula, tomate cherry y pepino",
+    "verdura": "Ensalada de rúcula, tomate cherry y pepino",
     "carbo": "1 taza de frejol canario cocido",
     "carboK": "menestras",
     "grasa": "6 a 8 aceitunas",
@@ -1054,10 +1549,67 @@
       "aceituna",
       1
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_pollo_plancha",
+      "k": "pollo",
+      "titulo": "2 filetes medianos de pollo a la plancha",
+      "corto": "Pollo a la plancha",
+      "ing": [
+       [
+        "pollo_filete",
+        2
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_rúcula",
+      "titulo": "Ensalada de rúcula, tomate cherry y pepino",
+      "ing": [
+       [
+        "rucula",
+        1
+       ],
+       [
+        "cherry",
+        1
+       ],
+       [
+        "pepino",
+        0.5
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_frejol",
+      "k": "menestras",
+      "titulo": "1 taza de frejol canario cocido",
+      "ing": [
+       [
+        "frejol",
+        1
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_aceitunas",
+      "titulo": "6 a 8 aceitunas",
+      "ing": [
+       [
+        "aceituna",
+        1
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
-    "titulo": "Preentreno: 1 platano",
+    "titulo": "Preentreno: 1 plátano",
     "ing": [
      [
       "platano",
@@ -1068,8 +1620,9 @@
    "cena": {
     "tipo": "omelette",
     "protK": "huevos",
-    "titulo": "Omelette de 3 huevos con champinones",
-    "detalle": "Con media palta pequena. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+    "titulo": "Omelette de 3 huevos con champiñones",
+    "corto": "Omelette con champiñones",
+    "detalle": "Con media palta pequeña. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
     "ing": [
      [
       "huevo",
@@ -1084,6 +1637,28 @@
       0.5
      ]
     ],
+    "partes": {
+     "omelette": {
+      "id": "o_champ",
+      "titulo": "Omelette de 3 huevos con champiñones",
+      "corto": "Omelette con champiñones",
+      "detalle": "Con media palta pequeña. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+      "ing": [
+       [
+        "huevo",
+        3
+       ],
+       [
+        "champinon",
+        1
+       ],
+       [
+        "palta",
+        0.5
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -1100,6 +1675,7 @@
    "dia": 7,
    "semana": 1,
    "desayuno": {
+    "id": "d_bowl_mango",
     "titulo": "Bowl de yogurt proteico con granola y mango",
     "detalle": "8 cdas de yogurt proteico, 3 cdas de granola y media taza de mango picado",
     "tags": [
@@ -1122,7 +1698,7 @@
     ]
    },
    "mediaManana": {
-    "titulo": "1 trocito de chocolate >70% y 1 punado de frutos secos",
+    "titulo": "1 trocito de chocolate >70% y 1 puñado de frutos secos",
     "ing": [
      [
       "chocolate",
@@ -1136,11 +1712,12 @@
    },
    "almuerzo": {
     "titulo": "2 filetes medianos de pollo al horno con hierbas",
+    "corto": "Pollo al horno con hierbas",
     "protK": "pollo",
     "verdura": "Ensalada criolla de cebolla, tomate y limon",
-    "carbo": "1 papa pequena sancochada",
+    "carbo": "1 papa pequeña sancochada",
     "carboK": "otro",
-    "grasa": "Media palta pequena",
+    "grasa": "Media palta pequeña",
     "ing": [
      [
       "pollo_filete",
@@ -1170,7 +1747,64 @@
       "palta",
       0.5
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_pollo_horno",
+      "k": "pollo",
+      "titulo": "2 filetes medianos de pollo al horno con hierbas",
+      "corto": "Pollo al horno con hierbas",
+      "ing": [
+       [
+        "pollo_filete",
+        2
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_criolla",
+      "titulo": "Ensalada criolla de cebolla, tomate y limon",
+      "ing": [
+       [
+        "cebolla",
+        0.5
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "limon",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_papa",
+      "k": "otro",
+      "titulo": "1 papa pequeña sancochada",
+      "ing": [
+       [
+        "papa",
+        1
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_palta",
+      "titulo": "Media palta pequeña",
+      "ing": [
+       [
+        "palta",
+        0.5
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
     "titulo": "1 yogurt proteico de sabor",
@@ -1185,8 +1819,9 @@
     "tipo": "plato",
     "protK": "pescado",
     "titulo": "1 filete grande de perico a la plancha",
-    "verdura": "Esparragos y zanahoria al horno",
-    "carbo": "Media papa pequena sancochada",
+    "corto": "Perico a la plancha",
+    "verdura": "Espárragos y zanahoria al horno",
+    "carbo": "Media papa pequeña sancochada",
     "detalle": "Sin grasa extra: basta el aceite de oliva de las verduras",
     "ing": [
      [
@@ -1210,6 +1845,49 @@
       0.5
      ]
     ],
+    "partes": {
+     "prot": {
+      "id": "p_perico",
+      "k": "pescado",
+      "titulo": "1 filete grande de perico a la plancha",
+      "corto": "Perico a la plancha",
+      "ing": [
+       [
+        "perico",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_esparrago",
+      "titulo": "Espárragos y zanahoria al horno",
+      "ing": [
+       [
+        "esparrago",
+        1
+       ],
+       [
+        "zanahoria",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "cc_papa",
+      "k": "otro",
+      "titulo": "Media papa pequeña sancochada",
+      "ing": [
+       [
+        "papa",
+        0.5
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -1221,8 +1899,9 @@
    "dia": 8,
    "semana": 2,
    "desayuno": {
-    "titulo": "Batido de proteina con platano y mani",
-    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chia o linaza, 1 platano y 1 cdta de mantequilla de mani",
+    "id": "d_batido_plátano",
+    "titulo": "Batido de proteina con plátano y mani",
+    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chía o linaza, 1 plátano y 1 cdta de mantequilla de mani",
     "tags": [
      "proteina_polvo",
      "fruta"
@@ -1251,7 +1930,7 @@
     ]
    },
    "mediaManana": {
-    "titulo": "1 cafe o infusion con 1 trocito de chocolate >70%",
+    "titulo": "1 café o infusion con 1 trocito de chocolate >70%",
     "ing": [
      [
       "chocolate",
@@ -1261,8 +1940,9 @@
    },
    "almuerzo": {
     "titulo": "2 filetes medianos de pollo sudados con tomate y cebolla",
+    "corto": "Pollo sudado con tomate y cebolla",
     "protK": "pollo",
-    "verdura": "Ensalada de rucula, tomate cherry y pepino",
+    "verdura": "Ensalada de rúcula, tomate cherry y pepino",
     "carbo": "1 taza de garbanzos cocidos",
     "carboK": "menestras",
     "grasa": "6 a 8 aceitunas",
@@ -1303,7 +1983,72 @@
       "aceituna",
       1
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_pollo_sudado",
+      "k": "pollo",
+      "titulo": "2 filetes medianos de pollo sudados con tomate y cebolla",
+      "corto": "Pollo sudado con tomate y cebolla",
+      "ing": [
+       [
+        "pollo_filete",
+        2
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "cebolla",
+        0.5
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_rúcula",
+      "titulo": "Ensalada de rúcula, tomate cherry y pepino",
+      "ing": [
+       [
+        "rucula",
+        1
+       ],
+       [
+        "cherry",
+        1
+       ],
+       [
+        "pepino",
+        0.5
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_garbanzos",
+      "k": "menestras",
+      "titulo": "1 taza de garbanzos cocidos",
+      "ing": [
+       [
+        "garbanzo",
+        1
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_aceitunas",
+      "titulo": "6 a 8 aceitunas",
+      "ing": [
+       [
+        "aceituna",
+        1
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
     "titulo": "1 fruta y 1 barrita de proteina",
@@ -1322,6 +2067,7 @@
     "tipo": "omelette",
     "protK": "huevos",
     "titulo": "Omelette de 3 huevos con espinaca y tomate",
+    "corto": "Omelette con espinaca y tomate",
     "detalle": "Con 2 lonchas de gouda. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
     "ing": [
      [
@@ -1341,6 +2087,32 @@
       2
      ]
     ],
+    "partes": {
+     "omelette": {
+      "id": "o_espinaca",
+      "titulo": "Omelette de 3 huevos con espinaca y tomate",
+      "corto": "Omelette con espinaca y tomate",
+      "detalle": "Con 2 lonchas de gouda. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+      "ing": [
+       [
+        "huevo",
+        3
+       ],
+       [
+        "espinaca",
+        1
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "gouda",
+        2
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -1357,6 +2129,7 @@
    "dia": 9,
    "semana": 2,
    "desayuno": {
+    "id": "d_bowl_mango",
     "titulo": "Bowl de yogurt proteico con granola y mango",
     "detalle": "8 cdas de yogurt proteico, 3 cdas de granola y media taza de mango picado",
     "tags": [
@@ -1388,12 +2161,13 @@
     ]
    },
    "almuerzo": {
-    "titulo": "1 lata de atun al natural y 1 huevo cocido",
+    "titulo": "1 lata de atún al natural y 1 huevo cocido",
+    "corto": "Atún con huevo cocido",
     "protK": "atun",
     "verdura": "Zapallito italiano y vainitas salteados",
     "carbo": "Medio camote mediano al horno",
     "carboK": "otro",
-    "grasa": "Media palta pequena",
+    "grasa": "Media palta pequeña",
     "ing": [
      [
       "atun_lata",
@@ -1423,7 +2197,64 @@
       "palta",
       0.5
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_atun",
+      "k": "atun",
+      "titulo": "1 lata de atún al natural y 1 huevo cocido",
+      "corto": "Atún con huevo cocido",
+      "ing": [
+       [
+        "atun_lata",
+        1
+       ],
+       [
+        "huevo",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_zapallito",
+      "titulo": "Zapallito italiano y vainitas salteados",
+      "ing": [
+       [
+        "zapallito",
+        1
+       ],
+       [
+        "vainita",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_camote",
+      "k": "otro",
+      "titulo": "Medio camote mediano al horno",
+      "ing": [
+       [
+        "camote",
+        0.5
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_palta",
+      "titulo": "Media palta pequeña",
+      "ing": [
+       [
+        "palta",
+        0.5
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
     "titulo": "1 yogurt proteico de sabor",
@@ -1438,8 +2269,9 @@
     "tipo": "plato",
     "protK": "pollo",
     "titulo": "2 filetes medianos de pollo a la plancha",
+    "corto": "Pollo a la plancha",
     "verdura": "Ensalada de lechuga, tomate y pepino",
-    "carbo": "Media papa pequena sancochada",
+    "carbo": "Media papa pequeña sancochada",
     "detalle": "Sin grasa extra: basta el aceite de oliva de las verduras",
     "ing": [
      [
@@ -1471,6 +2303,57 @@
       0.5
      ]
     ],
+    "partes": {
+     "prot": {
+      "id": "p_pollo_plancha",
+      "k": "pollo",
+      "titulo": "2 filetes medianos de pollo a la plancha",
+      "corto": "Pollo a la plancha",
+      "ing": [
+       [
+        "pollo_filete",
+        2
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_mixta",
+      "titulo": "Ensalada de lechuga, tomate y pepino",
+      "ing": [
+       [
+        "lechuga",
+        1
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "pepino",
+        0.5
+       ],
+       [
+        "aceite",
+        1
+       ],
+       [
+        "limon",
+        0.5
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "cc_papa",
+      "k": "otro",
+      "titulo": "Media papa pequeña sancochada",
+      "ing": [
+       [
+        "papa",
+        0.5
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -1482,6 +2365,7 @@
    "dia": 10,
    "semana": 2,
    "desayuno": {
+    "id": "d_bowl_manzana",
     "titulo": "Bowl de yogurt proteico con granola y manzana",
     "detalle": "8 cdas de yogurt proteico, 3 cdas de granola y 1 manzana picada",
     "tags": [
@@ -1504,7 +2388,7 @@
     ]
    },
    "mediaManana": {
-    "titulo": "1 trocito de chocolate >70% y 1 punado de frutos secos",
+    "titulo": "1 trocito de chocolate >70% y 1 puñado de frutos secos",
     "ing": [
      [
       "chocolate",
@@ -1518,9 +2402,10 @@
    },
    "almuerzo": {
     "titulo": "1 filete grande de merluza al vapor",
+    "corto": "Merluza al vapor",
     "protK": "pescado",
-    "verdura": "Brocoli y zanahoria al vapor",
-    "carbo": "1 taza de noquis",
+    "verdura": "Brócoli y zanahoria al vapor",
+    "carbo": "1 taza de ñoquis",
     "carboK": "otro",
     "grasa": "6 a 8 aceitunas",
     "ing": [
@@ -1548,10 +2433,63 @@
       "aceituna",
       1
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_merluza",
+      "k": "pescado",
+      "titulo": "1 filete grande de merluza al vapor",
+      "corto": "Merluza al vapor",
+      "ing": [
+       [
+        "merluza",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_brócoli",
+      "titulo": "Brócoli y zanahoria al vapor",
+      "ing": [
+       [
+        "brocoli",
+        1
+       ],
+       [
+        "zanahoria",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_ñoquis",
+      "k": "otro",
+      "titulo": "1 taza de ñoquis",
+      "ing": [
+       [
+        "noquis",
+        1
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_aceitunas",
+      "titulo": "6 a 8 aceitunas",
+      "ing": [
+       [
+        "aceituna",
+        1
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
-    "titulo": "Preentreno: 1 platano",
+    "titulo": "Preentreno: 1 plátano",
     "ing": [
      [
       "platano",
@@ -1563,6 +2501,7 @@
     "tipo": "omelette",
     "protK": "huevos",
     "titulo": "Omelette de 3 huevos con espinaca y tomate",
+    "corto": "Omelette con espinaca y tomate",
     "detalle": "Con 2 lonchas de gouda. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
     "ing": [
      [
@@ -1582,6 +2521,32 @@
       2
      ]
     ],
+    "partes": {
+     "omelette": {
+      "id": "o_espinaca",
+      "titulo": "Omelette de 3 huevos con espinaca y tomate",
+      "corto": "Omelette con espinaca y tomate",
+      "detalle": "Con 2 lonchas de gouda. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+      "ing": [
+       [
+        "huevo",
+        3
+       ],
+       [
+        "espinaca",
+        1
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "gouda",
+        2
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -1598,6 +2563,7 @@
    "dia": 11,
    "semana": 2,
    "desayuno": {
+    "id": "d_bowl_papaya",
     "titulo": "Bowl de yogurt proteico con granola y papaya",
     "detalle": "8 cdas de yogurt proteico, 3 cdas de granola y papaya picada",
     "tags": [
@@ -1620,7 +2586,7 @@
     ]
    },
    "mediaManana": {
-    "titulo": "1 fruta y 1 punado de frutos secos (12 a 15 unidades)",
+    "titulo": "1 fruta y 1 puñado de frutos secos (12 a 15 unidades)",
     "ing": [
      [
       "manzana",
@@ -1634,11 +2600,12 @@
    },
    "almuerzo": {
     "titulo": "2 filetes medianos de pollo a la plancha",
+    "corto": "Pollo a la plancha",
     "protK": "pollo",
     "verdura": "Zapallito italiano y vainitas salteados",
     "carbo": "1 taza de lentejas cocidas",
     "carboK": "menestras",
-    "grasa": "Media palta pequena",
+    "grasa": "Media palta pequeña",
     "ing": [
      [
       "pollo_filete",
@@ -1664,10 +2631,63 @@
       "palta",
       0.5
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_pollo_plancha",
+      "k": "pollo",
+      "titulo": "2 filetes medianos de pollo a la plancha",
+      "corto": "Pollo a la plancha",
+      "ing": [
+       [
+        "pollo_filete",
+        2
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_zapallito",
+      "titulo": "Zapallito italiano y vainitas salteados",
+      "ing": [
+       [
+        "zapallito",
+        1
+       ],
+       [
+        "vainita",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_lentejas",
+      "k": "menestras",
+      "titulo": "1 taza de lentejas cocidas",
+      "ing": [
+       [
+        "lenteja",
+        1
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_palta",
+      "titulo": "Media palta pequeña",
+      "ing": [
+       [
+        "palta",
+        0.5
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
-    "titulo": "Preentreno: bowl de yogurt proteico con granola y medio platano",
+    "titulo": "Preentreno: bowl de yogurt proteico con granola y medio plátano",
     "ing": [
      [
       "yogurt_prot",
@@ -1687,8 +2707,9 @@
     "tipo": "plato",
     "protK": "pescado",
     "titulo": "1 filete grande de bonito a la plancha",
-    "verdura": "Esparragos y zanahoria al horno",
-    "carbo": "Media papa pequena sancochada",
+    "corto": "Bonito a la plancha",
+    "verdura": "Espárragos y zanahoria al horno",
+    "carbo": "Media papa pequeña sancochada",
     "detalle": "Sin grasa extra: basta el aceite de oliva de las verduras",
     "ing": [
      [
@@ -1712,6 +2733,49 @@
       0.5
      ]
     ],
+    "partes": {
+     "prot": {
+      "id": "p_bonito",
+      "k": "pescado",
+      "titulo": "1 filete grande de bonito a la plancha",
+      "corto": "Bonito a la plancha",
+      "ing": [
+       [
+        "bonito",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_esparrago",
+      "titulo": "Espárragos y zanahoria al horno",
+      "ing": [
+       [
+        "esparrago",
+        1
+       ],
+       [
+        "zanahoria",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "cc_papa",
+      "k": "otro",
+      "titulo": "Media papa pequeña sancochada",
+      "ing": [
+       [
+        "papa",
+        0.5
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -1723,8 +2787,9 @@
    "dia": 12,
    "semana": 2,
    "desayuno": {
-    "titulo": "Huevos revueltos con jamon cocido",
-    "detalle": "3 huevos con 2 lonchas de jamon, media palta pequena y 1 fruta",
+    "id": "d_revueltos_jamón",
+    "titulo": "Huevos revueltos con jamón cocido",
+    "detalle": "3 huevos con 2 lonchas de jamón, media palta pequeña y 1 fruta",
     "tags": [
      "huevos",
      "fruta"
@@ -1749,7 +2814,7 @@
     ]
    },
    "mediaManana": {
-    "titulo": "1 trocito de chocolate >70% y 1 punado de frutos secos",
+    "titulo": "1 trocito de chocolate >70% y 1 puñado de frutos secos",
     "ing": [
      [
       "chocolate",
@@ -1763,6 +2828,7 @@
    },
    "almuerzo": {
     "titulo": "2 filetes medianos de pollo al horno con hierbas",
+    "corto": "Pollo al horno con hierbas",
     "protK": "pollo",
     "verdura": "Coliflor al horno con hojas verdes",
     "carbo": "Medio camote mediano al horno",
@@ -1793,7 +2859,60 @@
       "aceituna",
       1
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_pollo_horno",
+      "k": "pollo",
+      "titulo": "2 filetes medianos de pollo al horno con hierbas",
+      "corto": "Pollo al horno con hierbas",
+      "ing": [
+       [
+        "pollo_filete",
+        2
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_coliflor",
+      "titulo": "Coliflor al horno con hojas verdes",
+      "ing": [
+       [
+        "coliflor",
+        1
+       ],
+       [
+        "lechuga",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_camote",
+      "k": "otro",
+      "titulo": "Medio camote mediano al horno",
+      "ing": [
+       [
+        "camote",
+        0.5
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_aceitunas",
+      "titulo": "6 a 8 aceitunas",
+      "ing": [
+       [
+        "aceituna",
+        1
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
     "titulo": "1 fruta y 1 barrita de proteina",
@@ -1812,8 +2931,9 @@
     "tipo": "plato",
     "protK": "carne",
     "titulo": "1 filete grande de res a la plancha",
+    "corto": "Res a la plancha",
     "verdura": "Ensalada de lechuga, tomate y pepino",
-    "carbo": "Tres cuartos de taza de noquis",
+    "carbo": "Tres cuartos de taza de ñoquis",
     "detalle": "Sin grasa extra: basta el aceite de oliva de las verduras",
     "ing": [
      [
@@ -1845,6 +2965,57 @@
       0.75
      ]
     ],
+    "partes": {
+     "prot": {
+      "id": "p_res",
+      "k": "carne",
+      "titulo": "1 filete grande de res a la plancha",
+      "corto": "Res a la plancha",
+      "ing": [
+       [
+        "res_filete",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_mixta",
+      "titulo": "Ensalada de lechuga, tomate y pepino",
+      "ing": [
+       [
+        "lechuga",
+        1
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "pepino",
+        0.5
+       ],
+       [
+        "aceite",
+        1
+       ],
+       [
+        "limon",
+        0.5
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "cc_ñoquis",
+      "k": "otro",
+      "titulo": "Tres cuartos de taza de ñoquis",
+      "ing": [
+       [
+        "noquis",
+        0.75
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -1861,6 +3032,7 @@
    "dia": 13,
    "semana": 2,
    "desayuno": {
+    "id": "d_wrap_pollo",
     "titulo": "Wrap integral de pollo deshilachado",
     "detalle": "Con media palta, tomate en rodajas, lechuga, 1 punto de mayonesa light y 1 fruta",
     "tags": [
@@ -1899,7 +3071,7 @@
     ]
    },
    "mediaManana": {
-    "titulo": "1 cafe o infusion con 1 trocito de chocolate >70%",
+    "titulo": "1 café o infusion con 1 trocito de chocolate >70%",
     "ing": [
      [
       "chocolate",
@@ -1909,11 +3081,12 @@
    },
    "almuerzo": {
     "titulo": "1 filete grande de bonito a la plancha",
+    "corto": "Bonito a la plancha",
     "protK": "pescado",
-    "verdura": "Brocoli y zanahoria al vapor",
-    "carbo": "1 taza de noquis",
+    "verdura": "Brócoli y zanahoria al vapor",
+    "carbo": "1 taza de ñoquis",
     "carboK": "otro",
-    "grasa": "Media palta pequena",
+    "grasa": "Media palta pequeña",
     "ing": [
      [
       "bonito",
@@ -1939,10 +3112,63 @@
       "palta",
       0.5
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_bonito",
+      "k": "pescado",
+      "titulo": "1 filete grande de bonito a la plancha",
+      "corto": "Bonito a la plancha",
+      "ing": [
+       [
+        "bonito",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_brócoli",
+      "titulo": "Brócoli y zanahoria al vapor",
+      "ing": [
+       [
+        "brocoli",
+        1
+       ],
+       [
+        "zanahoria",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_ñoquis",
+      "k": "otro",
+      "titulo": "1 taza de ñoquis",
+      "ing": [
+       [
+        "noquis",
+        1
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_palta",
+      "titulo": "Media palta pequeña",
+      "ing": [
+       [
+        "palta",
+        0.5
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
-    "titulo": "Preentreno: jugo de lucuma con leche",
+    "titulo": "Preentreno: jugo de lúcuma con leche",
     "ing": [
      [
       "lucuma",
@@ -1958,8 +3184,9 @@
     "tipo": "plato",
     "protK": "pollo",
     "titulo": "2 filetes medianos de pollo a la plancha",
+    "corto": "Pollo a la plancha",
     "verdura": "Ensalada criolla de cebolla, tomate y limon",
-    "carbo": "Media papa pequena sancochada",
+    "carbo": "Media papa pequeña sancochada",
     "detalle": "Sin grasa extra: basta el aceite de oliva de las verduras",
     "ing": [
      [
@@ -1987,6 +3214,53 @@
       0.5
      ]
     ],
+    "partes": {
+     "prot": {
+      "id": "p_pollo_plancha",
+      "k": "pollo",
+      "titulo": "2 filetes medianos de pollo a la plancha",
+      "corto": "Pollo a la plancha",
+      "ing": [
+       [
+        "pollo_filete",
+        2
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_criolla",
+      "titulo": "Ensalada criolla de cebolla, tomate y limon",
+      "ing": [
+       [
+        "cebolla",
+        0.5
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "limon",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "cc_papa",
+      "k": "otro",
+      "titulo": "Media papa pequeña sancochada",
+      "ing": [
+       [
+        "papa",
+        0.5
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -1998,8 +3272,9 @@
    "dia": 14,
    "semana": 2,
    "desayuno": {
+    "id": "d_omelette_esp",
     "titulo": "Omelette de 3 huevos con mozzarella y espinaca",
-    "detalle": "Con media palta pequena y 1 paquete de salmas si te provoca",
+    "detalle": "Con media palta pequeña y 1 paquete de salmas si te provoca",
     "tags": [
      "huevos"
     ],
@@ -2023,7 +3298,7 @@
     ]
    },
    "mediaManana": {
-    "titulo": "1 trocito de chocolate >70% y 1 punado de frutos secos",
+    "titulo": "1 trocito de chocolate >70% y 1 puñado de frutos secos",
     "ing": [
      [
       "chocolate",
@@ -2037,8 +3312,9 @@
    },
    "almuerzo": {
     "titulo": "1 filete grande de res a la plancha",
+    "corto": "Res a la plancha",
     "protK": "carne",
-    "verdura": "Espinaca salteada con champinones",
+    "verdura": "Espinaca salteada con champiñones",
     "carbo": "Medio camote mediano al horno",
     "carboK": "otro",
     "grasa": "6 a 8 aceitunas",
@@ -2067,10 +3343,63 @@
       "aceituna",
       1
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_res",
+      "k": "carne",
+      "titulo": "1 filete grande de res a la plancha",
+      "corto": "Res a la plancha",
+      "ing": [
+       [
+        "res_filete",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_espinaca",
+      "titulo": "Espinaca salteada con champiñones",
+      "ing": [
+       [
+        "espinaca",
+        1
+       ],
+       [
+        "champinon",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_camote",
+      "k": "otro",
+      "titulo": "Medio camote mediano al horno",
+      "ing": [
+       [
+        "camote",
+        0.5
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_aceitunas",
+      "titulo": "6 a 8 aceitunas",
+      "ing": [
+       [
+        "aceituna",
+        1
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
-    "titulo": "Preentreno: 1 platano",
+    "titulo": "Preentreno: 1 plátano",
     "ing": [
      [
       "platano",
@@ -2082,8 +3411,9 @@
     "tipo": "plato",
     "protK": "pollo",
     "titulo": "2 filetes medianos de pollo sudados con tomate y cebolla",
-    "verdura": "Esparragos y zanahoria al horno",
-    "carbo": "Tres cuartos de taza de noquis",
+    "corto": "Pollo sudado con tomate y cebolla",
+    "verdura": "Espárragos y zanahoria al horno",
+    "carbo": "Tres cuartos de taza de ñoquis",
     "detalle": "Sin grasa extra: basta el aceite de oliva de las verduras",
     "ing": [
      [
@@ -2115,6 +3445,57 @@
       0.75
      ]
     ],
+    "partes": {
+     "prot": {
+      "id": "p_pollo_sudado",
+      "k": "pollo",
+      "titulo": "2 filetes medianos de pollo sudados con tomate y cebolla",
+      "corto": "Pollo sudado con tomate y cebolla",
+      "ing": [
+       [
+        "pollo_filete",
+        2
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "cebolla",
+        0.5
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_esparrago",
+      "titulo": "Espárragos y zanahoria al horno",
+      "ing": [
+       [
+        "esparrago",
+        1
+       ],
+       [
+        "zanahoria",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "cc_ñoquis",
+      "k": "otro",
+      "titulo": "Tres cuartos de taza de ñoquis",
+      "ing": [
+       [
+        "noquis",
+        0.75
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -2131,8 +3512,9 @@
    "dia": 15,
    "semana": 3,
    "desayuno": {
-    "titulo": "Batido de proteina con lucuma",
-    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chia o linaza y pulpa de lucuma al gusto",
+    "id": "d_batido_lúcuma",
+    "titulo": "Batido de proteina con lúcuma",
+    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chía o linaza y pulpa de lúcuma al gusto",
     "tags": [
      "proteina_polvo",
      "fruta"
@@ -2157,7 +3539,7 @@
     ]
    },
    "mediaManana": {
-    "titulo": "1 fruta y 1 punado de frutos secos (12 a 15 unidades)",
+    "titulo": "1 fruta y 1 puñado de frutos secos (12 a 15 unidades)",
     "ing": [
      [
       "manzana",
@@ -2171,11 +3553,12 @@
    },
    "almuerzo": {
     "titulo": "1 filete grande de lomo a la plancha",
+    "corto": "Lomo a la plancha",
     "protK": "carne",
-    "verdura": "Brocoli y zanahoria al vapor",
+    "verdura": "Brócoli y zanahoria al vapor",
     "carbo": "1 taza de lentejas cocidas",
     "carboK": "menestras",
-    "grasa": "Media palta pequena",
+    "grasa": "Media palta pequeña",
     "ing": [
      [
       "lomo_filete",
@@ -2201,7 +3584,60 @@
       "palta",
       0.5
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_lomo",
+      "k": "carne",
+      "titulo": "1 filete grande de lomo a la plancha",
+      "corto": "Lomo a la plancha",
+      "ing": [
+       [
+        "lomo_filete",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_brócoli",
+      "titulo": "Brócoli y zanahoria al vapor",
+      "ing": [
+       [
+        "brocoli",
+        1
+       ],
+       [
+        "zanahoria",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_lentejas",
+      "k": "menestras",
+      "titulo": "1 taza de lentejas cocidas",
+      "ing": [
+       [
+        "lenteja",
+        1
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_palta",
+      "titulo": "Media palta pequeña",
+      "ing": [
+       [
+        "palta",
+        0.5
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
     "titulo": "1 yogurt proteico de sabor",
@@ -2216,6 +3652,7 @@
     "tipo": "omelette",
     "protK": "huevos",
     "titulo": "Omelette de 3 huevos con espinaca y tomate",
+    "corto": "Omelette con espinaca y tomate",
     "detalle": "Con 2 lonchas de gouda. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
     "ing": [
      [
@@ -2235,6 +3672,32 @@
       2
      ]
     ],
+    "partes": {
+     "omelette": {
+      "id": "o_espinaca",
+      "titulo": "Omelette de 3 huevos con espinaca y tomate",
+      "corto": "Omelette con espinaca y tomate",
+      "detalle": "Con 2 lonchas de gouda. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+      "ing": [
+       [
+        "huevo",
+        3
+       ],
+       [
+        "espinaca",
+        1
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "gouda",
+        2
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -2246,6 +3709,7 @@
    "dia": 16,
    "semana": 3,
    "desayuno": {
+    "id": "d_bowl_manzana",
     "titulo": "Bowl de yogurt proteico con granola y manzana",
     "detalle": "8 cdas de yogurt proteico, 3 cdas de granola y 1 manzana picada",
     "tags": [
@@ -2268,7 +3732,7 @@
     ]
    },
    "mediaManana": {
-    "titulo": "1 trocito de chocolate >70% y 1 punado de frutos secos",
+    "titulo": "1 trocito de chocolate >70% y 1 puñado de frutos secos",
     "ing": [
      [
       "chocolate",
@@ -2282,6 +3746,7 @@
    },
    "almuerzo": {
     "titulo": "2 filetes medianos de pollo a la plancha",
+    "corto": "Pollo a la plancha",
     "protK": "pollo",
     "verdura": "Zapallito italiano y vainitas salteados",
     "carbo": "Medio camote mediano al horno",
@@ -2312,10 +3777,63 @@
       "aceituna",
       1
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_pollo_plancha",
+      "k": "pollo",
+      "titulo": "2 filetes medianos de pollo a la plancha",
+      "corto": "Pollo a la plancha",
+      "ing": [
+       [
+        "pollo_filete",
+        2
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_zapallito",
+      "titulo": "Zapallito italiano y vainitas salteados",
+      "ing": [
+       [
+        "zapallito",
+        1
+       ],
+       [
+        "vainita",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_camote",
+      "k": "otro",
+      "titulo": "Medio camote mediano al horno",
+      "ing": [
+       [
+        "camote",
+        0.5
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_aceitunas",
+      "titulo": "6 a 8 aceitunas",
+      "ing": [
+       [
+        "aceituna",
+        1
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
-    "titulo": "Preentreno: jugo de lucuma con leche",
+    "titulo": "Preentreno: jugo de lúcuma con leche",
     "ing": [
      [
       "lucuma",
@@ -2331,8 +3849,9 @@
     "tipo": "plato",
     "protK": "pescado",
     "titulo": "1 filete grande de merluza al vapor",
-    "verdura": "Brocoli y zanahoria al vapor",
-    "carbo": "Tres cuartos de taza de noquis",
+    "corto": "Merluza al vapor",
+    "verdura": "Brócoli y zanahoria al vapor",
+    "carbo": "Tres cuartos de taza de ñoquis",
     "detalle": "Sin grasa extra: basta el aceite de oliva de las verduras",
     "ing": [
      [
@@ -2356,6 +3875,49 @@
       0.75
      ]
     ],
+    "partes": {
+     "prot": {
+      "id": "p_merluza",
+      "k": "pescado",
+      "titulo": "1 filete grande de merluza al vapor",
+      "corto": "Merluza al vapor",
+      "ing": [
+       [
+        "merluza",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_brócoli",
+      "titulo": "Brócoli y zanahoria al vapor",
+      "ing": [
+       [
+        "brocoli",
+        1
+       ],
+       [
+        "zanahoria",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "cc_ñoquis",
+      "k": "otro",
+      "titulo": "Tres cuartos de taza de ñoquis",
+      "ing": [
+       [
+        "noquis",
+        0.75
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -2372,6 +3934,7 @@
    "dia": 17,
    "semana": 3,
    "desayuno": {
+    "id": "d_wrap_pollo",
     "titulo": "Wrap integral de pollo deshilachado",
     "detalle": "Con media palta, tomate en rodajas, lechuga, 1 punto de mayonesa light y 1 fruta",
     "tags": [
@@ -2410,7 +3973,7 @@
     ]
    },
    "mediaManana": {
-    "titulo": "1 fruta y 1 punado de frutos secos (12 a 15 unidades)",
+    "titulo": "1 fruta y 1 puñado de frutos secos (12 a 15 unidades)",
     "ing": [
      [
       "manzana",
@@ -2424,11 +3987,12 @@
    },
    "almuerzo": {
     "titulo": "1 filete grande de res a la plancha",
+    "corto": "Res a la plancha",
     "protK": "carne",
-    "verdura": "Brocoli y zanahoria al vapor",
+    "verdura": "Brócoli y zanahoria al vapor",
     "carbo": "1 taza de garbanzos cocidos",
     "carboK": "menestras",
-    "grasa": "Media palta pequena",
+    "grasa": "Media palta pequeña",
     "ing": [
      [
       "res_filete",
@@ -2454,10 +4018,63 @@
       "palta",
       0.5
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_res",
+      "k": "carne",
+      "titulo": "1 filete grande de res a la plancha",
+      "corto": "Res a la plancha",
+      "ing": [
+       [
+        "res_filete",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_brócoli",
+      "titulo": "Brócoli y zanahoria al vapor",
+      "ing": [
+       [
+        "brocoli",
+        1
+       ],
+       [
+        "zanahoria",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_garbanzos",
+      "k": "menestras",
+      "titulo": "1 taza de garbanzos cocidos",
+      "ing": [
+       [
+        "garbanzo",
+        1
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_palta",
+      "titulo": "Media palta pequeña",
+      "ing": [
+       [
+        "palta",
+        0.5
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
-    "titulo": "Preentreno: 1 platano",
+    "titulo": "Preentreno: 1 plátano",
     "ing": [
      [
       "platano",
@@ -2469,6 +4086,7 @@
     "tipo": "omelette",
     "protK": "huevos",
     "titulo": "Omelette de 3 huevos con espinaca y tomate",
+    "corto": "Omelette con espinaca y tomate",
     "detalle": "Con 2 lonchas de gouda. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
     "ing": [
      [
@@ -2488,6 +4106,32 @@
       2
      ]
     ],
+    "partes": {
+     "omelette": {
+      "id": "o_espinaca",
+      "titulo": "Omelette de 3 huevos con espinaca y tomate",
+      "corto": "Omelette con espinaca y tomate",
+      "detalle": "Con 2 lonchas de gouda. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+      "ing": [
+       [
+        "huevo",
+        3
+       ],
+       [
+        "espinaca",
+        1
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "gouda",
+        2
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -2499,8 +4143,9 @@
    "dia": 18,
    "semana": 3,
    "desayuno": {
-    "titulo": "Batido de proteina con platano y mani",
-    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chia o linaza, 1 platano y 1 cdta de mantequilla de mani",
+    "id": "d_batido_plátano",
+    "titulo": "Batido de proteina con plátano y mani",
+    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chía o linaza, 1 plátano y 1 cdta de mantequilla de mani",
     "tags": [
      "proteina_polvo",
      "fruta"
@@ -2529,7 +4174,7 @@
     ]
    },
    "mediaManana": {
-    "titulo": "1 trocito de chocolate >70% y 1 punado de frutos secos",
+    "titulo": "1 trocito de chocolate >70% y 1 puñado de frutos secos",
     "ing": [
      [
       "chocolate",
@@ -2543,9 +4188,10 @@
    },
    "almuerzo": {
     "titulo": "2 filetes medianos de pollo sudados con tomate y cebolla",
+    "corto": "Pollo sudado con tomate y cebolla",
     "protK": "pollo",
-    "verdura": "Ensalada de rucula, tomate cherry y pepino",
-    "carbo": "1 papa pequena sancochada",
+    "verdura": "Ensalada de rúcula, tomate cherry y pepino",
+    "carbo": "1 papa pequeña sancochada",
     "carboK": "otro",
     "grasa": "6 a 8 aceitunas",
     "ing": [
@@ -2585,7 +4231,72 @@
       "aceituna",
       1
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_pollo_sudado",
+      "k": "pollo",
+      "titulo": "2 filetes medianos de pollo sudados con tomate y cebolla",
+      "corto": "Pollo sudado con tomate y cebolla",
+      "ing": [
+       [
+        "pollo_filete",
+        2
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "cebolla",
+        0.5
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_rúcula",
+      "titulo": "Ensalada de rúcula, tomate cherry y pepino",
+      "ing": [
+       [
+        "rucula",
+        1
+       ],
+       [
+        "cherry",
+        1
+       ],
+       [
+        "pepino",
+        0.5
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_papa",
+      "k": "otro",
+      "titulo": "1 papa pequeña sancochada",
+      "ing": [
+       [
+        "papa",
+        1
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_aceitunas",
+      "titulo": "6 a 8 aceitunas",
+      "ing": [
+       [
+        "aceituna",
+        1
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
     "titulo": "1 yogurt proteico de sabor",
@@ -2600,8 +4311,9 @@
     "tipo": "plato",
     "protK": "pescado",
     "titulo": "1 filete grande de bonito a la plancha",
-    "verdura": "Espinaca salteada con champinones",
-    "carbo": "Tres cuartos de taza de noquis",
+    "corto": "Bonito a la plancha",
+    "verdura": "Espinaca salteada con champiñones",
+    "carbo": "Tres cuartos de taza de ñoquis",
     "detalle": "Sin grasa extra: basta el aceite de oliva de las verduras",
     "ing": [
      [
@@ -2625,6 +4337,49 @@
       0.75
      ]
     ],
+    "partes": {
+     "prot": {
+      "id": "p_bonito",
+      "k": "pescado",
+      "titulo": "1 filete grande de bonito a la plancha",
+      "corto": "Bonito a la plancha",
+      "ing": [
+       [
+        "bonito",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_espinaca",
+      "titulo": "Espinaca salteada con champiñones",
+      "ing": [
+       [
+        "espinaca",
+        1
+       ],
+       [
+        "champinon",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "cc_ñoquis",
+      "k": "otro",
+      "titulo": "Tres cuartos de taza de ñoquis",
+      "ing": [
+       [
+        "noquis",
+        0.75
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -2641,6 +4396,7 @@
    "dia": 19,
    "semana": 3,
    "desayuno": {
+    "id": "d_bowl_mango",
     "titulo": "Bowl de yogurt proteico con granola y mango",
     "detalle": "8 cdas de yogurt proteico, 3 cdas de granola y media taza de mango picado",
     "tags": [
@@ -2663,7 +4419,7 @@
     ]
    },
    "mediaManana": {
-    "titulo": "1 cafe o infusion con 1 trocito de chocolate >70%",
+    "titulo": "1 café o infusion con 1 trocito de chocolate >70%",
     "ing": [
      [
       "chocolate",
@@ -2673,11 +4429,12 @@
    },
    "almuerzo": {
     "titulo": "2 filetes medianos de pollo a la plancha",
+    "corto": "Pollo a la plancha",
     "protK": "pollo",
     "verdura": "Ensalada criolla de cebolla, tomate y limon",
-    "carbo": "1 taza de noquis",
+    "carbo": "1 taza de ñoquis",
     "carboK": "otro",
-    "grasa": "Media palta pequena",
+    "grasa": "Media palta pequeña",
     "ing": [
      [
       "pollo_filete",
@@ -2707,10 +4464,67 @@
       "palta",
       0.5
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_pollo_plancha",
+      "k": "pollo",
+      "titulo": "2 filetes medianos de pollo a la plancha",
+      "corto": "Pollo a la plancha",
+      "ing": [
+       [
+        "pollo_filete",
+        2
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_criolla",
+      "titulo": "Ensalada criolla de cebolla, tomate y limon",
+      "ing": [
+       [
+        "cebolla",
+        0.5
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "limon",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_ñoquis",
+      "k": "otro",
+      "titulo": "1 taza de ñoquis",
+      "ing": [
+       [
+        "noquis",
+        1
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_palta",
+      "titulo": "Media palta pequeña",
+      "ing": [
+       [
+        "palta",
+        0.5
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
-    "titulo": "Preentreno: jugo de lucuma con leche",
+    "titulo": "Preentreno: jugo de lúcuma con leche",
     "ing": [
      [
       "lucuma",
@@ -2726,7 +4540,8 @@
     "tipo": "omelette",
     "protK": "huevos",
     "titulo": "Omelette de 3 huevos con zapallito y tomate",
-    "detalle": "Con media palta pequena. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+    "corto": "Omelette con zapallito y tomate",
+    "detalle": "Con media palta pequeña. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
     "ing": [
      [
       "huevo",
@@ -2745,6 +4560,32 @@
       0.5
      ]
     ],
+    "partes": {
+     "omelette": {
+      "id": "o_verduras",
+      "titulo": "Omelette de 3 huevos con zapallito y tomate",
+      "corto": "Omelette con zapallito y tomate",
+      "detalle": "Con media palta pequeña. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+      "ing": [
+       [
+        "huevo",
+        3
+       ],
+       [
+        "zapallito",
+        1
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "palta",
+        0.5
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -2756,6 +4597,7 @@
    "dia": 20,
    "semana": 3,
    "desayuno": {
+    "id": "d_bowl_papaya",
     "titulo": "Bowl de yogurt proteico con granola y papaya",
     "detalle": "8 cdas de yogurt proteico, 3 cdas de granola y papaya picada",
     "tags": [
@@ -2788,9 +4630,10 @@
    },
    "almuerzo": {
     "titulo": "1 filete grande de jurel al horno",
+    "corto": "Jurel al horno",
     "protK": "pescado",
     "verdura": "Coliflor al horno con hojas verdes",
-    "carbo": "1 papa pequena sancochada",
+    "carbo": "1 papa pequeña sancochada",
     "carboK": "otro",
     "grasa": "6 a 8 aceitunas",
     "ing": [
@@ -2818,7 +4661,60 @@
       "aceituna",
       1
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_jurel",
+      "k": "pescado",
+      "titulo": "1 filete grande de jurel al horno",
+      "corto": "Jurel al horno",
+      "ing": [
+       [
+        "jurel",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_coliflor",
+      "titulo": "Coliflor al horno con hojas verdes",
+      "ing": [
+       [
+        "coliflor",
+        1
+       ],
+       [
+        "lechuga",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_papa",
+      "k": "otro",
+      "titulo": "1 papa pequeña sancochada",
+      "ing": [
+       [
+        "papa",
+        1
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_aceitunas",
+      "titulo": "6 a 8 aceitunas",
+      "ing": [
+       [
+        "aceituna",
+        1
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
     "titulo": "1 fruta y 1 barrita de proteina",
@@ -2837,8 +4733,9 @@
     "tipo": "plato",
     "protK": "pollo",
     "titulo": "2 filetes medianos de pollo sudados con tomate y cebolla",
-    "verdura": "Ensalada de rucula, tomate cherry y pepino",
-    "carbo": "Tres cuartos de taza de noquis",
+    "corto": "Pollo sudado con tomate y cebolla",
+    "verdura": "Ensalada de rúcula, tomate cherry y pepino",
+    "carbo": "Tres cuartos de taza de ñoquis",
     "detalle": "Sin grasa extra: basta el aceite de oliva de las verduras",
     "ing": [
      [
@@ -2874,6 +4771,61 @@
       0.75
      ]
     ],
+    "partes": {
+     "prot": {
+      "id": "p_pollo_sudado",
+      "k": "pollo",
+      "titulo": "2 filetes medianos de pollo sudados con tomate y cebolla",
+      "corto": "Pollo sudado con tomate y cebolla",
+      "ing": [
+       [
+        "pollo_filete",
+        2
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "cebolla",
+        0.5
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_rúcula",
+      "titulo": "Ensalada de rúcula, tomate cherry y pepino",
+      "ing": [
+       [
+        "rucula",
+        1
+       ],
+       [
+        "cherry",
+        1
+       ],
+       [
+        "pepino",
+        0.5
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "cc_ñoquis",
+      "k": "otro",
+      "titulo": "Tres cuartos de taza de ñoquis",
+      "ing": [
+       [
+        "noquis",
+        0.75
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -2890,8 +4842,9 @@
    "dia": 21,
    "semana": 3,
    "desayuno": {
+    "id": "d_omelette_esp",
     "titulo": "Omelette de 3 huevos con mozzarella y espinaca",
-    "detalle": "Con media palta pequena y 1 paquete de salmas si te provoca",
+    "detalle": "Con media palta pequeña y 1 paquete de salmas si te provoca",
     "tags": [
      "huevos"
     ],
@@ -2915,7 +4868,7 @@
     ]
    },
    "mediaManana": {
-    "titulo": "1 trocito de chocolate >70% y 1 punado de frutos secos",
+    "titulo": "1 trocito de chocolate >70% y 1 puñado de frutos secos",
     "ing": [
      [
       "chocolate",
@@ -2929,11 +4882,12 @@
    },
    "almuerzo": {
     "titulo": "1 filete grande de trucha al horno",
+    "corto": "Trucha al horno",
     "protK": "pescado",
-    "verdura": "Brocoli y zanahoria al vapor",
+    "verdura": "Brócoli y zanahoria al vapor",
     "carbo": "Medio camote mediano al horno",
     "carboK": "otro",
-    "grasa": "Media palta pequena",
+    "grasa": "Media palta pequeña",
     "ing": [
      [
       "trucha",
@@ -2959,10 +4913,63 @@
       "palta",
       0.5
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_trucha",
+      "k": "pescado",
+      "titulo": "1 filete grande de trucha al horno",
+      "corto": "Trucha al horno",
+      "ing": [
+       [
+        "trucha",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_brócoli",
+      "titulo": "Brócoli y zanahoria al vapor",
+      "ing": [
+       [
+        "brocoli",
+        1
+       ],
+       [
+        "zanahoria",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_camote",
+      "k": "otro",
+      "titulo": "Medio camote mediano al horno",
+      "ing": [
+       [
+        "camote",
+        0.5
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_palta",
+      "titulo": "Media palta pequeña",
+      "ing": [
+       [
+        "palta",
+        0.5
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
-    "titulo": "Preentreno: 1 platano",
+    "titulo": "Preentreno: 1 plátano",
     "ing": [
      [
       "platano",
@@ -2974,7 +4981,8 @@
     "tipo": "plato",
     "protK": "pollo",
     "titulo": "2 filetes medianos de pollo a la plancha",
-    "verdura": "Espinaca salteada con champinones",
+    "corto": "Pollo a la plancha",
+    "verdura": "Espinaca salteada con champiñones",
     "carbo": "Tres cuartos de taza de quinoa cocida",
     "detalle": "Sin grasa extra: basta el aceite de oliva de las verduras",
     "ing": [
@@ -2999,6 +5007,49 @@
       0.75
      ]
     ],
+    "partes": {
+     "prot": {
+      "id": "p_pollo_plancha",
+      "k": "pollo",
+      "titulo": "2 filetes medianos de pollo a la plancha",
+      "corto": "Pollo a la plancha",
+      "ing": [
+       [
+        "pollo_filete",
+        2
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_espinaca",
+      "titulo": "Espinaca salteada con champiñones",
+      "ing": [
+       [
+        "espinaca",
+        1
+       ],
+       [
+        "champinon",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "cc_quinoa",
+      "k": "quinoa",
+      "titulo": "Tres cuartos de taza de quinoa cocida",
+      "ing": [
+       [
+        "quinoa",
+        0.75
+       ]
+      ]
+     }
+    },
     "carboK": "quinoa"
    },
    "postre": {
@@ -3010,8 +5061,9 @@
    "dia": 22,
    "semana": 4,
    "desayuno": {
+    "id": "d_revueltos_pavo",
     "titulo": "Huevos revueltos con pavo",
-    "detalle": "3 huevos con 2 lonchas de pavo, media palta pequena y 1 fruta",
+    "detalle": "3 huevos con 2 lonchas de pavo, media palta pequeña y 1 fruta",
     "tags": [
      "huevos",
      "fruta"
@@ -3036,7 +5088,7 @@
     ]
    },
    "mediaManana": {
-    "titulo": "1 cafe o infusion con 1 trocito de chocolate >70%",
+    "titulo": "1 café o infusion con 1 trocito de chocolate >70%",
     "ing": [
      [
       "chocolate",
@@ -3046,9 +5098,10 @@
    },
    "almuerzo": {
     "titulo": "1 filete grande de lomo a la plancha",
+    "corto": "Lomo a la plancha",
     "protK": "carne",
-    "verdura": "Esparragos y zanahoria al horno",
-    "carbo": "1 papa pequena sancochada",
+    "verdura": "Espárragos y zanahoria al horno",
+    "carbo": "1 papa pequeña sancochada",
     "carboK": "otro",
     "grasa": "6 a 8 aceitunas",
     "ing": [
@@ -3076,7 +5129,60 @@
       "aceituna",
       1
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_lomo",
+      "k": "carne",
+      "titulo": "1 filete grande de lomo a la plancha",
+      "corto": "Lomo a la plancha",
+      "ing": [
+       [
+        "lomo_filete",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_esparrago",
+      "titulo": "Espárragos y zanahoria al horno",
+      "ing": [
+       [
+        "esparrago",
+        1
+       ],
+       [
+        "zanahoria",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_papa",
+      "k": "otro",
+      "titulo": "1 papa pequeña sancochada",
+      "ing": [
+       [
+        "papa",
+        1
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_aceitunas",
+      "titulo": "6 a 8 aceitunas",
+      "ing": [
+       [
+        "aceituna",
+        1
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
     "titulo": "1 fruta y 1 barrita de proteina",
@@ -3095,8 +5201,9 @@
     "tipo": "plato",
     "protK": "pollo",
     "titulo": "2 filetes medianos de pollo al horno con hierbas",
+    "corto": "Pollo al horno con hierbas",
     "verdura": "Ensalada criolla de cebolla, tomate y limon",
-    "carbo": "Tres cuartos de taza de noquis",
+    "carbo": "Tres cuartos de taza de ñoquis",
     "detalle": "Sin grasa extra: basta el aceite de oliva de las verduras",
     "ing": [
      [
@@ -3124,6 +5231,53 @@
       0.75
      ]
     ],
+    "partes": {
+     "prot": {
+      "id": "p_pollo_horno",
+      "k": "pollo",
+      "titulo": "2 filetes medianos de pollo al horno con hierbas",
+      "corto": "Pollo al horno con hierbas",
+      "ing": [
+       [
+        "pollo_filete",
+        2
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_criolla",
+      "titulo": "Ensalada criolla de cebolla, tomate y limon",
+      "ing": [
+       [
+        "cebolla",
+        0.5
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "limon",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "cc_ñoquis",
+      "k": "otro",
+      "titulo": "Tres cuartos de taza de ñoquis",
+      "ing": [
+       [
+        "noquis",
+        0.75
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -3140,8 +5294,9 @@
    "dia": 23,
    "semana": 4,
    "desayuno": {
-    "titulo": "Huevos revueltos con jamon cocido",
-    "detalle": "3 huevos con 2 lonchas de jamon, media palta pequena y 1 fruta",
+    "id": "d_revueltos_jamón",
+    "titulo": "Huevos revueltos con jamón cocido",
+    "detalle": "3 huevos con 2 lonchas de jamón, media palta pequeña y 1 fruta",
     "tags": [
      "huevos",
      "fruta"
@@ -3176,11 +5331,12 @@
    },
    "almuerzo": {
     "titulo": "1 filete grande de res a la plancha",
+    "corto": "Res a la plancha",
     "protK": "carne",
     "verdura": "Ensalada criolla de cebolla, tomate y limon",
     "carbo": "Medio camote mediano al horno",
     "carboK": "otro",
-    "grasa": "Media palta pequena",
+    "grasa": "Media palta pequeña",
     "ing": [
      [
       "res_filete",
@@ -3210,7 +5366,64 @@
       "palta",
       0.5
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_res",
+      "k": "carne",
+      "titulo": "1 filete grande de res a la plancha",
+      "corto": "Res a la plancha",
+      "ing": [
+       [
+        "res_filete",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_criolla",
+      "titulo": "Ensalada criolla de cebolla, tomate y limon",
+      "ing": [
+       [
+        "cebolla",
+        0.5
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "limon",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_camote",
+      "k": "otro",
+      "titulo": "Medio camote mediano al horno",
+      "ing": [
+       [
+        "camote",
+        0.5
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_palta",
+      "titulo": "Media palta pequeña",
+      "ing": [
+       [
+        "palta",
+        0.5
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
     "titulo": "1 yogurt proteico de sabor",
@@ -3225,7 +5438,8 @@
     "tipo": "plato",
     "protK": "pollo",
     "titulo": "2 filetes medianos de pollo a la plancha",
-    "verdura": "Ensalada de rucula, tomate cherry y pepino",
+    "corto": "Pollo a la plancha",
+    "verdura": "Ensalada de rúcula, tomate cherry y pepino",
     "carbo": "Tres cuartos de taza de quinoa cocida",
     "detalle": "Sin grasa extra: basta el aceite de oliva de las verduras",
     "ing": [
@@ -3254,6 +5468,53 @@
       0.75
      ]
     ],
+    "partes": {
+     "prot": {
+      "id": "p_pollo_plancha",
+      "k": "pollo",
+      "titulo": "2 filetes medianos de pollo a la plancha",
+      "corto": "Pollo a la plancha",
+      "ing": [
+       [
+        "pollo_filete",
+        2
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_rúcula",
+      "titulo": "Ensalada de rúcula, tomate cherry y pepino",
+      "ing": [
+       [
+        "rucula",
+        1
+       ],
+       [
+        "cherry",
+        1
+       ],
+       [
+        "pepino",
+        0.5
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "cc_quinoa",
+      "k": "quinoa",
+      "titulo": "Tres cuartos de taza de quinoa cocida",
+      "ing": [
+       [
+        "quinoa",
+        0.75
+       ]
+      ]
+     }
+    },
     "carboK": "quinoa"
    },
    "postre": {
@@ -3265,6 +5526,7 @@
    "dia": 24,
    "semana": 4,
    "desayuno": {
+    "id": "d_bowl_mango",
     "titulo": "Bowl de yogurt proteico con granola y mango",
     "detalle": "8 cdas de yogurt proteico, 3 cdas de granola y media taza de mango picado",
     "tags": [
@@ -3287,7 +5549,7 @@
     ]
    },
    "mediaManana": {
-    "titulo": "1 trocito de chocolate >70% y 1 punado de frutos secos",
+    "titulo": "1 trocito de chocolate >70% y 1 puñado de frutos secos",
     "ing": [
      [
       "chocolate",
@@ -3301,9 +5563,10 @@
    },
    "almuerzo": {
     "titulo": "1 filete grande de trucha al horno",
+    "corto": "Trucha al horno",
     "protK": "pescado",
     "verdura": "Coliflor al horno con hojas verdes",
-    "carbo": "1 papa pequena sancochada",
+    "carbo": "1 papa pequeña sancochada",
     "carboK": "otro",
     "grasa": "6 a 8 aceitunas",
     "ing": [
@@ -3331,10 +5594,63 @@
       "aceituna",
       1
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_trucha",
+      "k": "pescado",
+      "titulo": "1 filete grande de trucha al horno",
+      "corto": "Trucha al horno",
+      "ing": [
+       [
+        "trucha",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_coliflor",
+      "titulo": "Coliflor al horno con hojas verdes",
+      "ing": [
+       [
+        "coliflor",
+        1
+       ],
+       [
+        "lechuga",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_papa",
+      "k": "otro",
+      "titulo": "1 papa pequeña sancochada",
+      "ing": [
+       [
+        "papa",
+        1
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_aceitunas",
+      "titulo": "6 a 8 aceitunas",
+      "ing": [
+       [
+        "aceituna",
+        1
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
-    "titulo": "Preentreno: jugo de lucuma con leche",
+    "titulo": "Preentreno: jugo de lúcuma con leche",
     "ing": [
      [
       "lucuma",
@@ -3350,8 +5666,9 @@
     "tipo": "plato",
     "protK": "pollo",
     "titulo": "2 filetes medianos de pollo sudados con tomate y cebolla",
-    "verdura": "Brocoli y zanahoria al vapor",
-    "carbo": "Media papa pequena sancochada",
+    "corto": "Pollo sudado con tomate y cebolla",
+    "verdura": "Brócoli y zanahoria al vapor",
+    "carbo": "Media papa pequeña sancochada",
     "detalle": "Sin grasa extra: basta el aceite de oliva de las verduras",
     "ing": [
      [
@@ -3383,6 +5700,57 @@
       0.5
      ]
     ],
+    "partes": {
+     "prot": {
+      "id": "p_pollo_sudado",
+      "k": "pollo",
+      "titulo": "2 filetes medianos de pollo sudados con tomate y cebolla",
+      "corto": "Pollo sudado con tomate y cebolla",
+      "ing": [
+       [
+        "pollo_filete",
+        2
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "cebolla",
+        0.5
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_brócoli",
+      "titulo": "Brócoli y zanahoria al vapor",
+      "ing": [
+       [
+        "brocoli",
+        1
+       ],
+       [
+        "zanahoria",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "cc_papa",
+      "k": "otro",
+      "titulo": "Media papa pequeña sancochada",
+      "ing": [
+       [
+        "papa",
+        0.5
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -3399,8 +5767,9 @@
    "dia": 25,
    "semana": 4,
    "desayuno": {
-    "titulo": "Batido de proteina con lucuma",
-    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chia o linaza y pulpa de lucuma al gusto",
+    "id": "d_batido_lúcuma",
+    "titulo": "Batido de proteina con lúcuma",
+    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chía o linaza y pulpa de lúcuma al gusto",
     "tags": [
      "proteina_polvo",
      "fruta"
@@ -3425,7 +5794,7 @@
     ]
    },
    "mediaManana": {
-    "titulo": "1 fruta y 1 punado de frutos secos (12 a 15 unidades)",
+    "titulo": "1 fruta y 1 puñado de frutos secos (12 a 15 unidades)",
     "ing": [
      [
       "manzana",
@@ -3439,11 +5808,12 @@
    },
    "almuerzo": {
     "titulo": "1 filete grande de jurel al horno",
+    "corto": "Jurel al horno",
     "protK": "pescado",
     "verdura": "Zapallito italiano y vainitas salteados",
     "carbo": "1 taza de garbanzos cocidos",
     "carboK": "menestras",
-    "grasa": "Media palta pequena",
+    "grasa": "Media palta pequeña",
     "ing": [
      [
       "jurel",
@@ -3469,7 +5839,60 @@
       "palta",
       0.5
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_jurel",
+      "k": "pescado",
+      "titulo": "1 filete grande de jurel al horno",
+      "corto": "Jurel al horno",
+      "ing": [
+       [
+        "jurel",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_zapallito",
+      "titulo": "Zapallito italiano y vainitas salteados",
+      "ing": [
+       [
+        "zapallito",
+        1
+       ],
+       [
+        "vainita",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_garbanzos",
+      "k": "menestras",
+      "titulo": "1 taza de garbanzos cocidos",
+      "ing": [
+       [
+        "garbanzo",
+        1
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_palta",
+      "titulo": "Media palta pequeña",
+      "ing": [
+       [
+        "palta",
+        0.5
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
     "titulo": "1 yogurt proteico de sabor",
@@ -3483,8 +5906,9 @@
    "cena": {
     "tipo": "omelette",
     "protK": "huevos",
-    "titulo": "Omelette de 3 huevos con champinones",
-    "detalle": "Con media palta pequena. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+    "titulo": "Omelette de 3 huevos con champiñones",
+    "corto": "Omelette con champiñones",
+    "detalle": "Con media palta pequeña. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
     "ing": [
      [
       "huevo",
@@ -3499,6 +5923,28 @@
       0.5
      ]
     ],
+    "partes": {
+     "omelette": {
+      "id": "o_champ",
+      "titulo": "Omelette de 3 huevos con champiñones",
+      "corto": "Omelette con champiñones",
+      "detalle": "Con media palta pequeña. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+      "ing": [
+       [
+        "huevo",
+        3
+       ],
+       [
+        "champinon",
+        1
+       ],
+       [
+        "palta",
+        0.5
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -3510,6 +5956,7 @@
    "dia": 26,
    "semana": 4,
    "desayuno": {
+    "id": "d_bowl_papaya",
     "titulo": "Bowl de yogurt proteico con granola y papaya",
     "detalle": "8 cdas de yogurt proteico, 3 cdas de granola y papaya picada",
     "tags": [
@@ -3542,9 +5989,10 @@
    },
    "almuerzo": {
     "titulo": "1 filete grande de trucha al horno",
+    "corto": "Trucha al horno",
     "protK": "pescado",
     "verdura": "Ensalada de lechuga, tomate y pepino",
-    "carbo": "1 taza de noquis",
+    "carbo": "1 taza de ñoquis",
     "carboK": "otro",
     "grasa": "6 a 8 aceitunas",
     "ing": [
@@ -3580,7 +6028,68 @@
       "aceituna",
       1
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_trucha",
+      "k": "pescado",
+      "titulo": "1 filete grande de trucha al horno",
+      "corto": "Trucha al horno",
+      "ing": [
+       [
+        "trucha",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_mixta",
+      "titulo": "Ensalada de lechuga, tomate y pepino",
+      "ing": [
+       [
+        "lechuga",
+        1
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "pepino",
+        0.5
+       ],
+       [
+        "aceite",
+        1
+       ],
+       [
+        "limon",
+        0.5
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_ñoquis",
+      "k": "otro",
+      "titulo": "1 taza de ñoquis",
+      "ing": [
+       [
+        "noquis",
+        1
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_aceitunas",
+      "titulo": "6 a 8 aceitunas",
+      "ing": [
+       [
+        "aceituna",
+        1
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
     "titulo": "1 fruta y 1 barrita de proteina",
@@ -3599,7 +6108,8 @@
     "tipo": "omelette",
     "protK": "huevos",
     "titulo": "Omelette de 3 huevos con zapallito y tomate",
-    "detalle": "Con media palta pequena. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+    "corto": "Omelette con zapallito y tomate",
+    "detalle": "Con media palta pequeña. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
     "ing": [
      [
       "huevo",
@@ -3618,6 +6128,32 @@
       0.5
      ]
     ],
+    "partes": {
+     "omelette": {
+      "id": "o_verduras",
+      "titulo": "Omelette de 3 huevos con zapallito y tomate",
+      "corto": "Omelette con zapallito y tomate",
+      "detalle": "Con media palta pequeña. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+      "ing": [
+       [
+        "huevo",
+        3
+       ],
+       [
+        "zapallito",
+        1
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "palta",
+        0.5
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -3634,6 +6170,7 @@
    "dia": 27,
    "semana": 4,
    "desayuno": {
+    "id": "d_bowl_manzana",
     "titulo": "Bowl de yogurt proteico con granola y manzana",
     "detalle": "8 cdas de yogurt proteico, 3 cdas de granola y 1 manzana picada",
     "tags": [
@@ -3656,7 +6193,7 @@
     ]
    },
    "mediaManana": {
-    "titulo": "1 trocito de chocolate >70% y 1 punado de frutos secos",
+    "titulo": "1 trocito de chocolate >70% y 1 puñado de frutos secos",
     "ing": [
      [
       "chocolate",
@@ -3670,11 +6207,12 @@
    },
    "almuerzo": {
     "titulo": "2 filetes medianos de pollo a la plancha",
+    "corto": "Pollo a la plancha",
     "protK": "pollo",
-    "verdura": "Ensalada de rucula, tomate cherry y pepino",
+    "verdura": "Ensalada de rúcula, tomate cherry y pepino",
     "carbo": "1 taza de garbanzos cocidos",
     "carboK": "menestras",
-    "grasa": "Media palta pequena",
+    "grasa": "Media palta pequeña",
     "ing": [
      [
       "pollo_filete",
@@ -3704,7 +6242,64 @@
       "palta",
       0.5
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_pollo_plancha",
+      "k": "pollo",
+      "titulo": "2 filetes medianos de pollo a la plancha",
+      "corto": "Pollo a la plancha",
+      "ing": [
+       [
+        "pollo_filete",
+        2
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_rúcula",
+      "titulo": "Ensalada de rúcula, tomate cherry y pepino",
+      "ing": [
+       [
+        "rucula",
+        1
+       ],
+       [
+        "cherry",
+        1
+       ],
+       [
+        "pepino",
+        0.5
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_garbanzos",
+      "k": "menestras",
+      "titulo": "1 taza de garbanzos cocidos",
+      "ing": [
+       [
+        "garbanzo",
+        1
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_palta",
+      "titulo": "Media palta pequeña",
+      "ing": [
+       [
+        "palta",
+        0.5
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
     "titulo": "1 yogurt proteico de sabor",
@@ -3719,8 +6314,9 @@
     "tipo": "plato",
     "protK": "pescado",
     "titulo": "1 filete grande de jurel al horno",
-    "verdura": "Esparragos y zanahoria al horno",
-    "carbo": "Tres cuartos de taza de noquis",
+    "corto": "Jurel al horno",
+    "verdura": "Espárragos y zanahoria al horno",
+    "carbo": "Tres cuartos de taza de ñoquis",
     "detalle": "Sin grasa extra: basta el aceite de oliva de las verduras",
     "ing": [
      [
@@ -3744,6 +6340,49 @@
       0.75
      ]
     ],
+    "partes": {
+     "prot": {
+      "id": "p_jurel",
+      "k": "pescado",
+      "titulo": "1 filete grande de jurel al horno",
+      "corto": "Jurel al horno",
+      "ing": [
+       [
+        "jurel",
+        1
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_esparrago",
+      "titulo": "Espárragos y zanahoria al horno",
+      "ing": [
+       [
+        "esparrago",
+        1
+       ],
+       [
+        "zanahoria",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "cc_ñoquis",
+      "k": "otro",
+      "titulo": "Tres cuartos de taza de ñoquis",
+      "ing": [
+       [
+        "noquis",
+        0.75
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -3755,8 +6394,9 @@
    "dia": 28,
    "semana": 4,
    "desayuno": {
-    "titulo": "Batido de proteina con platano y mani",
-    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chia o linaza, 1 platano y 1 cdta de mantequilla de mani",
+    "id": "d_batido_plátano",
+    "titulo": "Batido de proteina con plátano y mani",
+    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chía o linaza, 1 plátano y 1 cdta de mantequilla de mani",
     "tags": [
      "proteina_polvo",
      "fruta"
@@ -3795,8 +6435,9 @@
    },
    "almuerzo": {
     "titulo": "2 filetes medianos de pollo sudados con tomate y cebolla",
+    "corto": "Pollo sudado con tomate y cebolla",
     "protK": "pollo",
-    "verdura": "Espinaca salteada con champinones",
+    "verdura": "Espinaca salteada con champiñones",
     "carbo": "Medio camote mediano al horno",
     "carboK": "otro",
     "grasa": "6 a 8 aceitunas",
@@ -3833,7 +6474,68 @@
       "aceituna",
       1
      ]
-    ]
+    ],
+    "partes": {
+     "prot": {
+      "id": "p_pollo_sudado",
+      "k": "pollo",
+      "titulo": "2 filetes medianos de pollo sudados con tomate y cebolla",
+      "corto": "Pollo sudado con tomate y cebolla",
+      "ing": [
+       [
+        "pollo_filete",
+        2
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "cebolla",
+        0.5
+       ]
+      ]
+     },
+     "verdura": {
+      "id": "v_espinaca",
+      "titulo": "Espinaca salteada con champiñones",
+      "ing": [
+       [
+        "espinaca",
+        1
+       ],
+       [
+        "champinon",
+        1
+       ],
+       [
+        "aceite",
+        1
+       ]
+      ]
+     },
+     "carbo": {
+      "id": "c_camote",
+      "k": "otro",
+      "titulo": "Medio camote mediano al horno",
+      "ing": [
+       [
+        "camote",
+        0.5
+       ]
+      ]
+     },
+     "grasa": {
+      "id": "g_aceitunas",
+      "titulo": "6 a 8 aceitunas",
+      "ing": [
+       [
+        "aceituna",
+        1
+       ]
+      ]
+     }
+    }
    },
    "merienda": {
     "titulo": "1 fruta y 1 barrita de proteina",
@@ -3852,7 +6554,8 @@
     "tipo": "omelette",
     "protK": "huevos",
     "titulo": "Omelette de 3 huevos con zapallito y tomate",
-    "detalle": "Con media palta pequena. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+    "corto": "Omelette con zapallito y tomate",
+    "detalle": "Con media palta pequeña. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
     "ing": [
      [
       "huevo",
@@ -3871,6 +6574,32 @@
       0.5
      ]
     ],
+    "partes": {
+     "omelette": {
+      "id": "o_verduras",
+      "titulo": "Omelette de 3 huevos con zapallito y tomate",
+      "corto": "Omelette con zapallito y tomate",
+      "detalle": "Con media palta pequeña. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+      "ing": [
+       [
+        "huevo",
+        3
+       ],
+       [
+        "zapallito",
+        1
+       ],
+       [
+        "tomate",
+        1
+       ],
+       [
+        "palta",
+        0.5
+       ]
+      ]
+     }
+    },
     "carboK": "otro"
    },
    "postre": {
@@ -3883,5 +6612,627 @@
     ]
    }
   }
- ]
+ ],
+ "opciones": {
+  "desayunos": [
+   {
+    "id": "d_omelette_esp",
+    "titulo": "Omelette de 3 huevos con mozzarella y espinaca",
+    "detalle": "Con media palta pequeña y 1 paquete de salmas si te provoca",
+    "tags": [
+     "huevos"
+    ],
+    "ing": [
+     [
+      "huevo",
+      3
+     ],
+     [
+      "mozzarella",
+      2
+     ],
+     [
+      "espinaca",
+      1
+     ],
+     [
+      "palta",
+      0.5
+     ]
+    ]
+   },
+   {
+    "id": "d_omelette_champ",
+    "titulo": "Omelette de 3 huevos con mozzarella y champiñones",
+    "detalle": "Con media palta pequeña y 1 paquete de salmas si te provoca",
+    "tags": [
+     "huevos"
+    ],
+    "ing": [
+     [
+      "huevo",
+      3
+     ],
+     [
+      "mozzarella",
+      2
+     ],
+     [
+      "champinon",
+      1
+     ],
+     [
+      "palta",
+      0.5
+     ]
+    ]
+   },
+   {
+    "id": "d_revueltos_pavo",
+    "titulo": "Huevos revueltos con pavo",
+    "detalle": "3 huevos con 2 lonchas de pavo, media palta pequeña y 1 fruta",
+    "tags": [
+     "huevos",
+     "fruta"
+    ],
+    "ing": [
+     [
+      "huevo",
+      3
+     ],
+     [
+      "pavo_lonchas",
+      2
+     ],
+     [
+      "palta",
+      0.5
+     ],
+     [
+      "manzana",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "d_revueltos_jamón",
+    "titulo": "Huevos revueltos con jamón cocido",
+    "detalle": "3 huevos con 2 lonchas de jamón, media palta pequeña y 1 fruta",
+    "tags": [
+     "huevos",
+     "fruta"
+    ],
+    "ing": [
+     [
+      "huevo",
+      3
+     ],
+     [
+      "jamon_lonchas",
+      2
+     ],
+     [
+      "palta",
+      0.5
+     ],
+     [
+      "mandarina",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "d_wrap_pollo",
+    "titulo": "Wrap integral de pollo deshilachado",
+    "detalle": "Con media palta, tomate en rodajas, lechuga, 1 punto de mayonesa light y 1 fruta",
+    "tags": [
+     "pollo",
+     "fruta"
+    ],
+    "ing": [
+     [
+      "wrap",
+      1
+     ],
+     [
+      "pollo_deshila",
+      80
+     ],
+     [
+      "palta",
+      0.5
+     ],
+     [
+      "tomate",
+      0.5
+     ],
+     [
+      "lechuga",
+      1
+     ],
+     [
+      "mayonesa",
+      1
+     ],
+     [
+      "manzana",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "d_batido_plátano",
+    "titulo": "Batido de proteina con plátano y mani",
+    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chía o linaza, 1 plátano y 1 cdta de mantequilla de mani",
+    "tags": [
+     "proteina_polvo",
+     "fruta"
+    ],
+    "ing": [
+     [
+      "leche",
+      1
+     ],
+     [
+      "proteina",
+      1
+     ],
+     [
+      "chia",
+      1
+     ],
+     [
+      "platano",
+      1
+     ],
+     [
+      "mani",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "d_batido_lúcuma",
+    "titulo": "Batido de proteina con lúcuma",
+    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chía o linaza y pulpa de lúcuma al gusto",
+    "tags": [
+     "proteina_polvo",
+     "fruta"
+    ],
+    "ing": [
+     [
+      "leche",
+      1
+     ],
+     [
+      "proteina",
+      1
+     ],
+     [
+      "chia",
+      1
+     ],
+     [
+      "lucuma",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "d_bowl_mango",
+    "titulo": "Bowl de yogurt proteico con granola y mango",
+    "detalle": "8 cdas de yogurt proteico, 3 cdas de granola y media taza de mango picado",
+    "tags": [
+     "lacteo",
+     "fruta"
+    ],
+    "ing": [
+     [
+      "yogurt_prot",
+      8
+     ],
+     [
+      "granola",
+      3
+     ],
+     [
+      "mango",
+      0.5
+     ]
+    ]
+   },
+   {
+    "id": "d_bowl_manzana",
+    "titulo": "Bowl de yogurt proteico con granola y manzana",
+    "detalle": "8 cdas de yogurt proteico, 3 cdas de granola y 1 manzana picada",
+    "tags": [
+     "lacteo",
+     "fruta"
+    ],
+    "ing": [
+     [
+      "yogurt_prot",
+      8
+     ],
+     [
+      "granola",
+      3
+     ],
+     [
+      "manzana",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "d_bowl_papaya",
+    "titulo": "Bowl de yogurt proteico con granola y papaya",
+    "detalle": "8 cdas de yogurt proteico, 3 cdas de granola y papaya picada",
+    "tags": [
+     "lacteo",
+     "fruta"
+    ],
+    "ing": [
+     [
+      "yogurt_prot",
+      8
+     ],
+     [
+      "granola",
+      3
+     ],
+     [
+      "papaya",
+      1
+     ]
+    ]
+   }
+  ],
+  "protAlm": [
+   {
+    "id": "p_pollo_plancha",
+    "k": "pollo",
+    "titulo": "2 filetes medianos de pollo a la plancha",
+    "corto": "Pollo a la plancha",
+    "ing": [
+     [
+      "pollo_filete",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "p_pollo_horno",
+    "k": "pollo",
+    "titulo": "2 filetes medianos de pollo al horno con hierbas",
+    "corto": "Pollo al horno con hierbas",
+    "ing": [
+     [
+      "pollo_filete",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "p_pollo_sudado",
+    "k": "pollo",
+    "titulo": "2 filetes medianos de pollo sudados con tomate y cebolla",
+    "corto": "Pollo sudado con tomate y cebolla",
+    "ing": [
+     [
+      "pollo_filete",
+      2
+     ],
+     [
+      "tomate",
+      1
+     ],
+     [
+      "cebolla",
+      0.5
+     ]
+    ]
+   },
+   {
+    "id": "p_bonito",
+    "k": "pescado",
+    "titulo": "1 filete grande de bonito a la plancha",
+    "corto": "Bonito a la plancha",
+    "ing": [
+     [
+      "bonito",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_trucha",
+    "k": "pescado",
+    "titulo": "1 filete grande de trucha al horno",
+    "corto": "Trucha al horno",
+    "ing": [
+     [
+      "trucha",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_perico",
+    "k": "pescado",
+    "titulo": "1 filete grande de perico a la plancha",
+    "corto": "Perico a la plancha",
+    "ing": [
+     [
+      "perico",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_jurel",
+    "k": "pescado",
+    "titulo": "1 filete grande de jurel al horno",
+    "corto": "Jurel al horno",
+    "ing": [
+     [
+      "jurel",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_merluza",
+    "k": "pescado",
+    "titulo": "1 filete grande de merluza al vapor",
+    "corto": "Merluza al vapor",
+    "ing": [
+     [
+      "merluza",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_atun",
+    "k": "atun",
+    "titulo": "1 lata de atún al natural y 1 huevo cocido",
+    "corto": "Atún con huevo cocido",
+    "ing": [
+     [
+      "atun_lata",
+      1
+     ],
+     [
+      "huevo",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_res",
+    "k": "carne",
+    "titulo": "1 filete grande de res a la plancha",
+    "corto": "Res a la plancha",
+    "ing": [
+     [
+      "res_filete",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_lomo",
+    "k": "carne",
+    "titulo": "1 filete grande de lomo a la plancha",
+    "corto": "Lomo a la plancha",
+    "ing": [
+     [
+      "lomo_filete",
+      1
+     ]
+    ]
+   }
+  ],
+  "protCen": [
+   {
+    "id": "p_pollo_plancha",
+    "k": "pollo",
+    "titulo": "2 filetes medianos de pollo a la plancha",
+    "corto": "Pollo a la plancha",
+    "ing": [
+     [
+      "pollo_filete",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "p_pollo_horno",
+    "k": "pollo",
+    "titulo": "2 filetes medianos de pollo al horno con hierbas",
+    "corto": "Pollo al horno con hierbas",
+    "ing": [
+     [
+      "pollo_filete",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "p_pollo_sudado",
+    "k": "pollo",
+    "titulo": "2 filetes medianos de pollo sudados con tomate y cebolla",
+    "corto": "Pollo sudado con tomate y cebolla",
+    "ing": [
+     [
+      "pollo_filete",
+      2
+     ],
+     [
+      "tomate",
+      1
+     ],
+     [
+      "cebolla",
+      0.5
+     ]
+    ]
+   },
+   {
+    "id": "p_bonito",
+    "k": "pescado",
+    "titulo": "1 filete grande de bonito a la plancha",
+    "corto": "Bonito a la plancha",
+    "ing": [
+     [
+      "bonito",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_trucha",
+    "k": "pescado",
+    "titulo": "1 filete grande de trucha al horno",
+    "corto": "Trucha al horno",
+    "ing": [
+     [
+      "trucha",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_perico",
+    "k": "pescado",
+    "titulo": "1 filete grande de perico a la plancha",
+    "corto": "Perico a la plancha",
+    "ing": [
+     [
+      "perico",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_jurel",
+    "k": "pescado",
+    "titulo": "1 filete grande de jurel al horno",
+    "corto": "Jurel al horno",
+    "ing": [
+     [
+      "jurel",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_merluza",
+    "k": "pescado",
+    "titulo": "1 filete grande de merluza al vapor",
+    "corto": "Merluza al vapor",
+    "ing": [
+     [
+      "merluza",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_res",
+    "k": "carne",
+    "titulo": "1 filete grande de res a la plancha",
+    "corto": "Res a la plancha",
+    "ing": [
+     [
+      "res_filete",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_lomo",
+    "k": "carne",
+    "titulo": "1 filete grande de lomo a la plancha",
+    "corto": "Lomo a la plancha",
+    "ing": [
+     [
+      "lomo_filete",
+      1
+     ]
+    ]
+   }
+  ],
+  "omelettes": [
+   {
+    "id": "o_champ",
+    "titulo": "Omelette de 3 huevos con champiñones",
+    "corto": "Omelette con champiñones",
+    "detalle": "Con media palta pequeña. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+    "ing": [
+     [
+      "huevo",
+      3
+     ],
+     [
+      "champinon",
+      1
+     ],
+     [
+      "palta",
+      0.5
+     ]
+    ]
+   },
+   {
+    "id": "o_espinaca",
+    "titulo": "Omelette de 3 huevos con espinaca y tomate",
+    "corto": "Omelette con espinaca y tomate",
+    "detalle": "Con 2 lonchas de gouda. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+    "ing": [
+     [
+      "huevo",
+      3
+     ],
+     [
+      "espinaca",
+      1
+     ],
+     [
+      "tomate",
+      1
+     ],
+     [
+      "gouda",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "o_verduras",
+    "titulo": "Omelette de 3 huevos con zapallito y tomate",
+    "corto": "Omelette con zapallito y tomate",
+    "detalle": "Con media palta pequeña. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+    "ing": [
+     [
+      "huevo",
+      3
+     ],
+     [
+      "zapallito",
+      1
+     ],
+     [
+      "tomate",
+      1
+     ],
+     [
+      "palta",
+      0.5
+     ]
+    ]
+   }
+  ]
+ }
 }
