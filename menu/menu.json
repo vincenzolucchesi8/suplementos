@@ -96,7 +96,12 @@
   "yogurt_prot": {
    "n": "Yogurt proteico (Vakimu PRO o Quark)",
    "u": "cda",
-   "cat": "lacteos"
+   "cat": "lacteos",
+   "compra": {
+    "u": "g",
+    "factor": 15,
+    "paso": 250
+   }
   },
   "yogurt_indiv": {
    "n": "Yogurt proteico individual",
@@ -106,12 +111,22 @@
   "leche": {
    "n": "Leche",
    "u": "vaso",
-   "cat": "lacteos"
+   "cat": "lacteos",
+   "compra": {
+    "u": "ml",
+    "factor": 250,
+    "paso": 500
+   }
   },
   "lechuga": {
    "n": "Lechuga",
    "u": "porc",
-   "cat": "verduras"
+   "cat": "verduras",
+   "compra": {
+    "u": "u",
+    "factor": 0.5,
+    "paso": 1
+   }
   },
   "tomate": {
    "n": "Tomate",
@@ -131,17 +146,32 @@
   "rucula": {
    "n": "Rúcula",
    "u": "porc",
-   "cat": "verduras"
+   "cat": "verduras",
+   "compra": {
+    "u": "g",
+    "factor": 60,
+    "paso": 100
+   }
   },
   "cherry": {
    "n": "Tomate cherry",
    "u": "porc",
-   "cat": "verduras"
+   "cat": "verduras",
+   "compra": {
+    "u": "g",
+    "factor": 80,
+    "paso": 250
+   }
   },
   "brocoli": {
    "n": "Brócoli",
    "u": "porc",
-   "cat": "verduras"
+   "cat": "verduras",
+   "compra": {
+    "u": "g",
+    "factor": 150,
+    "paso": 250
+   }
   },
   "zanahoria": {
    "n": "Zanahoria",
@@ -151,7 +181,12 @@
   "vainita": {
    "n": "Vainitas",
    "u": "porc",
-   "cat": "verduras"
+   "cat": "verduras",
+   "compra": {
+    "u": "g",
+    "factor": 100,
+    "paso": 250
+   }
   },
   "zapallito": {
    "n": "Zapallito italiano",
@@ -161,12 +196,22 @@
   "esparrago": {
    "n": "Espárragos",
    "u": "porc",
-   "cat": "verduras"
+   "cat": "verduras",
+   "compra": {
+    "u": "g",
+    "factor": 120,
+    "paso": 250
+   }
   },
   "coliflor": {
    "n": "Coliflor",
    "u": "porc",
-   "cat": "verduras"
+   "cat": "verduras",
+   "compra": {
+    "u": "g",
+    "factor": 200,
+    "paso": 250
+   }
   },
   "betarraga": {
    "n": "Betarraga",
@@ -176,12 +221,22 @@
   "espinaca": {
    "n": "Espinaca",
    "u": "porc",
-   "cat": "verduras"
+   "cat": "verduras",
+   "compra": {
+    "u": "g",
+    "factor": 80,
+    "paso": 100
+   }
   },
   "champinon": {
    "n": "Champiñones",
    "u": "porc",
-   "cat": "verduras"
+   "cat": "verduras",
+   "compra": {
+    "u": "g",
+    "factor": 80,
+    "paso": 100
+   }
   },
   "palta": {
    "n": "Palta pequeña",
@@ -191,7 +246,12 @@
   "aceituna": {
    "n": "Aceitunas",
    "u": "porc",
-   "cat": "verduras"
+   "cat": "verduras",
+   "compra": {
+    "u": "g",
+    "factor": 30,
+    "paso": 100
+   }
   },
   "limon": {
    "n": "Limón",
@@ -216,7 +276,12 @@
   "uva": {
    "n": "Uvas",
    "u": "porc",
-   "cat": "frutas"
+   "cat": "frutas",
+   "compra": {
+    "u": "g",
+    "factor": 150,
+    "paso": 250
+   }
   },
   "mandarina": {
    "n": "Mandarina",
@@ -226,32 +291,62 @@
   "papaya": {
    "n": "Papaya",
    "u": "porc",
-   "cat": "frutas"
+   "cat": "frutas",
+   "compra": {
+    "u": "g",
+    "factor": 200,
+    "paso": 500
+   }
   },
   "lucuma": {
    "n": "Pulpa de lúcuma",
    "u": "porc",
-   "cat": "frutas"
+   "cat": "frutas",
+   "compra": {
+    "u": "g",
+    "factor": 100,
+    "paso": 250
+   }
   },
   "quinoa": {
    "n": "Quinoa",
    "u": "taza",
-   "cat": "abarrotes"
+   "cat": "abarrotes",
+   "compra": {
+    "u": "g",
+    "factor": 60,
+    "paso": 100
+   }
   },
   "lenteja": {
    "n": "Lentejas",
    "u": "taza",
-   "cat": "abarrotes"
+   "cat": "abarrotes",
+   "compra": {
+    "u": "g",
+    "factor": 70,
+    "paso": 250
+   }
   },
   "garbanzo": {
    "n": "Garbanzos",
    "u": "taza",
-   "cat": "abarrotes"
+   "cat": "abarrotes",
+   "compra": {
+    "u": "g",
+    "factor": 70,
+    "paso": 250
+   }
   },
   "frejol": {
    "n": "Frejol canario",
    "u": "taza",
-   "cat": "abarrotes"
+   "cat": "abarrotes",
+   "compra": {
+    "u": "g",
+    "factor": 70,
+    "paso": 250
+   }
   },
   "papa": {
    "n": "Papa pequeña",
@@ -266,7 +361,12 @@
   "noquis": {
    "n": "Ñoquis",
    "u": "taza",
-   "cat": "abarrotes"
+   "cat": "abarrotes",
+   "compra": {
+    "u": "g",
+    "factor": 150,
+    "paso": 250
+   }
   },
   "wrap": {
    "n": "Wrap integral",
@@ -281,32 +381,62 @@
   "granola": {
    "n": "Granola (Huella Verde o Amaru)",
    "u": "cda",
-   "cat": "abarrotes"
+   "cat": "abarrotes",
+   "compra": {
+    "u": "g",
+    "factor": 12,
+    "paso": 100
+   }
   },
   "proteina": {
    "n": "Proteína en polvo",
    "u": "scoop",
-   "cat": "abarrotes"
+   "cat": "abarrotes",
+   "compra": {
+    "u": "g",
+    "factor": 30,
+    "paso": 100
+   }
   },
   "chia": {
    "n": "Chía o linaza",
    "u": "cda",
-   "cat": "abarrotes"
+   "cat": "abarrotes",
+   "compra": {
+    "u": "g",
+    "factor": 12,
+    "paso": 50
+   }
   },
   "mani": {
    "n": "Mantequilla de maní natural",
    "u": "cdta",
-   "cat": "abarrotes"
+   "cat": "abarrotes",
+   "compra": {
+    "u": "g",
+    "factor": 5,
+    "paso": 50
+   }
   },
   "frutos_secos": {
    "n": "Frutos secos",
    "u": "pun",
-   "cat": "abarrotes"
+   "cat": "abarrotes",
+   "compra": {
+    "u": "g",
+    "factor": 25,
+    "paso": 100
+   }
   },
   "chocolate": {
    "n": "Chocolate >70% cacao",
    "u": "troc",
-   "cat": "abarrotes"
+   "cat": "abarrotes",
+   "compra": {
+    "u": "g",
+    "factor": 10,
+    "paso": 100
+   }
   },
   "barrita": {
    "n": "Barrita de proteina",
@@ -316,12 +446,22 @@
   "aceite": {
    "n": "Aceite de oliva virgen extra",
    "u": "cda",
-   "cat": "abarrotes"
+   "cat": "abarrotes",
+   "compra": {
+    "u": "ml",
+    "factor": 15,
+    "paso": 250
+   }
   },
   "mayonesa": {
-   "n": "Mayonesa light",
+   "n": "Mayonesa light (frasco)",
    "u": "pto",
-   "cat": "abarrotes"
+   "cat": "abarrotes",
+   "compra": {
+    "u": "u",
+    "factor": 0.06,
+    "paso": 1
+   }
   }
  },
  "dias": [

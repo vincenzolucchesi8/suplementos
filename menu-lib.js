@@ -38,7 +38,7 @@
     const oA = off('A');
     const protA = rota(opsAlm, (iA < 0 ? 0 : iA) + oA);
     const almuerzo = {
-      tipo: 'plato', titulo: protA.titulo, corto: protA.corto || protA.titulo, protK: protA.k, cambiado: oA !== 0,
+      tipo: 'plato', id: protA.id, titulo: protA.titulo, corto: protA.corto || protA.titulo, protK: protA.k, cambiado: oA !== 0,
       verdura: pa.verdura.titulo, carbo: pa.carbo.titulo, carboK: pa.carbo.k, grasa: pa.grasa.titulo,
       ing: [].concat(protA.ing, pa.verdura.ing, pa.carbo.ing, pa.grasa.ing),
     };
@@ -57,7 +57,7 @@
     let cena;
     if (elC.tipo === 'omelette') {
       cena = {
-        tipo: 'omelette', titulo: elC.o.titulo, corto: elC.o.corto || elC.o.titulo, detalle: elC.o.detalle,
+        tipo: 'omelette', id: elC.o.id, titulo: elC.o.titulo, corto: elC.o.corto || elC.o.titulo, detalle: elC.o.detalle,
         protK: 'huevos', carboK: null, cambiado: oC !== 0, ing: elC.o.ing,
       };
     } else {
@@ -68,7 +68,7 @@
       const carb = base.cena.tipo === 'plato' ? pc.carbo
         : { titulo: 'Media papa pequeña sancochada', k: 'otro', ing: [['papa', 0.5]] };
       cena = {
-        tipo: 'plato', titulo: elC.p.titulo, corto: elC.p.corto || elC.p.titulo, protK: elC.p.k, cambiado: oC !== 0,
+        tipo: 'plato', id: elC.p.id, titulo: elC.p.titulo, corto: elC.p.corto || elC.p.titulo, protK: elC.p.k, cambiado: oC !== 0,
         verdura: verd.titulo, carbo: carb.titulo, carboK: carb.k,
         detalle: 'Sin grasa extra: basta el aceite de oliva de las verduras',
         ing: [].concat(elC.p.ing, verd.ing, carb.ing),
@@ -81,5 +81,25 @@
     };
   }
 
-  return { rota, conHuevo, menuBase, resolverDia };
+  /* Lo que se compra no siempre se mide como se cocina. "108 cucharadas de
+     yogurt" no le sirve a nadie parado en un mercado: eso son 1,7 kg. Cada
+     insumo que se mide en cucharadas, tazas o porciones declara a cuanto
+     equivale y a que multiplo se redondea hacia arriba. */
+  const ENTERAS = ['u', 'lata', 'paq', 'lon'];
+
+  function compraDe(items, clave, cant) {
+    const it = items[clave];
+    if (!it) return null;
+    if (!it.compra) {
+      const q = ENTERAS.indexOf(it.u) >= 0 ? Math.ceil(cant) : Math.round(cant * 10) / 10;
+      return { q, u: it.u };
+    }
+    const c = it.compra;
+    let q = Math.ceil((cant * c.factor) / c.paso) * c.paso;
+    if (c.u === 'g' && q >= 1000) return { q: Math.round(q / 100) / 10, u: 'kg' };
+    if (c.u === 'ml' && q >= 1000) return { q: Math.round(q / 100) / 10, u: 'L' };
+    return { q, u: c.u };
+  }
+
+  return { rota, conHuevo, menuBase, resolverDia, compraDe };
 }));

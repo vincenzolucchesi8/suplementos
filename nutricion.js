@@ -152,7 +152,7 @@ function renderCalendario() {
          <div class="cal-sub">Cena: ${esc(c.cena.corto || c.cena.titulo)}</div>
        </div>
        <div class="cal-marks">${marcas.map(m => `<i class="${m}"></i>`).join('')}</div>`;
-    b.onclick = () => jumpDay(n);
+    b.onclick = () => abrirHojaDia(n);
     cont.appendChild(b);
   }
   cont.insertAdjacentHTML('beforeend',
@@ -163,12 +163,120 @@ function renderCalendario() {
      </div>`);
 }
 
-/* ---------- Lista de compras de la semana ---------- */
+
+/* ============================================================================
+   Elegir los platos de la semana.
+   Las opciones no se listan aparte: se derivan probando los cambios posibles,
+   asi lo que se ofrece es exactamente lo que el tablero puede resolver y nunca
+   aparece una opcion que romperia la regla de una sola toma de huevo al dia.
+   ============================================================================ */
+const CLAVE_DE = { Desayuno: 'D', Almuerzo: 'A', Cena: 'C' };
+const platoDe = (c, comida) => comida === 'Desayuno' ? c.desayuno : comida === 'Almuerzo' ? c.almuerzo : c.cena;
+
+function opcionesDe(dia, comida) {
+  if (!MENU) return [];
+  const ds = dsDiaG(dia);
+  const letra = CLAVE_DE[comida];
+  const actual = k => parseInt(valorDe(`${ds}:MO:${k}`) || '0', 10) || 0;
+  const vistas = new Map();
+  for (let n = 0; n < 24; n++) {
+    const r = MenuLib.resolverDia(MENU, dia, k => (k === letra ? n : actual(k)));
+    if (!r) break;
+    const m = platoDe(r, comida);
+    if (!vistas.has(m.id)) vistas.set(m.id, { ...m, off: n });
+  }
+  return [...vistas.values()];
+}
+
+function elegirPlato(dia, comida, off) {
+  setMark(`${dsDiaG(dia)}:MO:${CLAVE_DE[comida]}`, String(off));
+  sincronizarFrecuencias(dia);
+  render();
+}
+
+// Que proteina se comio el dia anterior: sirve para avisar de una repeticion
+function proteinaDeAyer(dia) {
+  const a = dia > 1 ? comidasDeDia(dia - 1) : null;
+  if (!a) return [];
+  return [a.almuerzo.protK, a.cena.protK].filter(Boolean);
+}
+
+function filaOpcion(m, comida, seleccionada, ayer, alElegir, conDisco2) {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'opt' + (seleccionada ? ' sel' : '');
+  b.setAttribute('aria-pressed', seleccionada ? 'true' : 'false');
+  const conDisco = m.tipo === 'plato' && conDisco2 !== false;
+  const repite = m.protK && ayer.includes(m.protK) && m.protK !== 'huevos';
+  b.innerHTML =
+    (conDisco ? `<span class="opt-plate">${platoSVG(comida === 'Cena' ? 'cena' : 'almuerzo')}</span>` : '') +
+    `<span class="opt-info">
+       <span class="opt-name">${esc(m.corto || m.titulo)}</span>
+       ${m.tipo === 'plato' ? `<span class="opt-sub">${esc(m.titulo)}</span>` : (m.detalle ? `<span class="opt-sub">${esc(m.detalle)}</span>` : '')}
+       ${repite ? '<span class="opt-hint">Ayer comiste lo mismo</span>' : ''}
+     </span>
+     <span class="opt-tick"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>`;
+  b.onclick = alElegir;
+  return b;
+}
+
+function abrirHojaOpciones(dia, comida) {
+  const ayer = proteinaDeAyer(dia);
+  abrirHoja(`${comida} · ${etiquetaDia(dia)}`, cont => {
+    const c = comidasDeDia(dia);
+    const actual = platoDe(c, comida);
+    opcionesDe(dia, comida).forEach(m => {
+      cont.appendChild(filaOpcion(m, comida, m.id === actual.id, ayer, () => {
+        elegirPlato(dia, comida, m.off);
+        volverHoja();
+      }, false));
+    });
+    cont.insertAdjacentHTML('beforeend',
+      `<div class="sheet-nota"><p>Son las opciones del plan de Alexia. No aparecen las que te dejarían dos tomas de huevo el mismo día.</p></div>`);
+  });
+}
+
+const etiquetaDia = dia => {
+  const f = new Date(Date.parse(dsDiaG(dia) + 'T00:00:00Z'));
+  const t = f.toLocaleDateString('es-PE', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
+  return t.charAt(0).toUpperCase() + t.slice(1);
+};
+
+function abrirHojaDia(dia) {
+  abrirHoja(etiquetaDia(dia), cont => {
+    const c = comidasDeDia(dia);
+    if (!c) { cont.innerHTML = '<p class="dish-sub">Todavía no cargó el menú.</p>'; return; }
+    ['Desayuno', 'Almuerzo', 'Cena'].forEach(comida => {
+      const m = platoDe(c, comida);
+      const bloque = document.createElement('div');
+      bloque.className = 'sheet-meal';
+      bloque.innerHTML = `<span>${comida}</span>`;
+      bloque.appendChild(filaOpcion(m, comida, true, [], () => abrirHojaOpciones(dia, comida)));
+      cont.appendChild(bloque);
+    });
+    const ver = document.createElement('div');
+    ver.className = 'btns';
+    ver.style.marginTop = '20px';
+    ver.innerHTML = `<button class="btn btn-s" type="button" style="flex:1">Ver este día en Hoy</button>`;
+    ver.querySelector('button').onclick = () => { cerrarHoja(); jumpDay(dia); irASeccion('hoy'); };
+    cont.appendChild(ver);
+    cont.insertAdjacentHTML('beforeend',
+      `<div class="sheet-nota"><p>Toca un plato para cambiarlo. Lo que elijas manda en la lista de compras y en el PDF.</p></div>`);
+  });
+}
+
+/* ---------- Lista de compras de la semana ----------
+   El orden es el de caminar un mercado (verduleria, frutas, carnes, lacteos,
+   abarrotes), no el orden interno del catalogo. Lo usan la lista de pantalla
+   y el PDF: un solo orden, para que no digan cosas distintas. */
+const ORDEN_MERCADO = ['verduras', 'frutas', 'proteina', 'lacteos', 'abarrotes'];
+
 const UNIDADES = {
   u: ['u', 'u'], g: ['g', 'g'], lata: ['lata', 'latas'], lon: ['loncha', 'lonchas'],
   cda: ['cda', 'cdas'], cdta: ['cdta', 'cdtas'], taza: ['taza', 'tazas'],
   porc: ['porción', 'porciones'], pun: ['puñado', 'puñados'], troc: ['trocito', 'trocitos'],
   paq: ['paquete', 'paquetes'], vaso: ['vaso', 'vasos'], scoop: ['scoop', 'scoops'], pto: ['punto', 'puntos'],
+  kg: ['kg', 'kg'], ml: ['ml', 'ml'], L: ['L', 'L'],
 };
 const ENTERAS = ['u', 'lata', 'paq', 'lon'];
 
@@ -185,8 +293,8 @@ function comprasDeSemana(w) {
   Object.entries(total).forEach(([clave, cant]) => {
     const it = MENU.items[clave];
     if (!it) return;
-    const q = ENTERAS.includes(it.u) ? Math.ceil(cant) : Math.round(cant * 10) / 10;
-    (porCat[it.cat] = porCat[it.cat] || []).push({ clave, nombre: it.n, q, u: it.u });
+    const c = MenuLib.compraDe(MENU.items, clave, cant);
+    (porCat[it.cat] = porCat[it.cat] || []).push({ clave, nombre: it.n, q: c.q, u: c.u });
   });
   Object.values(porCat).forEach(a => a.sort((x, y) => x.nombre.localeCompare(y.nombre, 'es')));
   return porCat;
@@ -203,7 +311,8 @@ function renderCompras() {
   cont.innerHTML = '';
 
   let hechos = 0, todos = 0;
-  Object.entries(MENU.cats).forEach(([cat, titulo]) => {
+  ORDEN_MERCADO.forEach(cat => {
+    const titulo = MENU.cats[cat] || cat;
     const lista = porCat[cat];
     if (!lista || !lista.length) return;
     const sec = document.createElement('div');
@@ -258,6 +367,7 @@ function toggleCompras() {
 /* Se engancha al render principal del tablero */
 function renderNutricion() {
   renderCalendario();
+  if (typeof montarBotonesPDF === 'function') montarBotonesPDF();
   actualizarCabeceraCompras();
   if (!document.getElementById('buyBody').hidden) renderCompras();
 }

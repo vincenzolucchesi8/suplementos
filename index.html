@@ -41,6 +41,7 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
     <div class="date-chip" id="fecha"></div>
   </div>
 
+  <section class="panel" id="panel-hoy" role="tabpanel" aria-labelledby="tab-hoy">
   <div class="hero">
     <div class="hero-grid">
       <div class="ring-wrap">
@@ -106,6 +107,15 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
     </div>
   </div>
 
+  <div class="note">
+    <div class="note-ic">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+    </div>
+    <p id="notaFase"></p>
+  </div>
+  </section>
+
+  <section class="panel" id="panel-comidas" role="tabpanel" aria-labelledby="tab-comidas">
   <div class="card">
     <div class="card-h">
       <h2>Menú de la semana</h2>
@@ -121,8 +131,28 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
       <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
     </button>
     <div class="acc-body" id="buyBody" hidden></div>
+    <div class="pdf-box">
+      <div class="btns">
+        <button class="btn btn-p" id="pdfMes" type="button">
+          <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v5"/><path d="M9.5 14.5L12 17l2.5-2.5"/></svg>
+          PDF del mes
+        </button>
+        <button class="btn btn-s" id="pdfSemana" type="button">Solo esta semana</button>
+      </div>
+      <p class="pdf-nota" id="pdfNota">Sale de los platos que elegiste, agrupado por sección del mercado y con casillas para marcar.</p>
+    </div>
   </div>
 
+  <div class="card">
+    <button class="acc-h" id="accBtn" aria-expanded="false" aria-controls="accBody" onclick="toggleComer()">
+      <h2>Qué comer</h2>
+      <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="acc-body" id="accBody" hidden></div>
+  </div>
+  </section>
+
+  <section class="panel" id="panel-progreso" role="tabpanel" aria-labelledby="tab-progreso">
   <div class="card">
     <div class="card-h">
       <h2>Esta semana</h2>
@@ -140,34 +170,6 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
   </div>
 
   <div class="card">
-    <div class="card-h">
-      <h2>Avisos</h2>
-      <span class="count" id="aviCount"></span>
-    </div>
-    <div id="aviBody"></div>
-  </div>
-
-  <div class="note">
-    <div class="note-ic">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
-    </div>
-    <p id="notaFase"></p>
-  </div>
-
-  <div class="card">
-    <button class="acc-h" id="accBtn" aria-expanded="false" aria-controls="accBody" onclick="toggleComer()">
-      <h2>Qué comer</h2>
-      <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
-    </button>
-    <div class="acc-body" id="accBody" hidden></div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><h2>Plan de suplementos</h2></div>
-    <div class="tl" id="tlFases"></div>
-  </div>
-
-  <div class="card">
     <div class="card-h"><h2>Consistencia</h2><span class="count" id="totalDias"></span></div>
     <div class="heat-stats">
       <div class="heat-stat"><b id="hsAdh">0%</b><span>Adherencia</span></div>
@@ -182,8 +184,55 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
       <span class="leg"><i class="l-future"></i>Próximo</span>
     </div>
   </div>
+  </section>
+
+  <section class="panel" id="panel-plan" role="tabpanel" aria-labelledby="tab-plan">
+  <div class="card">
+    <div class="card-h"><h2>Plan de suplementos</h2></div>
+    <div class="tl" id="tlFases"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">
+      <h2>Avisos</h2>
+      <span class="count" id="aviCount"></span>
+    </div>
+    <div id="aviBody"></div>
+  </div>
+  </section>
+
 
   <footer>Elaborado por Vinz Lucchesi<span class="ver" id="ver"></span><span class="ver" id="syncTag"></span></footer>
+
+  <nav class="tabs" role="tablist" aria-label="Secciones del tablero">
+    <button class="tab" id="tab-hoy" role="tab" aria-controls="panel-hoy" data-tab="hoy">
+      <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span>Hoy</span>
+    </button>
+    <button class="tab" id="tab-comidas" role="tab" aria-controls="panel-comidas" data-tab="comidas">
+      <svg viewBox="0 0 24 24"><path d="M4 20c0-8 6-14 16-15 0 10-5 15-12 15H4z"/><path d="M8 18c2-4 5-7 9-9"/></svg><span>Comidas</span>
+    </button>
+    <button class="tab" id="tab-progreso" role="tab" aria-controls="panel-progreso" data-tab="progreso">
+      <svg viewBox="0 0 24 24"><path d="M3 17l5-6 4 4 5-8"/><path d="M3 21h18"/></svg><span>Progreso</span>
+    </button>
+    <button class="tab" id="tab-plan" role="tab" aria-controls="panel-plan" data-tab="plan">
+      <svg viewBox="0 0 24 24"><path d="M8 4h9a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M9.5 9h6M9.5 13h6M9.5 17h3"/></svg><span>Plan</span>
+    </button>
+  </nav>
+</div>
+
+
+<div class="sheet-bg" id="sheetBg" hidden></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitulo" hidden>
+  <div class="sheet-h">
+    <button class="sheet-atras" id="sheetAtras" type="button" hidden aria-label="Volver">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <h2 id="sheetTitulo"></h2>
+    <button class="sheet-x" id="sheetX" type="button" aria-label="Cerrar">
+      <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="sheet-body" id="sheetBody"></div>
 </div>
 
 <script src="protocolo-lib.js" defer></script>
@@ -191,5 +240,8 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
 <script src="app.js" defer></script>
 <script src="nutricion.js" defer></script>
 <script src="avisos.js" defer></script>
+<script src="vendor/jspdf.umd.min.js" defer></script>
+<script src="compras-pdf.js" defer></script>
+<script src="navegacion.js" defer></script>
 </body>
 </html>

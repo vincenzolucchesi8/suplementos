@@ -22,6 +22,7 @@
   "homepage": "https://github.com/vincenzolucchesi8/suplementos#readme",
   "dependencies": {
     "@vercel/blob": "^2.8.0",
+    "jspdf": "^4.2.1",
     "web-push": "^3.6.7"
   }
 }

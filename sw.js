@@ -1,9 +1,10 @@
 // Service worker del tablero de protocolo (suplementos, comidas y peso).
 // Estrategia: la pagina va por RED primero (siempre fresca; offline cae al cache).
 // Assets estaticos por cache primero. La API NUNCA se cachea.
-const CACHE = 'protocolo-v8';
+const CACHE = 'protocolo-v9';
 const ASSETS = [
   './', './index.html', './estilos.css', './protocolo-lib.js', './menu-lib.js', './app.js', './nutricion.js', './avisos.js',
+  './compras-pdf.js', './navegacion.js', './vendor/jspdf.umd.min.js',
   './menu/menu.json', './manifest.json', './icon-192.png', './icon-512.png', './icon-180.png',
 ];
 
