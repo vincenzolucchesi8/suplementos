@@ -439,7 +439,7 @@
    }
   },
   "barrita": {
-   "n": "Barrita de proteina",
+   "n": "Barrita de proteína",
    "u": "u",
    "cat": "abarrotes"
   },
@@ -706,8 +706,8 @@
    "semana": 1,
    "desayuno": {
     "id": "d_batido_plátano",
-    "titulo": "Batido de proteina con plátano y mani",
-    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chía o linaza, 1 plátano y 1 cdta de mantequilla de mani",
+    "titulo": "Batido de proteína con plátano y maní",
+    "detalle": "1 vaso grande de leche, 1 scoop de proteína, 1 cda de chía o linaza, 1 plátano y 1 cdta de mantequilla de maní",
     "tags": [
      "proteina_polvo",
      "fruta"
@@ -841,7 +841,7 @@
     }
    },
    "merienda": {
-    "titulo": "1 fruta y 1 barrita de proteina",
+    "titulo": "1 fruta y 1 barrita de proteína",
     "ing": [
      [
       "uva",
@@ -1413,8 +1413,8 @@
    "semana": 1,
    "desayuno": {
     "id": "d_batido_lúcuma",
-    "titulo": "Batido de proteina con lúcuma",
-    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chía o linaza y pulpa de lúcuma al gusto",
+    "titulo": "Batido de proteína con lúcuma",
+    "detalle": "1 vaso grande de leche, 1 scoop de proteína, 1 cda de chía o linaza y pulpa de lúcuma al gusto",
     "tags": [
      "proteina_polvo",
      "fruta"
@@ -1854,7 +1854,7 @@
     "titulo": "2 filetes medianos de pollo al horno con hierbas",
     "corto": "Pollo al horno con hierbas",
     "protK": "pollo",
-    "verdura": "Ensalada criolla de cebolla, tomate y limon",
+    "verdura": "Ensalada criolla de cebolla, tomate y limón",
     "carbo": "1 papa pequeña sancochada",
     "carboK": "otro",
     "grasa": "Media palta pequeña",
@@ -1903,7 +1903,7 @@
      },
      "verdura": {
       "id": "v_criolla",
-      "titulo": "Ensalada criolla de cebolla, tomate y limon",
+      "titulo": "Ensalada criolla de cebolla, tomate y limón",
       "ing": [
        [
         "cebolla",
@@ -2040,8 +2040,8 @@
    "semana": 2,
    "desayuno": {
     "id": "d_batido_plátano",
-    "titulo": "Batido de proteina con plátano y mani",
-    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chía o linaza, 1 plátano y 1 cdta de mantequilla de mani",
+    "titulo": "Batido de proteína con plátano y maní",
+    "detalle": "1 vaso grande de leche, 1 scoop de proteína, 1 cda de chía o linaza, 1 plátano y 1 cdta de mantequilla de maní",
     "tags": [
      "proteina_polvo",
      "fruta"
@@ -2191,7 +2191,7 @@
     }
    },
    "merienda": {
-    "titulo": "1 fruta y 1 barrita de proteina",
+    "titulo": "1 fruta y 1 barrita de proteína",
     "ing": [
      [
       "uva",
@@ -3055,7 +3055,7 @@
     }
    },
    "merienda": {
-    "titulo": "1 fruta y 1 barrita de proteina",
+    "titulo": "1 fruta y 1 barrita de proteína",
     "ing": [
      [
       "uva",
@@ -3325,7 +3325,7 @@
     "protK": "pollo",
     "titulo": "2 filetes medianos de pollo a la plancha",
     "corto": "Pollo a la plancha",
-    "verdura": "Ensalada criolla de cebolla, tomate y limon",
+    "verdura": "Ensalada criolla de cebolla, tomate y limón",
     "carbo": "Media papa pequeña sancochada",
     "detalle": "Sin grasa extra: basta el aceite de oliva de las verduras",
     "ing": [
@@ -3369,7 +3369,7 @@
      },
      "verdura": {
       "id": "v_criolla",
-      "titulo": "Ensalada criolla de cebolla, tomate y limon",
+      "titulo": "Ensalada criolla de cebolla, tomate y limón",
       "ing": [
        [
         "cebolla",
@@ -3653,8 +3653,8 @@
    "semana": 3,
    "desayuno": {
     "id": "d_batido_lúcuma",
-    "titulo": "Batido de proteina con lúcuma",
-    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chía o linaza y pulpa de lúcuma al gusto",
+    "titulo": "Batido de proteína con lúcuma",
+    "detalle": "1 vaso grande de leche, 1 scoop de proteína, 1 cda de chía o linaza y pulpa de lúcuma al gusto",
     "tags": [
      "proteina_polvo",
      "fruta"
@@ -4284,8 +4284,8 @@
    "semana": 3,
    "desayuno": {
     "id": "d_batido_plátano",
-    "titulo": "Batido de proteina con plátano y mani",
-    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chía o linaza, 1 plátano y 1 cdta de mantequilla de mani",
+    "titulo": "Batido de proteína con plátano y maní",
+    "detalle": "1 vaso grande de leche, 1 scoop de proteína, 1 cda de chía o linaza, 1 plátano y 1 cdta de mantequilla de maní",
     "tags": [
      "proteina_polvo",
      "fruta"
@@ -4571,7 +4571,7 @@
     "titulo": "2 filetes medianos de pollo a la plancha",
     "corto": "Pollo a la plancha",
     "protK": "pollo",
-    "verdura": "Ensalada criolla de cebolla, tomate y limon",
+    "verdura": "Ensalada criolla de cebolla, tomate y limón",
     "carbo": "1 taza de ñoquis",
     "carboK": "otro",
     "grasa": "Media palta pequeña",
@@ -4620,7 +4620,7 @@
      },
      "verdura": {
       "id": "v_criolla",
-      "titulo": "Ensalada criolla de cebolla, tomate y limon",
+      "titulo": "Ensalada criolla de cebolla, tomate y limón",
       "ing": [
        [
         "cebolla",
@@ -4857,7 +4857,7 @@
     }
    },
    "merienda": {
-    "titulo": "1 fruta y 1 barrita de proteina",
+    "titulo": "1 fruta y 1 barrita de proteína",
     "ing": [
      [
       "uva",
@@ -5325,7 +5325,7 @@
     }
    },
    "merienda": {
-    "titulo": "1 fruta y 1 barrita de proteina",
+    "titulo": "1 fruta y 1 barrita de proteína",
     "ing": [
      [
       "uva",
@@ -5342,7 +5342,7 @@
     "protK": "pollo",
     "titulo": "2 filetes medianos de pollo al horno con hierbas",
     "corto": "Pollo al horno con hierbas",
-    "verdura": "Ensalada criolla de cebolla, tomate y limon",
+    "verdura": "Ensalada criolla de cebolla, tomate y limón",
     "carbo": "Tres cuartos de taza de ñoquis",
     "detalle": "Sin grasa extra: basta el aceite de oliva de las verduras",
     "ing": [
@@ -5386,7 +5386,7 @@
      },
      "verdura": {
       "id": "v_criolla",
-      "titulo": "Ensalada criolla de cebolla, tomate y limon",
+      "titulo": "Ensalada criolla de cebolla, tomate y limón",
       "ing": [
        [
         "cebolla",
@@ -5473,7 +5473,7 @@
     "titulo": "1 filete grande de res a la plancha",
     "corto": "Res a la plancha",
     "protK": "carne",
-    "verdura": "Ensalada criolla de cebolla, tomate y limon",
+    "verdura": "Ensalada criolla de cebolla, tomate y limón",
     "carbo": "Medio camote mediano al horno",
     "carboK": "otro",
     "grasa": "Media palta pequeña",
@@ -5522,7 +5522,7 @@
      },
      "verdura": {
       "id": "v_criolla",
-      "titulo": "Ensalada criolla de cebolla, tomate y limon",
+      "titulo": "Ensalada criolla de cebolla, tomate y limón",
       "ing": [
        [
         "cebolla",
@@ -5908,8 +5908,8 @@
    "semana": 4,
    "desayuno": {
     "id": "d_batido_lúcuma",
-    "titulo": "Batido de proteina con lúcuma",
-    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chía o linaza y pulpa de lúcuma al gusto",
+    "titulo": "Batido de proteína con lúcuma",
+    "detalle": "1 vaso grande de leche, 1 scoop de proteína, 1 cda de chía o linaza y pulpa de lúcuma al gusto",
     "tags": [
      "proteina_polvo",
      "fruta"
@@ -6232,7 +6232,7 @@
     }
    },
    "merienda": {
-    "titulo": "1 fruta y 1 barrita de proteina",
+    "titulo": "1 fruta y 1 barrita de proteína",
     "ing": [
      [
       "uva",
@@ -6535,8 +6535,8 @@
    "semana": 4,
    "desayuno": {
     "id": "d_batido_plátano",
-    "titulo": "Batido de proteina con plátano y mani",
-    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chía o linaza, 1 plátano y 1 cdta de mantequilla de mani",
+    "titulo": "Batido de proteína con plátano y maní",
+    "detalle": "1 vaso grande de leche, 1 scoop de proteína, 1 cda de chía o linaza, 1 plátano y 1 cdta de mantequilla de maní",
     "tags": [
      "proteina_polvo",
      "fruta"
@@ -6678,7 +6678,7 @@
     }
    },
    "merienda": {
-    "titulo": "1 fruta y 1 barrita de proteina",
+    "titulo": "1 fruta y 1 barrita de proteína",
     "ing": [
      [
       "uva",
@@ -6902,8 +6902,8 @@
    },
    {
     "id": "d_batido_plátano",
-    "titulo": "Batido de proteina con plátano y mani",
-    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chía o linaza, 1 plátano y 1 cdta de mantequilla de mani",
+    "titulo": "Batido de proteína con plátano y maní",
+    "detalle": "1 vaso grande de leche, 1 scoop de proteína, 1 cda de chía o linaza, 1 plátano y 1 cdta de mantequilla de maní",
     "tags": [
      "proteina_polvo",
      "fruta"
@@ -6933,8 +6933,8 @@
    },
    {
     "id": "d_batido_lúcuma",
-    "titulo": "Batido de proteina con lúcuma",
-    "detalle": "1 vaso grande de leche, 1 scoop de proteina, 1 cda de chía o linaza y pulpa de lúcuma al gusto",
+    "titulo": "Batido de proteína con lúcuma",
+    "detalle": "1 vaso grande de leche, 1 scoop de proteína, 1 cda de chía o linaza y pulpa de lúcuma al gusto",
     "tags": [
      "proteina_polvo",
      "fruta"

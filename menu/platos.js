@@ -76,7 +76,7 @@ const ITEMS = {
   mani:           { n: 'Mantequilla de maní natural',u: 'cdta', cat: 'abarrotes', compra: { u: 'g', factor: 5, paso: 50 } },
   frutos_secos:   { n: 'Frutos secos',               u: 'pun',  cat: 'abarrotes', compra: { u: 'g', factor: 25, paso: 100 } },
   chocolate:      { n: 'Chocolate >70% cacao',       u: 'troc', cat: 'abarrotes', compra: { u: 'g', factor: 10, paso: 100 } },
-  barrita:        { n: 'Barrita de proteina',        u: 'u',    cat: 'abarrotes' },
+  barrita:        { n: 'Barrita de proteína',        u: 'u',    cat: 'abarrotes' },
   aceite:         { n: 'Aceite de oliva virgen extra', u: 'cda',cat: 'abarrotes', compra: { u: 'ml', factor: 15, paso: 250 } },
   mayonesa:       { n: 'Mayonesa light (frasco)',    u: 'pto',  cat: 'abarrotes', compra: { u: 'u', factor: 0.06, paso: 1 } },
 };
@@ -106,11 +106,11 @@ const DESAYUNOS = [
   { id:'d_wrap_pollo',    t:'Wrap integral de pollo deshilachado',
     d:'Con media palta, tomate en rodajas, lechuga, 1 punto de mayonesa light y 1 fruta',
     tags:['pollo','fruta'], ing:[['wrap',1],['pollo_deshila',80],['palta',0.5],['tomate',0.5],['lechuga',1],['mayonesa',1],['manzana',1]] },
-  { id:'d_batido_plátano',t:'Batido de proteina con plátano y mani',
-    d:'1 vaso grande de leche, 1 scoop de proteina, 1 cda de chía o linaza, 1 plátano y 1 cdta de mantequilla de mani',
+  { id:'d_batido_plátano',t:'Batido de proteína con plátano y maní',
+    d:'1 vaso grande de leche, 1 scoop de proteína, 1 cda de chía o linaza, 1 plátano y 1 cdta de mantequilla de maní',
     tags:['proteina_polvo','fruta'], ing:[['leche',1],['proteina',1],['chia',1],['platano',1],['mani',1]] },
-  { id:'d_batido_lúcuma', t:'Batido de proteina con lúcuma',
-    d:'1 vaso grande de leche, 1 scoop de proteina, 1 cda de chía o linaza y pulpa de lúcuma al gusto',
+  { id:'d_batido_lúcuma', t:'Batido de proteína con lúcuma',
+    d:'1 vaso grande de leche, 1 scoop de proteína, 1 cda de chía o linaza y pulpa de lúcuma al gusto',
     tags:['proteina_polvo','fruta'], ing:[['leche',1],['proteina',1],['chia',1],['lucuma',1]] },
   { id:'d_bowl_mango',    t:'Bowl de yogurt proteico con granola y mango',
     d:'8 cdas de yogurt proteico, 3 cdas de granola y media taza de mango picado',
@@ -167,7 +167,7 @@ const GRASA_ALM = [
 // ---- Verduras: siempre un tercio del plato, con aceite de oliva, limon y sal
 const VERDURAS = [
   { id:'v_mixta',     t:'Ensalada de lechuga, tomate y pepino',            ing:[['lechuga',1],['tomate',1],['pepino',0.5],['aceite',1],['limon',0.5]] },
-  { id:'v_criolla',   t:'Ensalada criolla de cebolla, tomate y limon',     ing:[['cebolla',0.5],['tomate',1],['limon',1],['aceite',1]] },
+  { id:'v_criolla',   t:'Ensalada criolla de cebolla, tomate y limón',     ing:[['cebolla',0.5],['tomate',1],['limon',1],['aceite',1]] },
   { id:'v_brócoli',   t:'Brócoli y zanahoria al vapor',                    ing:[['brocoli',1],['zanahoria',1],['aceite',1]] },
   { id:'v_zapallito', t:'Zapallito italiano y vainitas salteados',         ing:[['zapallito',1],['vainita',1],['aceite',1]] },
   { id:'v_rúcula',    t:'Ensalada de rúcula, tomate cherry y pepino',      ing:[['rucula',1],['cherry',1],['pepino',0.5],['aceite',1]] },
@@ -205,7 +205,7 @@ const MEDIA_MANANA = [
 ];
 const MERIENDA = [
   { t:'1 yogurt proteico de sabor', ing:[['yogurt_indiv',1]] },
-  { t:'1 fruta y 1 barrita de proteina', ing:[['uva',1],['barrita',1]] },
+  { t:'1 fruta y 1 barrita de proteína', ing:[['uva',1],['barrita',1]] },
   { t:'Preentreno: 1 plátano', ing:[['platano',1]] },
   { t:'Preentreno: bowl de yogurt proteico con granola y medio plátano', ing:[['yogurt_prot',6],['granola',3],['platano',0.5]] },
   { t:'Preentreno: jugo de lúcuma con leche', ing:[['lucuma',1],['leche',0.5]] },
