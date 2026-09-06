@@ -10,6 +10,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<script>
+/* La casa del tablero es protocolo.papelito.online. Este redirect va en el HTML
+   y no en app.js porque el service worker viejo de GitHub Pages sirve el JS
+   desde cache: el HTML, en cambio, siempre se pide a la red. */
+if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.papelito.online/'+location.hash);
+</script>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0fa589">
 <meta name="apple-mobile-web-app-capable" content="yes">
