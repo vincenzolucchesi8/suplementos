@@ -77,7 +77,7 @@ self.addEventListener('notificationclick', e => {
   if (e.action === 'hecho' && d.marcar && d.marcar.length) {
     e.waitUntil(
       fetch('/api/estado', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: cabeceras(d),
         body: JSON.stringify({ marcar: d.marcar }),
       })
         .then(() => avisarClientes({ tipo: 'marcado', avisoId: d.avisoId }))
@@ -89,7 +89,7 @@ self.addEventListener('notificationclick', e => {
   if (e.action === 'snooze') {
     e.waitUntil(
       fetch('/api/push', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: cabeceras(d),
         body: JSON.stringify({ accion: 'snooze', avisoId: d.avisoId, minutos: 15 }),
       }).catch(() => {})
     );
@@ -105,6 +105,13 @@ self.addEventListener('notificationclick', e => {
     })
   );
 });
+
+// La clave llega en el propio aviso, no de localStorage: el worker no lo ve
+function cabeceras(d) {
+  const h = { 'Content-Type': 'application/json' };
+  if (d && d.auth) h['x-token'] = d.auth;
+  return h;
+}
 
 function avisarClientes(msg) {
   return self.clients.matchAll({ type: 'window', includeUncontrolled: true })

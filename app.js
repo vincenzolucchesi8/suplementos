@@ -151,6 +151,12 @@ const DIA_SEMANA = ['domingo','lunes','martes','miércoles','jueves','viernes','
    se pierde en la mudanza. */
 const API = '/api';
 
+// La casa del tablero es protocolo.papelito.online. La direccion vieja de
+// GitHub Pages sigue viva pero sin API, asi que manda a la nueva.
+if(location.hostname.endsWith('github.io')){
+  location.replace('https://protocolo.papelito.online/' + location.hash);
+}
+
 // Clave del tablero. Llega una vez por el enlace (#k=...) y queda guardada.
 function tokenApp(){
   const m = /[#&]k=([^&]+)/.exec(location.hash||'');

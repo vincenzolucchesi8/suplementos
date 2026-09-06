@@ -9,7 +9,7 @@ const webpush = require('web-push');
 const MenuLib = require('../menu-lib.js');
 const ProtocoloLib = require('../protocolo-lib.js');
 const MENU = require('../menu/menu.json');
-const { leerPush, guardarPush, leerEstado } = require('./_almacen');
+const { listarSubs, borrarSub, leerTick, guardarTick, leerEstado } = require('./_almacen');
 
 const TOLERANCIA_MIN = 90;   // si el cron estuvo caido mas de esto, no se dispara tarde
 
@@ -141,15 +141,16 @@ module.exports = async (req, res) => {
     process.env.VAPID_PUBLIC, process.env.VAPID_PRIVATE
   );
 
-  const datos = await leerPush();
+  const datos = await leerTick();
+  const subs = await listarSubs();
   const estado = await leerEstado();
   const ahora = new Date();
   const enviados = datos.enviados || {};
   const mandados = [];
   let cambio = false;
 
-  const vivos = [];
-  for (const s of (datos.subs || [])) {
+  let vivas = 0;
+  for (const s of subs) {
     const zona = s.zona || 'America/Lima';
     const { fecha, minutos, dow } = enZona(zona, ahora);
     const inicio = s.inicio || '2026-09-01';
@@ -185,17 +186,21 @@ module.exports = async (req, res) => {
       const carga = armar(avisoId, ctx);
       if (!carga) { enviados[`${fecha}:${avisoId}`] = ahora.getTime(); cambio = true; continue; }
       try {
+        // La clave viaja DENTRO del payload, que va cifrado de extremo a extremo
+        // hasta el dispositivo: es la unica forma de que los botones de la
+        // notificacion puedan marcar, porque el service worker no lee localStorage.
         await webpush.sendNotification(s.sub, JSON.stringify({
-          ...carga, avisoId, tag: avisoId, url: '/',
+          ...carga, avisoId, tag: avisoId, url: '/', auth: process.env.APP_TOKEN || '',
         }));
         enviados[`${fecha}:${avisoId}`] = ahora.getTime();
         mandados.push(avisoId);
         cambio = true;
       } catch (e) {
-        if (e.statusCode === 404 || e.statusCode === 410) { sigueViva = false; cambio = true; break; }
+        // 404 o 410 = la suscripcion murio (app desinstalada, permiso revocado)
+        if (e.statusCode === 404 || e.statusCode === 410) { sigueViva = false; break; }
       }
     }
-    if (sigueViva) vivos.push(s);
+    if (sigueViva) vivas++; else await borrarSub(s.sub.endpoint);
   }
 
   // Limpiar snoozes vencidos y anotaciones viejas
@@ -207,10 +212,9 @@ module.exports = async (req, res) => {
   Object.keys(enviados).forEach(k => { if (enviados[k] < corte) { delete enviados[k]; cambio = true; } });
 
   if (cambio) {
-    datos.subs = vivos;
     datos.enviados = enviados;
-    await guardarPush(datos);
+    await guardarTick(datos);
   }
 
-  return res.status(200).json({ ok: true, suscripciones: vivos.length, mandados });
+  return res.status(200).json({ ok: true, suscripciones: vivas, mandados });
 };

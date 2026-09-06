@@ -1,5 +1,5 @@
 /* Alta y baja de la suscripcion push, y el "en 15 min" de las notificaciones. */
-const { leerPush, guardarPush, autorizado, leerCuerpo } = require('./_almacen');
+const { guardarSub, borrarSub, leerTick, guardarTick, autorizado, leerCuerpo } = require('./_almacen');
 
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
@@ -18,32 +18,28 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const datos = await leerPush();
-
     if (cuerpo.accion === 'alta' && cuerpo.sub && cuerpo.sub.endpoint) {
-      datos.subs = (datos.subs || []).filter(s => s.sub.endpoint !== cuerpo.sub.endpoint);
-      datos.subs.push({
+      await guardarSub({
         sub: cuerpo.sub,
         cfg: cuerpo.cfg || {},
         zona: cuerpo.zona || 'America/Lima',
         inicio: cuerpo.inicio || '2026-09-01',
         ts: Date.now(),
       });
-      await guardarPush(datos);
-      return res.status(200).json({ ok: true, suscripciones: datos.subs.length });
+      return res.status(200).json({ ok: true });
     }
 
     if (cuerpo.accion === 'baja' && cuerpo.endpoint) {
-      datos.subs = (datos.subs || []).filter(s => s.sub.endpoint !== cuerpo.endpoint);
-      await guardarPush(datos);
-      return res.status(200).json({ ok: true, suscripciones: datos.subs.length });
+      await borrarSub(cuerpo.endpoint);
+      return res.status(200).json({ ok: true });
     }
 
     if (cuerpo.accion === 'snooze' && cuerpo.avisoId) {
       const minutos = Math.min(120, Math.max(1, parseInt(cuerpo.minutos, 10) || 15));
+      const datos = await leerTick();
       datos.snooze = (datos.snooze || []).filter(s => s.avisoId !== cuerpo.avisoId);
       datos.snooze.push({ avisoId: cuerpo.avisoId, cuando: Date.now() + minutos * 60000 });
-      await guardarPush(datos);
+      await guardarTick(datos);
       return res.status(200).json({ ok: true, en: minutos });
     }
 
