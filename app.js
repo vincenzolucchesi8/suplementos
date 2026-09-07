@@ -16,9 +16,17 @@ function dsDiaG(d){ return new Date(Date.parse(INICIO+'T00:00:00Z')+(d-1)*864000
 let selDia = diaPrograma;
 let selDate = antesDeEmpezar ? dsDiaG(1) : HOY;
 const selSemana = () => Math.ceil(selDia/7);
-function goDay(delta){ selDia = Math.min(diaPrograma, Math.max(1, selDia+delta)); selDate = dsDiaG(selDia); tramoAbierto = null; render(); }
+function goDay(delta){ jumpDay(selDia + delta); }
 function volverHoy(){ selDia = diaPrograma; selDate = HOY; tramoAbierto = null; render(); }
-function jumpDay(d){ selDia = Math.min(diaPrograma, Math.max(1, d)); selDate = dsDiaG(selDia); tramoAbierto = null; render(); window.scrollTo({top:0, behavior:'smooth'}); }
+function jumpDay(d){
+  selDia = Math.min(diaPrograma, Math.max(1, d)); selDate = dsDiaG(selDia);
+  tramoAbierto = null; render();
+  // el riel se redibuja: cambiar de dia es un cambio de contenido, no un marcado
+  if(typeof escalonar === 'function') escalonar(document.getElementById('panel-hoy'), 0);
+  const sel = document.querySelector('.dnav.sel');
+  if(sel){ sel.classList.add('recien'); setTimeout(()=>sel.classList.remove('recien'), 500); }
+  window.scrollTo({top:0, behavior:'smooth'});
+}
 /* La tira de la semana. Reemplaza al par de flechas: se ve donde estas dentro
    de la semana, que dia vas, y de un vistazo la variedad de proteina (dos
    puntos por dia, almuerzo y cena). Tocar un dia lo abre. */
@@ -391,9 +399,13 @@ function marcarTramo(comida, items){
   render();
 }
 
+let tramoRecienAbierto = null;   // para que el tramo nuevo nazca desplegandose
 function abrirTramo(comida){
-  tramoAbierto = (tramoAbierto === comida) ? '__ninguno' : comida;
+  const cerrando = (tramoAbierto === comida);
+  tramoAbierto = cerrando ? '__ninguno' : comida;
+  tramoRecienAbierto = cerrando ? null : comida;
   renderHoy();
+  tramoRecienAbierto = null;
 }
 
 function renderHoy(){
@@ -455,6 +467,7 @@ function renderHoy(){
     const body = document.createElement('div');
     body.className='tramo-body';
     body.hidden = !abierto;
+    if(c === tramoRecienAbierto) body.dataset.abriendo = '1';
 
     if(typeof bloquePlato === 'function' && menuHoy){
       const plato = bloquePlato(c, menuHoy);
@@ -483,6 +496,17 @@ function renderHoy(){
     linea.appendChild(tramo);
   });
   cont.appendChild(linea);
+
+  /* El tramo que se acaba de abrir se despliega. Va aca y no en una transicion
+     porque renderHoy rehace el DOM: el nodo nace ya desplegado y ninguna
+     transicion llega a dispararse. El alto se mide DESPUES de insertarlo, que
+     es cuando existe de verdad. */
+  const nuevo = linea.querySelector('.tramo-body[data-abriendo]');
+  if(nuevo && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+    nuevo.style.setProperty('--alto', nuevo.scrollHeight + 'px');
+    nuevo.classList.add('abriendo');
+    setTimeout(()=>{ nuevo.classList.remove('abriendo'); nuevo.style.removeProperty('--alto'); }, 420);
+  }
 
   // Lo que corre todo el dia no pertenece a ninguna comida: va fuera del riel
   const rw = document.createElement('div');

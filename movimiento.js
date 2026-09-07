@@ -1,56 +1,120 @@
 /* ============================================================================
    Movimiento
 
-   El sistema sale MEDIDO de un reel de navigation tabs (setiembre 2026). Se
-   midio la trayectoria horizontal del indicador cuadro a cuadro buscando el
-   pixel del blob en 167 imagenes: sobrepasa el destino un 6,3 %, llega al pico
-   a los 167 ms y se asienta a los ~330 ms. Eso es un resorte con amortiguacion
-   0,67, y la bezier (.48,1.47,.3,.98) lo reproduce con error < 0,1 %. Vive en
-   --resorte y la usa toda la app: la barra, los checks, las hojas, los pasos.
+   El sistema sale MEDIDO de un reel de navigation tabs. Se midio la trayectoria
+   del indicador cuadro a cuadro buscando su pixel en 167 imagenes: sobrepasa el
+   destino un 6,3 %, llega al pico a los 167 ms y se asienta a los ~330. Eso es
+   un resorte con amortiguacion 0,67, y la bezier (.48,1.47,.3,.98) lo reproduce
+   con error < 0,1 %. Vive en --resorte y la usa toda la app.
 
-   Aca solo vive lo que necesita JS: el metaball de la barra (dos formas que se
-   funden por un filtro SVG y no se pueden expresar en CSS solo), el ancho de
-   pestana, y los numeros que cuentan. Todo lo demas es CSS.
+   La barra: el indicador es una BURBUJA del color de acento que vive medio
+   hundida en el canto, lleva el icono dentro, y al cambiar de seccion sale con
+   un cuello liquido, cruza por arriba y se vuelve a hundir en el destino. Dos
+   formas planas dentro de un filtro SVG hacen el cuello; el icono va fuera del
+   filtro porque lo derretiria.
+
+   Aca solo vive lo que necesita JS: el ancho de pestana (el CSS no puede
+   deducirlo como longitud), el cruce de los dos iconos, y los numeros que
+   cuentan. Todo lo demas es CSS.
 
    Regla: si el JS no corre, la app se ve igual. Nada aca esconde contenido.
    ============================================================================ */
 
 (function () {
   // OJO: el div NO se puede llamar 'goo' porque el <filter id="goo"> ya usa ese
-  // id; getElementById devolvia el filtro y la barra nunca se medía.
+  // id; getElementById devolvia el filtro y la barra nunca se media.
   const goo = document.getElementById('gooCapa');
   const pill = document.getElementById('tabsPill');
-  if (!goo || !pill) return;
+  const ico = document.getElementById('burbujaIco');
+  if (!goo || !pill || !ico) return;
 
+  const nav = document.querySelector('.tabs');
   const tabs = [...pill.querySelectorAll('.tab')];
   const menos = matchMedia('(prefers-reduced-motion: reduce)');
 
   /* El ancho de pestana es el unico numero que el CSS no puede deducir solo:
      las animaciones lo necesitan como longitud, no como fraccion. */
-  const medir = () => goo.style.setProperty('--anchoTab', (pill.clientWidth - 12) / tabs.length + 'px');
+  const medir = () => {
+    const w = pill.clientWidth / tabs.length + 'px';
+    goo.style.setProperty('--anchoTab', w);
+    ico.style.setProperty('--anchoTab', w);
+  };
   medir();
   addEventListener('resize', medir);
   addEventListener('orientationchange', () => setTimeout(medir, 120));
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(medir);
 
-  let actual = Math.max(0, tabs.findIndex(t => t.classList.contains('on')));
-  goo.style.setProperty('--i', actual);
+  const svgDe = n => tabs[n].querySelector('svg').outerHTML;
+  const pon = (k, v) => { goo.style.setProperty(k, v); ico.style.setProperty(k, v); };
 
-  /* Salta el indicador a la pestana n. La llama navegacion.js despues de
-     cambiar de seccion, asi que la pantalla ya cambio: la gota es el acuse de
+  let actual = Math.max(0, tabs.findIndex(t => t.classList.contains('on')));
+  pon('--i', actual);
+  ico.innerHTML = `<span>${svgDe(actual)}</span>`;
+
+  /* Salta la burbuja a la pestana n. La llama navegacion.js DESPUES de cambiar
+     de seccion, asi que la pantalla ya cambio: la burbuja es el acuse de
      recibo, no la espera. */
   window.saltarChip = function (n) {
-    if (n < 0 || n === actual) { goo.style.setProperty('--i', Math.max(0, n)); return; }
-    goo.style.setProperty('--de', actual);
-    goo.style.setProperty('--a', n);
-    goo.style.setProperty('--i', n);
+    if (n < 0 || n === actual) { if (n >= 0) pon('--i', n); return; }
+    pon('--de', actual);
+    pon('--a', n);
+    pon('--i', n);
+
+    if (menos.matches) {
+      ico.innerHTML = `<span>${svgDe(n)}</span>`;
+      actual = n;
+      return;
+    }
+    // los dos iconos conviven y se cruzan con el mismo reloj que la burbuja:
+    // reemplazar el DOM a mitad de vuelo reinicia la animacion y el icono del
+    // destino aparecería en el origen
+    ico.innerHTML = `<span class="sale">${svgDe(actual)}</span><span class="entra">${svgDe(n)}</span>`;
+    nav.classList.remove('saltando');
+    void nav.offsetWidth;                        // reinicia la animacion
+    nav.classList.add('saltando');
     actual = n;
-    if (menos.matches) return;
-    pill.classList.remove('saltando');
-    void pill.offsetWidth;                       // reinicia la animacion
-    pill.classList.add('saltando');
   };
 })();
+
+/* ---------------------------------------------------------------------------
+   Cascadas de entrada
+
+   Una seccion que aparece entera de golpe se lee como un salto; entrando por
+   partes se lee como que se esta armando. Solo corre al ENTRAR a una seccion o
+   al cambiar de dia, nunca en cada marcado: si cada toque reanimara la pantalla
+   entera seria insoportable.
+
+   La clase la pone el JS y se quita sola: sin JS todo se ve igual, y si una
+   animacion no llegara a arrancar nada queda invisible.
+   --------------------------------------------------------------------------- */
+const CASCADAS = [
+  ['.dia .tramo', 90],          // el riel del dia, tramo por tramo
+  ['.corrida', 60],
+  ['.mes-cell', 14],            // las 28 celdas del mes, en diagonal
+  ['.cal-row', 45],
+  ['.dias i', 26],              // la tira de la racha, dia por dia
+  ['.wk', 70],
+  ['.sien', 70],
+  ['.tl-item', 90],             // las fases del plan
+  ['.avi-row', 45],
+  ['.frec', 70],
+  ['.ficha', 90],
+];
+
+function escalonar(raiz, base) {
+  if (!raiz || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  CASCADAS.forEach(([sel, paso]) => {
+    raiz.querySelectorAll(sel).forEach((el, i) => {
+      el.style.setProperty('--retraso', ((base || 0) + i * paso) + 'ms');
+    });
+  });
+  raiz.classList.remove('cae');
+  void raiz.offsetWidth;                       // reinicia las animaciones
+  raiz.classList.add('cae');
+  clearTimeout(raiz._cae);
+  // rescate: si algo no llegara a animarse, no puede quedarse invisible
+  raiz._cae = setTimeout(() => raiz.classList.remove('cae'), 2000);
+}
 
 /* ---------------------------------------------------------------------------
    Numeros que cuentan. Un porcentaje que salta de 55 a 64 no se lee; contando
@@ -75,7 +139,7 @@ function contarHasta(el, destino, sufijo) {
   el._raf = requestAnimationFrame(paso);
 }
 
-/* Un golpe corto cuando algo se marca. La vibracion es opcional en el sistema
+/* Un golpe corto cuando algo se cierra. La vibracion es opcional en el sistema
    y no se pide permiso: si no existe, no pasa nada. */
 function golpecito(el) {
   if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return;

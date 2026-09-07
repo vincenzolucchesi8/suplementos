@@ -31,8 +31,8 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
      salto brusco de alfa deja los bordes duros otra vez, y donde dos formas
      se rozan aparece el cuello liquido. -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-  <filter id="goo"><feGaussianBlur in="SourceGraphic" stdDeviation="6" result="b"/>
-    <feColorMatrix in="b" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -11"/></filter>
+  <filter id="goo"><feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b"/>
+    <feColorMatrix in="b" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 32 -16"/></filter>
 </defs></svg>
 
 <div class="wrap">
@@ -270,8 +270,10 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
 </div>
 
 <nav class="tabs" role="tablist" aria-label="Secciones del tablero">
+  <!-- La capa que se funde lleva SOLO formas planas: la superficie de la barra
+       y la burbuja. El icono va aparte, encima, porque el filtro lo derretiria. -->
+  <div class="goo" id="gooCapa"><span class="superficie"></span><span class="burbuja"></span></div>
   <div class="tabs-pill" id="tabsPill">
-    <div class="goo" id="gooCapa"><span class="chip"></span><span class="gota"></span></div>
     <button class="tab on" id="tab-hoy" role="tab" aria-controls="panel-hoy" data-tab="hoy">
       <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span>Hoy</span>
     </button>
@@ -285,6 +287,7 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
       <svg viewBox="0 0 24 24"><path d="M8 4h9a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M9.5 9h6M9.5 13h6M9.5 17h3"/></svg><span>Plan</span>
     </button>
   </div>
+  <div class="burbuja-ico" id="burbujaIco" aria-hidden="true"></div>
 </nav>
 
 <div class="sheet-bg" id="sheetBg" hidden></div>
@@ -323,9 +326,9 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
 <script src="compras-pdf.js" defer></script>
 <script src="menu-pdf.js" defer></script>
 <script src="informe-pdf.js" defer></script>
+<script src="movimiento.js" defer></script>
 <script src="navegacion.js" defer></script>
 <script src="plan-editor.js" defer></script>
-<script src="movimiento.js" defer></script>
 <script src="instalar.js" defer></script>
 </body>
 </html>

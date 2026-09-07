@@ -29,6 +29,9 @@ function irASeccion(nombre, opciones) {
   if (!opciones || opciones.scroll !== false) window.scrollTo({ top: 0, behavior: 'auto' });
   // La lista de compras se pinta al entrar, no antes: es la vista mas cara
   if (nombre === 'comidas' && typeof renderNutricion === 'function') renderNutricion();
+  // La cascada va DESPUES de pintar: si corre antes, las celdas del mes todavia
+  // no existen y nacen sin retraso, o sea todas a la vez.
+  if (typeof escalonar === 'function') escalonar(document.getElementById('panel-' + nombre), 90);
 }
 
 function montarSecciones() {

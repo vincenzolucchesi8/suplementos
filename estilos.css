@@ -36,7 +36,7 @@
 
   --resorte:cubic-bezier(.48,1.47,.3,.98);   /* el resorte medido del reel */
   --suave:cubic-bezier(.32,.72,0,1);
-  --salto:420ms; --rapido:180ms; --medio:280ms;
+  --salto:460ms; --rapido:180ms; --medio:280ms;
 
   --sombra-1:0 2px 6px rgba(18,23,26,.07);
   --sombra-2:0 14px 30px -14px rgba(18,23,26,.4);
@@ -51,7 +51,7 @@ body{
   font-family:'Schibsted Grotesk',system-ui,-apple-system,sans-serif;
   -webkit-font-smoothing:antialiased;
   font-size:var(--t3);line-height:1.45;
-  padding-bottom:calc(96px + env(safe-area-inset-bottom));
+  padding-bottom:calc(104px + env(safe-area-inset-bottom));
 }
 button,input,select,textarea{font:inherit;color:inherit;background:none;border:0}
 button{cursor:pointer}
@@ -139,6 +139,9 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .anillo circle{fill:none;stroke-linecap:round}
 .ring-bg{stroke:rgba(14,122,95,.16)}
 .ring-fg{stroke:var(--verde);transition:stroke-dashoffset 900ms var(--suave)}
+/* al entrar a Hoy el anillo se dibuja desde cero en vez de aparecer lleno */
+.cae .anillo .ring-fg{animation:dibujaAnillo 1100ms var(--suave) both;animation-delay:180ms}
+@keyframes dibujaAnillo{from{stroke-dashoffset:175.93}}
 
 /* ------------------------------------------------- el riel del dia (Hoy) */
 .dia{position:relative;padding-left:62px}
@@ -184,6 +187,12 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 
 .tramo-body{margin-top:14px}
 .tramo-body[hidden]{display:none}
+/* el tramo que se abre se despliega en vez de aparecer de golpe */
+@keyframes abreTramo{
+  from{max-height:0;opacity:0;transform:translateY(-8px);margin-top:0}
+  to  {max-height:var(--alto,640px);opacity:1;transform:none;margin-top:14px}
+}
+.tramo-body.abriendo{overflow:hidden;animation:abreTramo 340ms var(--suave)}
 
 /* el plato propuesto */
 .dish{margin-bottom:12px}
@@ -272,7 +281,9 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .sien .nm{flex:1;font-size:var(--t3);font-weight:600}
 .esc{width:92px;height:7px;border-radius:var(--r5);background:var(--g2);overflow:hidden;flex-shrink:0}
 .esc i{display:block;height:100%;background:var(--tinta);border-radius:var(--r5);
-  transition:width var(--salto) var(--resorte)}
+  transition:width var(--salto) var(--resorte);transform-origin:left}
+.cae .esc i{animation:creceX 620ms var(--suave) both;animation-delay:var(--retraso,0ms)}
+@keyframes creceX{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 .sien .v{font-size:var(--t4);color:var(--g3);min-width:62px;text-align:right;font-weight:600}
 
 /* nota de fase */
@@ -495,40 +506,61 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .avi-sub{font-size:var(--t5);color:var(--g3);margin-top:2px}
 
 
-/* ------------------------------------------- barra flotante con el metaball */
-.tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;
-  padding:0 14px calc(14px + env(safe-area-inset-bottom));pointer-events:none}
-.tabs-pill{flex:1;position:relative;display:flex;pointer-events:auto;padding:6px;border-radius:var(--r5);
-  background:rgba(255,255,255,.86);backdrop-filter:saturate(1.6) blur(16px);
-  -webkit-backdrop-filter:saturate(1.6) blur(16px);box-shadow:var(--sombra-1),var(--sombra-2)}
-.goo{position:absolute;inset:6px;filter:url(#goo);pointer-events:none}
-.goo .chip,.goo .gota{position:absolute;background:var(--tinta);border-radius:var(--r5)}
-.goo .chip{top:0;height:100%;width:var(--anchoTab);left:0;transform-origin:center;
+/* ---------------------------------------------- la barra, con la burbuja
+   Sale MEDIDA de un reel de navigation tabs: el indicador no es un chip que se
+   desliza, es una BURBUJA del color de acento que vive medio hundida en el
+   canto de la barra, lleva el icono dentro, y al cambiar de seccion sale de la
+   barra con un cuello liquido, cruza por arriba y se vuelve a hundir en el
+   destino. El resorte tiene 6,3 % de sobrepaso con el pico al 49 % de la
+   duracion, medido cuadro a cuadro; --resorte lo reproduce con error < 0,1 %.
+   ------------------------------------------------------------------------- */
+.tabs{position:fixed;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));
+  height:58px;z-index:40}
+
+/* la capa que se funde: dentro van SOLO formas planas, nunca el icono */
+.goo{position:absolute;left:0;right:0;bottom:0;top:-29px;filter:url(#goo);pointer-events:none}
+.superficie{position:absolute;left:0;right:0;bottom:0;height:58px;border-radius:var(--r5);background:#fff}
+.burbuja{position:absolute;width:44px;height:44px;border-radius:50%;background:var(--verde);
+  left:calc(var(--anchoTab)/2 - 22px);top:0;
   transform:translateX(calc(var(--i) * var(--anchoTab)))}
-.goo .gota{width:32px;height:32px;top:calc(50% - 16px);left:calc(var(--anchoTab)/2 - 16px);opacity:0;
-  transform:translate(calc(var(--i) * var(--anchoTab)),0) scale(.5)}
-@keyframes chipSalta{
-  0%  {transform:translateX(calc(var(--de) * var(--anchoTab))) scaleX(1)}
-  34% {transform:translateX(calc(var(--de) * var(--anchoTab))) scaleX(0)}
-  56% {transform:translateX(calc(var(--a)  * var(--anchoTab))) scaleX(0)}
-  100%{transform:translateX(calc(var(--a)  * var(--anchoTab))) scaleX(1)}
+
+/* el icono viaja pegado a la burbuja pero FUERA del filtro, que lo derretiria */
+.burbuja-ico{position:absolute;width:44px;height:44px;top:-29px;
+  left:calc(var(--anchoTab)/2 - 22px);pointer-events:none;
+  transform:translateX(calc(var(--i) * var(--anchoTab)))}
+.burbuja-ico span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.burbuja-ico svg{width:21px;height:21px;stroke:#fff;stroke-width:2.1;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+@keyframes salta{
+  0%  {transform:translateX(calc(var(--de) * var(--anchoTab)))                translateY(0)}
+  26% {transform:translateX(calc(var(--de) * var(--anchoTab)))                translateY(-26px)}
+  50% {transform:translateX(calc((var(--de) + var(--a)) * var(--anchoTab)/2)) translateY(-34px)}
+  76% {transform:translateX(calc(var(--a)  * var(--anchoTab)))                translateY(-24px)}
+  100%{transform:translateX(calc(var(--a)  * var(--anchoTab)))                translateY(0)}
 }
-@keyframes gotaArco{
-  0%  {opacity:1;transform:translate(calc(var(--de) * var(--anchoTab)), 0)     scale(.5)}
-  20% {opacity:1;transform:translate(calc(var(--de) * var(--anchoTab)), -21px) scale(1)}
-  50% {opacity:1;transform:translate(calc((var(--de) + var(--a)) * var(--anchoTab) / 2), -31px) scale(1.05)}
-  80% {opacity:1;transform:translate(calc(var(--a) * var(--anchoTab)), -19px)  scale(1)}
-  100%{opacity:1;transform:translate(calc(var(--a) * var(--anchoTab)), 0)      scale(.5)}
-}
-.saltando .chip{animation:chipSalta var(--salto) var(--resorte) forwards}
-.saltando .gota{animation:gotaArco var(--salto) var(--resorte) forwards}
-.tab{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
-  padding:8px 2px 7px;min-height:46px;border-radius:var(--r5);color:var(--g3);font-size:var(--t5);font-weight:600;
-  transition:color 140ms ease}
-.tab svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round;
-  transition:transform var(--medio) var(--resorte) 215ms}
-.tab.on{color:#fff;transition:color 130ms ease 215ms}
-.tab.on svg{transform:translateY(-1px) scale(1.06)}
+/* al despegar y al aterrizar se estira, como una gota de verdad */
+@keyframes gota{0%{scale:1 1}18%{scale:.86 1.16}50%{scale:1.06 .96}82%{scale:.9 1.12}100%{scale:1 1}}
+/* dos capas de icono que se cruzan: reemplazar el DOM a mitad de vuelo
+   reiniciaria la animacion y el icono del destino apareceria en el origen */
+@keyframes seVa {0%{opacity:1;scale:1}   28%{opacity:0;scale:.45} 100%{opacity:0;scale:.45}}
+@keyframes llega{0%{opacity:0;scale:.45} 46%{opacity:0;scale:.45} 100%{opacity:1;scale:1}}
+.saltando .burbuja-ico{animation:salta var(--salto) var(--resorte) forwards}
+.saltando .burbuja{animation:salta var(--salto) var(--resorte) forwards, gota var(--salto) var(--suave)}
+.burbuja-ico .sale {animation:seVa  var(--salto) var(--suave) forwards}
+.burbuja-ico .entra{animation:llega var(--salto) var(--suave) forwards}
+
+.tabs-pill{position:absolute;inset:0;display:flex;border-radius:var(--r5);
+  box-shadow:var(--sombra-1),var(--sombra-2)}
+.tab{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-end;gap:3px;padding:0 2px 9px;border-radius:var(--r5);
+  color:var(--g3);font-size:var(--t5);font-weight:600}
+.tab svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round;
+  transition:opacity 160ms var(--suave),transform 300ms var(--resorte)}
+.tab span{transition:transform 280ms var(--resorte),color 160ms ease}
+.tab.on{color:var(--verde)}
+.tab.on svg{opacity:0;transform:scale(.6)}   /* su icono se fue en la burbuja */
+.tab.on span{transform:translateY(2px)}
+
 footer{text-align:center;font-size:var(--t5);color:var(--g3);padding:var(--e4) 0 var(--e2);font-weight:500}
 footer .ver{margin-left:8px;opacity:.7}
 
@@ -608,15 +640,38 @@ footer .ver{margin-left:8px;opacity:.7}
 .item.recien .check,.units .u.recien,.tramo.recien .tramo-ok{animation:pop 400ms var(--resorte)}
 .item.recien .check svg,.tramo.recien .tramo-ok svg{animation:popTic 320ms var(--resorte) 70ms both}
 
-/* entrada escalonada: la usa movimiento.js sobre las filas nuevas */
+/* ---------------------------------------------------------------- cascadas
+   La clase la pone el JS y sin ella todo se ve igual, asi que nada depende de
+   que el JS corra. Ademas se quita sola al segundo, por si una animacion no
+   llegara a arrancar y dejara algo invisible. */
 @keyframes asoma{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .asoma{animation:asoma 380ms var(--suave) both}
+
+/* Cada lista entra como una secuencia. Se listan los selectores en vez de usar
+   .cae > * porque los hijos directos del panel ya los anima .entra: dos
+   animaciones sobre el mismo nodo se pisan y gana una sola, al azar. */
+.cae .tramo,.cae .corrida,.cae .cal-row,.cae .wk,.cae .sien,.cae .tl-item,
+.cae .avi-row,.cae .frec{animation:asoma 420ms var(--suave) both;animation-delay:var(--retraso,0ms)}
+
+/* lo que es un punto o una celda nace chico y se asienta con el resorte */
+@keyframes brota{from{opacity:0;scale:.4}60%{opacity:1}to{opacity:1;scale:1}}
+.cae .mes-cell,.cae .dias i{animation:brota 380ms var(--resorte) both;animation-delay:var(--retraso,0ms)}
+
+/* el riel se dibuja de arriba abajo mientras caen los tramos */
+@keyframes rielCrece{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.cae .tramo:not(:last-child)::before{transform-origin:top;
+  animation:rielCrece 460ms var(--suave) both;animation-delay:calc(var(--retraso,0ms) + 120ms)}
+
+/* el dia elegido de la tira da un golpecito al cambiar */
+@keyframes late{0%{scale:1}40%{scale:1.09}100%{scale:1}}
+.dnav.sel.recien{animation:late 420ms var(--resorte)}
 
 /* ------------------------------------------------------------------------- */
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
+  .cae > *,.brota > *,.cae .esc i,.cae .anillo .ring-fg,.cae .tramo::before{animation:none!important}
   *,*::before,*::after{animation-duration:.001ms!important;animation-delay:0ms!important;
     transition-duration:.001ms!important;transition-delay:0ms!important}
-  .goo .gota{display:none}
+  .burbuja,.burbuja-ico{animation:none!important}
   .panel.entra > *{animation:none}
 }
