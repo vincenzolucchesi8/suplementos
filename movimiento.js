@@ -1,11 +1,15 @@
 /* ============================================================================
    Movimiento
 
-   El sistema sale MEDIDO de un reel de navigation tabs. Se midio la trayectoria
-   del indicador cuadro a cuadro buscando su pixel en 167 imagenes: sobrepasa el
-   destino un 6,3 %, llega al pico a los 167 ms y se asienta a los ~330. Eso es
-   un resorte con amortiguacion 0,67, y la bezier (.48,1.47,.3,.98) lo reproduce
-   con error < 0,1 %. Vive en --resorte y la usa toda la app.
+   Seis reglas, y ninguna es de gusto: bajo 250 ms, ease out y nunca linear,
+   sin sobrepaso salvo en el momento de deleite, anclado a su disparador,
+   respetando "menos movimiento", y solo transform (nunca width, height ni
+   left, que relayoutean la pagina en cada cuadro).
+
+   El resorte medido de un reel de navigation tabs -- 6,3 % de sobrepaso, pico
+   a los 167 ms, asentado a los ~330, bezier (.48,1.47,.3,.98) con error
+   < 0,1 % -- se quedo SOLO en el vuelo de la burbuja y en tres celebraciones.
+   Un rebote es simpatico la primera vez y cansa la decima.
 
    La barra: el indicador es una BURBUJA del color de acento que vive medio
    hundida en el canto, lleva el icono dentro, y al cambiar de seccion sale con
@@ -99,63 +103,72 @@
    animacion no llegara a arrancar nada queda invisible.
    --------------------------------------------------------------------------- */
 const CASCADAS = [
-  ['.dia .tramo', 60],          // el riel del dia, tramo por tramo
-  ['.corrida', 40],
-  ['.mes-cell', 9],             // las 28 celdas del mes, en diagonal
-  ['.cal-row', 32],
-  ['.dias i', 18],              // la tira de la racha, dia por dia
-  ['.wk', 45],
-  ['.sien', 45],
-  ['.tl-item', 55],             // las fases del plan
-  ['.avi-row', 32],
-  ['.frec', 45],
-  ['.ficha', 60],
-  ['.opt', 30],                 // las opciones de plato, en la hoja
-  ['.buy-item', 14],            // la lista de compras
-  ['.rec', 45],
-  ['.dish-part', 55],
-  ['.cell', 4],                 // el mapa de constancia
-  ['.perm', 40],                // los permisos del dia
+  ['.dia .tramo', 34],          // el riel del dia, tramo por tramo
+  ['.corrida', 24],
+  ['.mes-cell', 5],             // las 28 celdas del mes, en diagonal
+  ['.cal-row', 18],
+  ['.dias i', 10],              // la tira de la racha, dia por dia
+  ['.wk', 26],
+  ['.sien', 26],
+  ['.tl-item', 30],             // las fases del plan
+  ['.avi-row', 18],
+  ['.frec', 26],
+  ['.ficha', 34],
+  ['.opt', 18],                 // las opciones de plato, en la hoja
+  ['.buy-item', 8],             // la lista de compras
+  ['.rec', 26],
+  ['.dish-part', 30],
+  ['.cell', 3],                 // el mapa de constancia
+  ['.perm', 24],                // los permisos del dia
 ];
 
-/* Techo del escalonado. Una lista larga (la compra tiene 30 filas) con un paso
-   comodo estira la entrada mas alla de un segundo, y entonces ya no es UN
-   gesto: la pantalla se queda medio vacia mientras la burbuja hace rato que
-   aterrizo. Pasado el techo, lo que falta entra junto. */
-const TECHO_CASCADA = 300;
+/* Techo del escalonado. Una entrada tiene que estar terminada antes de los
+   250 ms; con --paso en 210, al ultimo elemento le quedan 150 de retraso y
+   ni uno mas. Sin techo, la lista de compras (30 filas) estiraba la entrada
+   mas alla del segundo y dejaba de ser UN gesto. Pasado el techo, lo que
+   falta entra junto. */
+const TECHO_CASCADA = 150;
 
-function escalonar(raiz, base) {
-  if (!raiz || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+/* Reparte los retrasos sin tocar el layout. Se separo del disparo porque al
+   entrar a una seccion corrian DOS reflujos sincronos seguidos sobre un panel
+   de dos mil pixeles (uno aca y otro en entradaEscalonada), y con la CPU
+   estrangulada 6x eso era el cuadro de 262 ms del cambio de seccion. */
+function marcarRetrasos(raiz, base) {
+  if (!raiz || matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
   CASCADAS.forEach(([sel, paso]) => {
     raiz.querySelectorAll(sel).forEach((el, i) => {
       const d = Math.min((base || 0) + i * paso, (base || 0) + TECHO_CASCADA);
       el.style.setProperty('--retraso', d + 'ms');
     });
   });
+  return true;
+}
+
+function escalonar(raiz, base, sinReflujo) {
+  if (!marcarRetrasos(raiz, base)) return;
   raiz.classList.remove('cae');
-  void raiz.offsetWidth;                       // reinicia las animaciones
+  if (!sinReflujo) void raiz.offsetWidth;      // reinicia las animaciones
   raiz.classList.add('cae');
   clearTimeout(raiz._cae);
   // rescate: si algo no llegara a animarse, no puede quedarse invisible
-  raiz._cae = setTimeout(() => raiz.classList.remove('cae'), 2000);
+  raiz._cae = setTimeout(() => raiz.classList.remove('cae'), 1200);
 }
 
-/* Despliega un bloque que acaba de dejar de estar hidden. El alto se mide
-   DESPUES de mostrarlo, que es cuando existe de verdad: con hidden puesto,
-   scrollHeight da 0 y la animacion iria de cero a cero. */
+/* Despliega un bloque que acaba de dejar de estar hidden.
+
+   El alto SALTA en un cuadro y lo que se anima es el contenido. Antes se media
+   el scrollHeight y se animaba max-height: eso relayoutea la pagina entera en
+   cada cuadro (la regla es "nunca animes width, height ni left") y obligaba a
+   renunciar a la animacion cuando el bloque no cabia en la pantalla, que es
+   justo el caso de la lista de compras. Sin medir nada, funciona con
+   cualquier tamano. */
 function desplegar(el) {
   if (!el || el.hidden || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  // Un bloque muy largo (la lista de compras mide 2.600 px) desplegandose en
-  // 340 ms cambia el alto del documento a una velocidad que hace saltar el
-  // scroll, y ademas solo se ve la parte de arriba. Pasado el alto de la
-  // pantalla, entra solo con la cascada de sus filas.
-  if (el.scrollHeight > innerHeight) return;
-  el.style.setProperty('--alto', el.scrollHeight + 'px');
   el.classList.remove('abriendo');
   void el.offsetWidth;
   el.classList.add('abriendo');
   clearTimeout(el._abre);
-  el._abre = setTimeout(() => { el.classList.remove('abriendo'); el.style.removeProperty('--alto'); }, 460);
+  el._abre = setTimeout(() => el.classList.remove('abriendo'), 260);
 }
 
 /* ---------------------------------------------------------------------------

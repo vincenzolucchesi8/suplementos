@@ -7,10 +7,21 @@
    titulos grandes en caja mixta, escala de seis tamanos y espaciado en
    multiplos de 4. Los numeros van anclados abajo en su ficha, como Oura.
 
-   El movimiento sale medido de un reel de navigation tabs: el indicador es un
-   metaball que sale de la barra, cruza por arriba y vuelve a fundirse. Su
-   resorte tiene 6,3 % de sobrepaso con el pico al 49 % de la duracion; la
-   bezier de abajo lo reproduce con error < 0,1 %. Toda la app usa esa curva.
+   El movimiento sigue SEIS REGLAS, tomadas de una guia de motion de interfaz
+   y contrastadas con lo medido en dos reels de referencia:
+
+     01  Bajo 250 ms       entradas y salidas; 600 ms se lee como roto
+     02  Ease out          nunca linear: rapido al salir, suave al llegar
+     03  Sin sobrepaso     el resorte se guarda para el momento de deleite
+     04  Anclado           la cosa nace de donde la disparaste
+     05  Menos movimiento  se respeta: fundir en vez de volar
+     06  Solo transform    nunca width, height ni left
+
+   De ahi salen --paso (210 ms) y --curva. El resorte medido del reel, con su
+   6,3 % de sobrepaso, sobrevive solo en cuatro sitios que pasan poco y
+   celebran algo: marcar una toma, cerrar el dia, cambiar de dia y el vuelo de
+   la burbuja de la barra. En el resto seria simpatico la primera vez y
+   cansaria la decima.
 
    Contraste: --g3 esta elegido para pasar 4,5:1 sobre los TRES fondos donde se
    usa (blanco, --g1 y --verde-suave), no solo sobre blanco. Medido, no a ojo.
@@ -34,11 +45,16 @@
   --e1:8px; --e2:16px; --e3:28px; --e4:44px;
   --r1:22px; --r2:14px; --r3:10px; --r4:6px; --r5:999px;
 
-  --resorte:cubic-bezier(.48,1.47,.3,.98);   /* el resorte medido del reel */
+  /* EL RESORTE SE GUARDA PARA EL DELEITE. Tiene 6,3 % de sobrepaso y estaba
+     en el retorno de los 107 botones, en la hoja y en las 28 celdas del mes:
+     un rebote es simpatico la primera vez y cansa la decima. Queda solo en
+     cuatro sitios que pasan poco y celebran algo: marcar una toma, cerrar el
+     dia, cambiar de dia y el vuelo de la burbuja. */
+  --resorte:cubic-bezier(.48,1.47,.3,.98);
   --suave:cubic-bezier(.32,.72,0,1);
   --fino:cubic-bezier(.2,.8,.25,1);          /* lo chico: menos brusco al arrancar */
   --hundir:cubic-bezier(.4,0,.6,1);          /* el toque baja recto y rapido */
-  --salto:460ms; --rapido:180ms; --medio:280ms;
+  --salto:340ms; --rapido:140ms; --medio:200ms;
 
   /* El reloj del CAMBIO DE SECCION, medido cuadro a cuadro del segundo reel
      (5,1 s, 30 fps): la cuenta tarda 367 ms de una pestana a otra, con CERO
@@ -46,8 +62,8 @@
      aterrizar con ella. Ahi esta el hallazgo: lo premium no era el rebote,
      era que TODO se mueva con el mismo reloj y termine junto. La bezier
      reproduce la trayectoria con 1,4 % de error. */
-  --paso:370ms;
-  --curva:cubic-bezier(.18,0,.24,.94);
+  --paso:210ms;
+  --curva:cubic-bezier(.2,.9,.25,1);
 
   /* Las sombras llevan el matiz de la casa, no negro plano: una sombra neutra
      sobre papel se lee gris sucia. Y van en dos capas, una de contacto corta y
@@ -87,11 +103,19 @@ img{max-width:100%;display:block}
   display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
   margin:0 -20px var(--e3);
   /* pegada arriba tiene que respetar la muesca: en la app instalada el
-     contenido llega hasta el borde de la pantalla */
-  padding:calc(22px + env(safe-area-inset-top)) 20px 14px;
-  transition:box-shadow 220ms var(--curva),padding var(--medio) var(--curva)}
+     contenido llega hasta el borde de la pantalla. El relleno NO cambia al
+     condensarse: todo el encogimiento lo lleva el bloque de texto, para que
+     solo haya UNA propiedad de layout animandose en vez de tres. */
+  padding:calc(18px + env(safe-area-inset-top)) 20px 12px;
+  transition:box-shadow 200ms var(--curva)}
 /* El bloque de texto es el que se encoge; el h1 deja su transform libre para
    la animacion de encendido, que si no se pelearian por la misma propiedad. */
+/* La UNICA excepcion a "nunca animes layout" de toda la app, y esta medida:
+   con la CPU estrangulada 6x (que es como se simula un telefono de gama
+   media) el encogido no pierde un solo cuadro y el peor tarda 21 ms. Es una
+   transicion, sobre un elemento, una vez por cambio de sentido del scroll --
+   no una por cuadro. Encogerlo con transform en vez de height dejaria un
+   hueco transparente arriba por donde se veria pasar el contenido. */
 .top-txt{height:52px;transform-origin:left top;
   transition:height var(--medio) var(--curva),transform var(--medio) var(--curva)}
 /* sin capitalize: el rotulo ya no es solo un dia de la semana, ahora lleva
@@ -100,8 +124,7 @@ img{max-width:100%;display:block}
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   transition:opacity 200ms var(--curva)}
 .top h1{font-size:var(--t0);font-weight:700;letter-spacing:-1.1px;line-height:1.05;margin-top:2px}
-.top.condensada{padding-top:calc(12px + env(safe-area-inset-top));padding-bottom:10px;
-  box-shadow:0 1px 0 var(--g2)}
+.top.condensada{box-shadow:0 1px 0 var(--g2)}
 .top.condensada .top-txt{height:26px;transform:translateY(-18px) scale(.72)}
 .top.condensada .rot{opacity:0}
 /* el encendido: el titulo llega apagado y sube a su tinta con la burbuja */
@@ -135,7 +158,7 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .panel[hidden]{display:none}
 /* la seccion que se va se retira; sin esto el cambio es un corte seco */
 @keyframes seRetira{to{opacity:.3;transform:translateY(-8px) scale(.99)}}
-.panel.se-va{animation:seRetira 110ms var(--curva) forwards;pointer-events:none}
+.panel.se-va{animation:seRetira 90ms var(--curva) forwards;pointer-events:none}
 /* Lo que entra nace al 18 %, no en negro. En el reel el titulo nuevo aparece
    apagado y SUBE a su tinta (brillo 76 -> 251 medido); nunca hay un cuadro en
    blanco entre una pantalla y la otra, y eso es la mitad de la sensacion de
@@ -190,7 +213,7 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .fichas{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:var(--e4)}
 .ficha{background:var(--g1);border-radius:var(--r1);padding:15px 16px 16px;min-height:132px;
   display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;text-align:left;width:100%;
-  transition:transform 340ms var(--resorte)}
+  transition:transform var(--medio) var(--curva)}
 .ficha:active{transform:scale(.972);transition:transform 90ms var(--hundir)}
 .ficha.viva{background:var(--verde-suave)}
 .ficha .lin{display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -206,9 +229,10 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .ficha .lin .anillo{margin:-4px -2px -4px 0}
 .anillo circle{fill:none;stroke-linecap:round}
 .ring-bg{stroke:rgba(14,122,95,.16)}
-.ring-fg{stroke:var(--verde);transition:stroke-dashoffset 900ms var(--suave)}
+.ring-fg{stroke:var(--verde);transition:stroke-dashoffset 620ms var(--curva),opacity 140ms linear}
+.ring-fg[data-cero="1"]{opacity:0}
 /* al entrar a Hoy el anillo se dibuja desde cero en vez de aparecer lleno */
-.cae .anillo .ring-fg{animation:dibujaAnillo 1100ms var(--suave) both;animation-delay:180ms}
+.cae .anillo .ring-fg{animation:dibujaAnillo 620ms var(--curva) both;animation-delay:120ms}
 @keyframes dibujaAnillo{from{stroke-dashoffset:175.93}}
 
 /* ------------------------------------------------- el riel del dia (Hoy) */
@@ -245,10 +269,10 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 /* el check: 26 px de dibujo, 44 px de blanco real */
 .tramo-ok,.check{position:relative;width:26px;height:26px;border-radius:50%;border:2px solid var(--g2);
   flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#fff;
-  transition:background var(--rapido) var(--suave),border-color var(--rapido) var(--suave),transform var(--medio) var(--resorte)}
+  transition:background var(--rapido) var(--suave),border-color var(--rapido) var(--suave),transform var(--medio) var(--curva)}
 .tramo-ok::after,.check::after{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px}
 .tramo-ok svg,.check svg{width:13px;height:13px;stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;
-  opacity:0;transform:scale(.4);transition:opacity 120ms var(--suave),transform var(--medio) var(--resorte)}
+  opacity:0;transform:scale(.4);transition:opacity 120ms var(--suave),transform var(--medio) var(--curva)}
 .tramo.listo .tramo-ok,.item.on .check{background:var(--verde);border-color:var(--verde)}
 .tramo.listo .tramo-ok svg,.item.on .check svg{opacity:1;transform:none}
 .tramo-ok{margin-top:7px}
@@ -256,11 +280,16 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .tramo-body{margin-top:14px}
 .tramo-body[hidden]{display:none}
 /* el tramo que se abre se despliega en vez de aparecer de golpe */
-@keyframes abreTramo{
-  from{max-height:0;opacity:0;transform:translateY(-8px);margin-top:0}
-  to  {max-height:var(--alto,640px);opacity:1;transform:none;margin-top:14px}
+/* El alto salta en un cuadro y lo que se anima es el CONTENIDO. Animar
+   max-height relayoutea la pagina entera en cada cuadro, y ademas obligaba a
+   medir el alto en JS y a renunciar a la animacion cuando el bloque no cabia
+   en la pantalla. Anclado arriba, que es de donde nace: sale de su cabecera. */
+@keyframes abreCuerpo{
+  from{opacity:0;transform:translateY(-7px) scaleY(.97)}
+  to  {opacity:1;transform:none}
 }
-.tramo-body.abriendo,.acc-body.abriendo{overflow:hidden;animation:abreTramo 340ms var(--suave)}
+.tramo-body.abriendo,.acc-body.abriendo{animation:abreCuerpo var(--paso) var(--curva);
+  transform-origin:top center}
 
 /* el plato propuesto */
 .dish{margin-bottom:12px}
@@ -268,9 +297,14 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .dish-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .dish-name{display:none}
 .dish-sub{font-size:var(--t4);color:var(--g3);margin-bottom:10px}
-.dish-swap{display:inline-flex;align-items:center;gap:6px;background:var(--g1);color:var(--tinta);
-  border-radius:var(--r5);padding:11px 16px;font-size:var(--t4);font-weight:700;min-height:44px;
-  transition:transform var(--rapido) var(--suave)}
+/* Es la accion SECUNDARIA del tramo y estaba como pastilla gris grande, o sea
+   pesando mas que "Marcar", que es la primaria. Ahora es texto con su icono, y
+   conserva sus 44 px de alto. */
+.dish-swap{display:inline-flex;align-items:center;gap:6px;background:none;color:var(--g3);
+  border-radius:var(--r3);padding:11px 0;font-size:var(--t4);font-weight:600;min-height:44px;
+  text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--g2);
+  transition:transform var(--rapido) var(--suave),color var(--rapido) var(--suave)}
+.dish-swap:active{color:var(--tinta)}
 .dish-swap:active{transform:scale(.95)}
 .dish-swap svg{width:14px;height:14px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;
   stroke-linejoin:round;flex-shrink:0}
@@ -315,7 +349,7 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
    que se va llenando si. Cada tramo mide como minimo 60 x 44. */
 .units{display:flex;gap:5px;flex-basis:100%;order:3;margin:8px 0 0}
 .units .u{flex:1;height:44px;min-width:0;border-radius:var(--r3);background:var(--g2);font-size:0;
-  transition:background var(--rapido) var(--suave),transform var(--medio) var(--resorte)}
+  transition:background var(--rapido) var(--suave),transform var(--medio) var(--curva)}
 .units .u svg,.tok svg{display:none}
 .units .u.on{background:var(--verde)}
 /* el ultimo tramo es el extra: hueco y mas angosto, para que se lea como
@@ -338,7 +372,7 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
    verde). */
 .toks{display:flex;gap:10px;margin-left:auto;flex-shrink:0}
 .tok{position:relative;width:44px;height:44px;border-radius:50%;background:var(--g2);font-size:0;
-  transition:background var(--rapido) var(--suave),transform var(--medio) var(--resorte)}
+  transition:background var(--rapido) var(--suave),transform var(--medio) var(--curva)}
 .tok.on{background:var(--c-huevos)}
 .tok:active{transform:scale(.8)}
 .perm-note{display:flex;gap:11px;background:var(--g1);border-radius:var(--r2);padding:13px 15px;margin-top:var(--e2)}
@@ -360,10 +394,10 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .sien + .sien{border-top:1px solid var(--g2)}
 .sien .nm{flex:1;font-size:var(--t3);font-weight:600}
 .esc{width:92px;height:7px;border-radius:var(--r5);background:var(--g2);overflow:hidden;flex-shrink:0}
-.esc i{display:block;height:100%;background:var(--tinta);border-radius:var(--r5);
-  transition:width var(--salto) var(--resorte);transform-origin:left}
-.cae .esc i{animation:creceX 620ms var(--suave) both;animation-delay:var(--retraso,0ms)}
-@keyframes creceX{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.esc i{display:block;width:100%;height:100%;background:var(--tinta);border-radius:var(--r5);
+  transform-origin:left;transition:transform var(--medio) var(--curva)}
+.cae .esc i{animation:creceX 420ms var(--curva) both;animation-delay:var(--retraso,0ms)}
+@keyframes creceX{from{transform:scaleX(0)}to{transform:scaleX(var(--x,1))}}
 .sien .v{font-size:var(--t4);color:var(--g3);min-width:62px;text-align:right;font-weight:600}
 
 /* nota de fase */
@@ -379,6 +413,11 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .btn svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.1;fill:none;stroke-linecap:round;stroke-linejoin:round}
 .btn-p{background:var(--verde);color:#fff;box-shadow:0 3px 0 var(--verde-hondo)}
 .btn-s{background:var(--g1);color:var(--tinta);box-shadow:0 3px 0 var(--g2)}
+/* Lo que borra va en el color de alerta y arma la confirmacion en si mismo.
+   Estaba identico a "Editar el plan", que no borra nada. */
+.btn-x{background:#fff;color:var(--alerta);box-shadow:inset 0 0 0 2px var(--alerta),0 3px 0 rgba(162,66,102,.22)}
+.btn-x[data-armado="1"]{background:var(--alerta);color:#fff;box-shadow:0 3px 0 #7C3049}
+.btn-x:disabled{opacity:.6}
 .btn:active{transform:translateY(3px);box-shadow:0 0 0 var(--verde-hondo)}
 .btn:disabled{opacity:.45;box-shadow:none;transform:none}
 .btn-s[style*="flex:1"]{flex:1}
@@ -428,12 +467,14 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .mes-sep{margin:var(--e4) 0 var(--e2);display:flex;align-items:baseline;justify-content:space-between}
 .mes-sep::before{content:"Esta semana";font-size:var(--t1);font-weight:700;letter-spacing:-.6px}
 .mes-sep span{font-size:var(--t3);font-weight:500;color:var(--g3)}
-.cal-row{display:flex;align-items:center;gap:12px;padding:11px 0;width:100%;text-align:left;min-height:62px}
+.cal-row{display:flex;align-items:center;gap:12px;padding:11px 0;width:100%;text-align:left;min-height:70px}
 .cal-row + .cal-row{border-top:1px solid var(--g2)}
 .cal-day{width:32px;text-align:center;flex-shrink:0}
 .cal-day b{display:block;font-size:var(--t2);font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
 .cal-day span{display:block;font-size:var(--t5);font-weight:600;color:var(--g3);text-transform:uppercase;margin-top:3px}
-.cal-img{width:40px;height:40px;object-fit:contain;flex-shrink:0}
+/* A 40 px con el aire propio del dibujo, la ilustracion se veia de unos 30 y
+   se leia como un emoji, que es justo lo contrario de para que se hicieron. */
+.cal-img{width:52px;height:52px;object-fit:contain;flex-shrink:0}
 .cal-info{flex:1;min-width:0}
 .cal-main{font-size:var(--t3);font-weight:700;letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cal-sub{font-size:var(--t4);color:var(--g3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -446,11 +487,15 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .pdf-box .btns{margin-bottom:0}
 .pdf-box .btn-s{background:#fff;box-shadow:0 3px 0 var(--g2)}
 .pdf-nota{font-size:var(--t4);color:var(--g3);line-height:1.5;margin-top:12px}
+#cardImprimir .seg{margin-bottom:2px}
+#cardImprimir .pdf-nota{margin:12px 0 14px}
 .pdf-box .pdf-nota{margin:0 0 14px}
 
 /* lista de compras */
 .acc-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;width:100%;text-align:left;
-  margin-bottom:var(--e2);min-height:44px}
+  margin-bottom:var(--e2);min-height:48px}
+/* plegado, la cabecera es la card entera: sin cuerpo debajo no necesita aire */
+.acc-h[aria-expanded="false"]{margin-bottom:0}
 .acc-h h2{flex:1}
 .acc-chev{width:18px;height:18px;stroke:var(--g3);stroke-width:2;fill:none;stroke-linecap:round;flex-shrink:0;
   transition:transform var(--medio) var(--suave)}
@@ -468,7 +513,7 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
   display:flex;align-items:center;justify-content:center;background:#fff;
   transition:background var(--rapido) var(--suave),border-color var(--rapido) var(--suave)}
 .buy-box svg{width:13px;height:13px;stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;
-  opacity:0;transform:scale(.4);transition:opacity 120ms var(--suave),transform var(--medio) var(--resorte)}
+  opacity:0;transform:scale(.4);transition:opacity 120ms var(--suave),transform var(--medio) var(--curva)}
 .buy-item.on .buy-box{background:var(--verde);border-color:var(--verde)}
 .buy-item.on .buy-box svg{opacity:1;transform:none}
 .buy-item{display:flex;align-items:center;gap:12px;padding:11px 0;width:100%;text-align:left;min-height:46px}
@@ -578,7 +623,7 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .avi-state.on .avi-dot{background:var(--verde)}
 .avi-state.warn .avi-dot{background:var(--alerta)}
 .avi-row .check{transition:background var(--rapido) var(--suave),border-color var(--rapido) var(--suave),
-  transform 340ms var(--resorte)}
+  transform var(--medio) var(--curva)}
 /* Con el push apagado NINGUNO va a sonar, asi que ninguno puede verse verde:
    arriba el cartel decia "los avisos estan apagados" y abajo habia nueve
    checks encendidos. Se conserva la marca (que si elegiste ese aviso) pero en
@@ -688,8 +733,8 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
   justify-content:flex-start;gap:2px;padding:5px 2px 0;border-radius:var(--r5);
   color:var(--g3);font-size:var(--t5);font-weight:600}
 .tab svg{width:19px;height:19px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round;
-  margin-top:8px;transition:opacity 160ms var(--suave),transform 300ms var(--resorte)}
-.tab span{margin-top:5px;transition:transform 280ms var(--resorte),color 160ms ease}
+  margin-top:8px;transition:opacity 140ms var(--suave),transform var(--medio) var(--curva)}
+.tab span{margin-top:5px;transition:transform var(--medio) var(--curva),color 140ms ease}
 .tab.on{color:var(--verde)}
 .tab.on svg{opacity:0}                     /* su icono lo lleva la burbuja */
 
@@ -702,7 +747,7 @@ footer .ver{margin-left:8px;opacity:.7}
 @keyframes velo{from{opacity:0}to{opacity:1}}
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:51;background:var(--papel);
   border-radius:26px 26px 0 0;max-height:88vh;display:flex;flex-direction:column;
-  box-shadow:0 -10px 40px -12px rgba(18,23,26,.35);animation:sube var(--salto) var(--resorte)}
+  box-shadow:0 -10px 40px -12px rgba(18,23,26,.35);animation:sube var(--medio) var(--curva)}
 @keyframes sube{from{transform:translateY(100%)}to{transform:none}}
 /* una clase con display:flex le gana al atributo hidden y deja una hoja
    invisible comiendose cada toque de la pantalla: esta guarda lo impide */
@@ -765,13 +810,13 @@ footer .ver{margin-left:8px;opacity:.7}
    que acordarse de apuntarlo. Va con especificidad baja a proposito (0,1,1)
    para que las reglas por clase de aqui abajo -- que tienen su propio hundido
    -- le ganen. La barra queda fuera: es un objeto fijo, no se hunde. */
-button{transition:transform 340ms var(--resorte)}
+button{transition:transform var(--medio) var(--curva)}
 button:active{transform:scale(.97);transition:transform 90ms var(--hundir)}
 .tab,.tab:active{transform:none}
 
 .btn,.dish-swap,.tramo-todo,.engrane,.dnav,.st,.dnav-btn,.sheet-x,.sheet-atras,
 .seg button,.mes-cell,.item,.buy-item,.opt,.cal-row{
-  transition:transform 340ms var(--resorte),box-shadow 200ms var(--fino),
+  transition:transform var(--medio) var(--curva),box-shadow var(--medio) var(--fino),
              background var(--rapido) var(--fino),color var(--rapido) var(--fino)}
 .btn:active,.dish-swap:active,.tramo-todo:active,.engrane:active,.dnav:active,
 .st:active,.dnav-btn:active,.sheet-x:active,.sheet-atras:active,.seg button:active,
@@ -808,8 +853,8 @@ button:active{transform:scale(.97);transition:transform 90ms var(--hundir)}
 .cae .dish-part{animation:asoma var(--paso) var(--curva) both;animation-delay:var(--retraso,0ms)}
 
 /* lo que es un punto o una celda nace chico y se asienta con el resorte */
-@keyframes brota{from{opacity:0;scale:.4}60%{opacity:1}to{opacity:1;scale:1}}
-.cae .mes-cell,.cae .dias i,.cae .cell{animation:brota 380ms var(--resorte) both;animation-delay:var(--retraso,0ms)}
+@keyframes brota{from{opacity:0;scale:.72}to{opacity:1;scale:1}}
+.cae .mes-cell,.cae .dias i,.cae .cell{animation:brota var(--paso) var(--curva) both;animation-delay:var(--retraso,0ms)}
 
 /* el riel se dibuja de arriba abajo mientras caen los tramos */
 @keyframes rielCrece{from{transform:scaleY(0)}to{transform:scaleY(1)}}

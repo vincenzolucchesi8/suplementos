@@ -109,13 +109,15 @@ function irASeccion(nombre, opciones) {
       const panel = document.getElementById('panel-' + s);
       if (panel) { panel.hidden = s !== nombre; panel.classList.remove('se-va'); }
     });
-    entradaEscalonada(destino);
     if (!opciones || opciones.scroll !== false) window.scrollTo({ top: 0, behavior: 'auto' });
     // La lista de compras se pinta al entrar, no antes: es la vista mas cara
     if (nombre === 'comidas' && typeof renderNutricion === 'function') renderNutricion();
     // La cascada va DESPUES de pintar: si corre antes, las celdas del mes
     // todavia no existen y nacen sin retraso, o sea todas a la vez.
-    if (typeof escalonar === 'function') escalonar(destino, 40);
+    // Y comparte el reflujo con entradaEscalonada: dos reflujos sincronos
+    // seguidos sobre un panel largo son el cuadro perdido del cambio.
+    if (typeof escalonar === 'function') escalonar(destino, 30, true);
+    entradaEscalonada(destino);   // y aca cae el unico reflujo, ya con todo puesto
   };
 
   /* La seccion que se va se retira antes de que entre la nueva; sin esto el
@@ -124,7 +126,7 @@ function irASeccion(nombre, opciones) {
   if (saliendo && destino && saliendo !== destino && !menos) {
     saliendo.classList.add('se-va');
     clearTimeout(irASeccion._t);
-    irASeccion._t = setTimeout(mostrar, 90);
+    irASeccion._t = setTimeout(mostrar, 70);
   } else {
     clearTimeout(irASeccion._t);
     if (saliendo) saliendo.classList.remove('se-va');
@@ -155,11 +157,11 @@ function montarSecciones() {
 function entradaEscalonada(panel) {
   if (!panel) return;
   panel.classList.remove('entra');
-  [...panel.children].forEach((c, i) => c.style.setProperty('--retraso', (i * 55) + 'ms'));
-  void panel.offsetWidth;                 // reinicia la animacion
+  [...panel.children].forEach((c, i) => c.style.setProperty('--retraso', (i * 35) + 'ms'));
+  void panel.offsetWidth;                 // el UNICO reflujo sincrono del cambio
   panel.classList.add('entra');
   clearTimeout(panel._limpia);
-  panel._limpia = setTimeout(() => panel.classList.remove('entra'), 1400);
+  panel._limpia = setTimeout(() => panel.classList.remove('entra'), 900);
 }
 
 /* ---------------- Hoja ---------------- */
@@ -175,7 +177,7 @@ function pintarHoja() {
   paso.pintar(body);
   body.scrollTop = 0;
   // el contenido de la hoja entra como una secuencia, no de golpe
-  if (typeof escalonar === 'function') escalonar(body, 60);
+  if (typeof escalonar === 'function') escalonar(body, 30);
 }
 
 function abrirHoja(titulo, pintar) {

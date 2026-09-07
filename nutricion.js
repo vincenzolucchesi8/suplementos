@@ -155,24 +155,45 @@ function bloquePlato(comida, c) {
 /* ---------- Las frecuencias de la semana se llenan solas ----------
    Antes habia que acordarse de subir el contador de pescado a mano. Ahora sale
    de lo que el menu dice que comiste, que es la unica fuente honesta. */
-function sincronizarFrecuencias(dia) {
+/* Que frecuencias semanales aporta el MENU de un dia, segun lo que marcaste.
+   Devuelve el mismo objeto que se escribe en el almacenamiento, para que la
+   card "Esta semana" pueda decir cuanto sale del menu y cuanto sumaste tu. */
+function derivadoDeDia(dia) {
   const c = comidasDeDia(dia);
-  if (!c) return;
+  if (!c) return null;
   const ds = dsDiaG(dia);
   const comido = comida => marcado(`${ds}:${comida}:${ID_COMIDA[comida]}`);
   const alm = comido('Almuerzo'), cen = comido('Cena');
-
-  const derivado = {
+  return {
     pesc: (alm && (c.almuerzo.protK === 'pescado' || c.almuerzo.protK === 'atun')) ||
       (cen && c.cena.protK === 'pescado'),
     menes: (alm && (c.almuerzo.carboK === 'menestras' || c.almuerzo.carboK === 'quinoa')) ||
       (cen && c.cena.carboK === 'quinoa'),
     roja: (alm && c.almuerzo.protK === 'carne') || (cen && c.cena.protK === 'carne'),
   };
+}
+
+function sincronizarFrecuencias(dia) {
+  const derivado = derivadoDeDia(dia);
+  if (!derivado) return;
+  const ds = dsDiaG(dia);
   Object.entries(derivado).forEach(([id, on]) => {
     const key = `${ds}:S:${id}1`;
     if (marcado(key) !== !!on) setMark(key, on ? '1' : '0');
   });
+}
+
+// El dia del programa que corresponde a una fecha, para poder ir al reves
+const diaDeDs = ds => Math.round((Date.parse(ds + 'T00:00:00Z') - Date.parse(INICIO + 'T00:00:00Z')) / 86400000) + 1;
+
+function aporteDelMenuDia(ds, id) {
+  const d = derivadoDeDia(diaDeDs(ds));
+  return d && d[id] ? 1 : 0;
+}
+
+function aporteDelMenu(semana, id) {
+  if (typeof diasDeSemana !== 'function') return 0;
+  return diasDeSemana(semana).reduce((n, ds) => n + aporteDelMenuDia(ds, id), 0);
 }
 
 /* ---------- El mes de un vistazo ----------
@@ -512,10 +533,46 @@ function toggleCompras() {
 function renderNutricion() {
   renderMes();
   renderCalendario();
-  if (typeof montarBotonesPDF === 'function') montarBotonesPDF();
-  if (typeof montarBotonesMenuPDF === 'function') montarBotonesMenuPDF();
+  montarRangoPDF();
   actualizarCabeceraCompras();
   if (!document.getElementById('buyBody').hidden) renderCompras();
 }
 
 cargarMenu();
+
+
+/* ---------- Para imprimir ----------
+   Antes habia cuatro botones de PDF repartidos en dos cajas grises casi
+   identicas, dos de ellos con el mismo texto "PDF del mes". El periodo se
+   elige UNA vez y despues eliges que papel quieres: dos decisiones cortas en
+   vez de cuatro botones que hay que leer. */
+let rangoPDF = 'mes';
+
+function montarRangoPDF() {
+  const seg = document.getElementById('pdfRango');
+  if (seg && !seg.dataset.montado) {
+    seg.dataset.montado = '1';
+    seg.querySelectorAll('button').forEach(b => {
+      b.onclick = () => {
+        rangoPDF = b.dataset.r;
+        seg.querySelectorAll('button').forEach(o => o.classList.toggle('on', o === b));
+        montarRangoPDF();
+      };
+    });
+  }
+  const nota = document.getElementById('pdfNota');
+  if (nota) {
+    const w = selSemana();
+    const f = ds => (typeof fechaLarga === 'function') ? fechaLarga(ds) : ds;
+    if (rangoPDF === 'mes') {
+      const base = (typeof mesBase === 'number' && mesBase) || 1;
+      nota.textContent = `Del ${f(dsDiaG(base))} al ${f(dsDiaG(base + 27))}. ` +
+        'El menú es para pegarlo en la refri; la lista de compras sale agrupada por sección del mercado.';
+    } else {
+      nota.textContent = `Del ${f(dsDiaG((w - 1) * 7 + 1))} al ${f(dsDiaG(w * 7))}. ` +
+        'El menú es para pegarlo en la refri; la lista de compras sale agrupada por sección del mercado.';
+    }
+  }
+  if (typeof montarBotonesPDF === 'function') montarBotonesPDF();
+  if (typeof montarBotonesMenuPDF === 'function') montarBotonesMenuPDF();
+}

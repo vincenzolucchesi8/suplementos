@@ -122,17 +122,16 @@ function generarMenuPDF(desde, hasta, devolver) {
 }
 
 function montarBotonesMenuPDF() {
-  const mes = document.getElementById('menuPdfMes');
-  const sem = document.getElementById('menuPdfSemana');
-  if (!mes || !sem) return;
-  const listo = !!(MENU && window.jspdf);
-  mes.disabled = !listo; sem.disabled = !listo;
-  mes.onclick = () => {
-    const base = (typeof mesBase === 'number' && mesBase) || 1;
-    generarMenuPDF(base, base + 27);
-  };
-  sem.onclick = () => {
-    const w = selSemana();
-    generarMenuPDF((w - 1) * 7 + 1, w * 7);
+  const btn = document.getElementById('pdfMenu');
+  if (!btn) return;
+  btn.disabled = !(MENU && window.jspdf);
+  btn.onclick = () => {
+    if (rangoPDF === 'mes') {
+      const base = (typeof mesBase === 'number' && mesBase) || 1;
+      generarMenuPDF(base, base + 27);
+    } else {
+      const w = selSemana();
+      generarMenuPDF((w - 1) * 7 + 1, w * 7);
+    }
   };
 }

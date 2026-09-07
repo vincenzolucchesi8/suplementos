@@ -168,19 +168,9 @@ function generarPDF(w1, w2, devolver) {
 
 /* ---------- Botones ---------- */
 function montarBotonesPDF() {
-  const mes = document.getElementById('pdfMes');
-  const sem = document.getElementById('pdfSemana');
-  const nota = document.getElementById('pdfNota');
-  if (!mes || !sem) return;
-
+  const btn = document.getElementById('pdfCompras');
+  if (!btn) return;
   const w = selSemana();
-  const listo = !!(MENU && window.jspdf);
-  mes.disabled = !listo; sem.disabled = !listo;
-
-  if (listo && nota) {
-    const d1 = dsDiaG((w - 1) * 7 + 1), d4 = dsDiaG((w + 3) * 7);
-    nota.textContent = `El del mes cubre del ${fechaLarga(d1)} al ${fechaLarga(d4)}. Sale de los platos que elegiste, agrupado por sección del mercado y con casillas para marcar.`;
-  }
-  mes.onclick = () => generarPDF(w, w + 3);
-  sem.onclick = () => generarPDF(w, w);
+  btn.disabled = !(MENU && window.jspdf);
+  btn.onclick = () => (rangoPDF === 'mes' ? generarPDF(w, w + 3) : generarPDF(w, w));
 }

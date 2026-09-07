@@ -334,6 +334,8 @@ function render(){
   if(typeof contarHasta === 'function') contarHasta($('ringPct'), pctHoy);
   else $('ringPct').textContent = pctHoy;
   $('ring').style.strokeDashoffset = RING_CIRC*(1-pctHoy/100);
+  // a 0 % el remate redondo del trazo deja un punto verde suelto arriba
+  $('ring').dataset.cero = pctHoy > 0 ? '0' : '1';
   $('hoyPie').textContent = `${oHoy.hechos} de ${oHoy.total} hechos`;
   if(antesDeEmpezar){
     const t = document.querySelector('#panel-hoy .card.focus h2'); if(t) t.textContent = 'El día 1';
@@ -470,13 +472,14 @@ function renderHoy(){
       `</span>`+
       `<span class="tramo-txt"><span class="tramo-nom">${c} · ${HORA_COMIDA[c]}</span>`+
       `<span class="tramo-res">${resumen}</span></span>`+
+      /* El atajo "Marcar las N" solo se gana su sitio con DOS o mas
+         pendientes. Con una sola, la fila de abajo es el control y estaban los
+         dos a quince pixeles: dos botones para exactamente la misma accion. */
       (listo
         ? `<span class="tramo-ok"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>`
-        : (abierto
-            ? `<span class="tramo-todo">${faltan === 1
-                  ? (faltan === total ? 'Marcar' : 'Marcar la que falta')
-                  : 'Marcar las ' + faltan + (faltan === total ? '' : ' que faltan')}</span>`
-            : `<span class="tramo-cnt">${total - faltan} de ${total}</span>`));
+        : (abierto && faltan >= 2
+            ? `<span class="tramo-todo">Marcar las ${faltan}${faltan === total ? '' : ' que faltan'}</span>`
+            : (total > 1 ? `<span class="tramo-cnt">${total - faltan} de ${total}</span>` : '')));
     cab.onclick = ev => {
       if (ev.target.closest('.tramo-todo')) { marcarTramo(c, del); return; }
       abrirTramo(c);
@@ -522,9 +525,8 @@ function renderHoy(){
      es cuando existe de verdad. */
   const nuevo = linea.querySelector('.tramo-body[data-abriendo]');
   if(nuevo && !matchMedia('(prefers-reduced-motion: reduce)').matches){
-    nuevo.style.setProperty('--alto', nuevo.scrollHeight + 'px');
     nuevo.classList.add('abriendo');
-    setTimeout(()=>{ nuevo.classList.remove('abriendo'); nuevo.style.removeProperty('--alto'); }, 420);
+    setTimeout(()=>nuevo.classList.remove('abriendo'), 260);
   }
 
   // Lo que corre todo el dia no pertenece a ninguna comida: va fuera del riel
@@ -629,7 +631,7 @@ function renderSien(){
   if(card.hidden) return;
   cont.innerHTML = filas.map(f=>
     `<div class="sien"><span class="nm">${f.nombre}</span>`+
-    `<span class="esc"><i style="width:${f.pct}%"></i></span>`+
+    `<span class="esc"><i style="--x:${(f.pct/100).toFixed(3)};transform:scaleX(${(f.pct/100).toFixed(3)})"></i></span>`+
     `<span class="v">${f.etiqueta}</span></div>`).join('');
 }
 
@@ -704,16 +706,23 @@ function renderSemana(){
   SEMANALES.forEach(s=>{
     const cap = (s.alto||s.meta)+3;
     const n = semanaCount(w,'S',s.id,cap);
+    /* Lo que pone el menu no se puede quitar con el menos: sale de lo que
+       marcaste en el dia y el proximo render lo vuelve a poner, asi que el
+       boton parecia roto. El menos queda para los extras que sumaste a mano. */
+    const delMenu = (typeof aporteDelMenu === 'function') ? aporteDelMenu(w, s.id) : 0;
+    const extras = Math.max(0, n - delMenu);
     const ok   = s.tipo==='min' ? n>=s.meta : n<=s.meta;
     const over = s.tipo==='max' && n>s.meta;
     const el = document.createElement('div');
     el.className = 'wk'+(over?' over':(ok&&n>0?' ok':''));
     el.innerHTML =
-      `<div class="wk-info"><div class="wk-name">${s.name}</div><div class="wk-goal">${s.goal}</div></div>`+
+      `<div class="wk-info"><div class="wk-name">${s.name}</div><div class="wk-goal">${s.goal}`+
+        (delMenu ? ` · ${delMenu} del menú${extras ? ` y ${extras} que sumaste` : ''}` : '')+
+      `</div></div>`+
       `<div class="wk-ctrl">`+
         `<span class="wk-val">${n} / ${s.meta}${s.alto&&s.alto!==s.meta?'-'+s.alto:''}</span>`+
         `<div class="stepper">`+
-          `<button class="st" ${n<=0?'disabled':''} onclick="tapWk('${s.id}',${cap},-1)" aria-label="Quitar uno a ${s.name}">−</button>`+
+          `<button class="st" ${extras<=0?'disabled':''} onclick="tapWk('${s.id}',${cap},-1)" aria-label="Quitar uno a ${s.name}">−</button>`+
           `<button class="st" onclick="tapWk('${s.id}',${cap},1)" aria-label="Sumar uno a ${s.name}">+</button>`+
         `</div>`+
       `</div>`;
@@ -721,12 +730,15 @@ function renderSemana(){
   });
 }
 function tapWk(id, cap, delta){
-  if(delta>0) bump(selDate,'S',id,cap,+1);
-  else {
-    // quita del dia seleccionado; si ahi no hay nada, del ultimo dia de la semana que tenga
-    const dias = diasDeSemana(selSemana()).filter(ds=>ds<=HOY);
-    const orden = [selDate, ...dias.slice().reverse()];
-    for(const ds of orden){ if(diaCount(ds,'S',id,cap)>0){ bump(ds,'S',id,cap,-1); break; } }
+  if(delta>0){ bump(selDate,'S',id,cap,+1); render(); return; }
+  /* Solo se quitan EXTRAS: un dia cuyo conteo pasa de lo que aporta el menu.
+     Si se le quita al menu, sincronizarFrecuencias lo repone en el siguiente
+     render y el boton se lee como roto. */
+  const dias = diasDeSemana(selSemana()).filter(ds=>ds<=HOY);
+  const orden = [selDate, ...dias.slice().reverse()];
+  const menuDia = ds => (typeof aporteDelMenuDia === 'function') ? aporteDelMenuDia(ds, id) : 0;
+  for(const ds of orden){
+    if(diaCount(ds,'S',id,cap) > menuDia(ds)){ bump(ds,'S',id,cap,-1); break; }
   }
   render();
 }
@@ -948,16 +960,49 @@ function toggleComer(){
 /* Habia un boton flotante con un check que marcaba el dia entero de un toque.
    Se saco: no decia que hacia, no se podia deshacer, y desde que cada comida
    tiene su "Marcar las N" con el numero escrito, era ademas redundante. */
-function reiniciar(){
-  if(confirm('Esto borra tu progreso en TODOS tus dispositivos. ¿Seguro?')){
-    const m = metaLoad(); const now = Date.now();
-    Object.keys(localStorage).filter(k=>DKEY.test(k)).forEach(k=>{ localStorage.removeItem(k); m[k]=now; });
-    metaSave(m);
-    if(cloudOn()) fullSync().finally(()=>location.reload());
-    else location.reload();
-  }
+/* Plegable generico. Se abre y cierra desde su propia cabecera, que es de
+   donde nace: el cuerpo entra anclado arriba. */
+function plegar(id){
+  const b = document.getElementById(id+'Btn');
+  const body = document.getElementById(id+'Body');
+  if(!b || !body) return;
+  const abierto = b.getAttribute('aria-expanded') === 'true';
+  b.setAttribute('aria-expanded', abierto ? 'false' : 'true');
+  body.hidden = abierto;
+  if(abierto) return;
+  if(typeof escalonar === 'function') escalonar(body, 20);
+  if(typeof desplegar === 'function') desplegar(body);
 }
-document.getElementById('ver').textContent = 'Versión 17 · ' + HOY;
+
+/* Reiniciar borra todo, asi que el propio boton pide la confirmacion: un
+   confirm() del navegador se acepta de memoria y ademas no dice desde donde
+   sale. Dos toques, con el segundo escrito y con salida. */
+function reiniciar(){
+  const btn = document.getElementById('btnReset');
+  const nota = document.getElementById('resetNota');
+  if(!btn) return;
+  if(btn.dataset.armado !== '1'){
+    btn.dataset.armado = '1';
+    btn.textContent = 'Sí, borrar todo lo marcado';
+    if(nota) nota.textContent = 'Toca de nuevo para borrar, o espera cinco segundos y se cancela.';
+    clearTimeout(btn._t);
+    btn._t = setTimeout(()=>{
+      btn.dataset.armado = '0';
+      btn.textContent = 'Reiniciar el progreso';
+      if(nota) nota.textContent = 'Borra lo que marcaste desde el día 1. El plan y el menú se quedan.';
+    }, 5000);
+    return;
+  }
+  clearTimeout(btn._t);
+  btn.disabled = true; btn.textContent = 'Borrando…';
+  const m = metaLoad(); const now = Date.now();
+  Object.keys(localStorage).filter(k=>DKEY.test(k)).forEach(k=>{ localStorage.removeItem(k); m[k]=now; });
+  metaSave(m);
+  if(cloudOn()) fullSync().finally(()=>location.reload());
+  else location.reload();
+}
+document.getElementById('btnReset').onclick = reiniciar;
+document.getElementById('ver').textContent = 'Versión 18 · ' + HOY;
 render();
 fullSync();
 

@@ -88,24 +88,33 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
     </div>
   </div>
 
+  <!-- Permisos y "como te sentiste" van plegados: medidos, ocupaban el 37 % de
+       la pantalla de uso diario y no son de uso diario. El contador de arriba
+       dice lo que hace falta saber sin abrirlos. -->
   <div class="card">
-    <div class="card-h">
+    <button class="acc-h" id="permBtn" aria-expanded="false" aria-controls="permBody"
+            onclick="plegar('perm')" type="button">
       <h2>Tus permisos</h2>
       <span class="count" id="permCount"></span>
-    </div>
-    <div id="permisos"></div>
-    <div class="perm-note">
-      <svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
-      <p>Gasta el dulce en la cena: después te vas a dormir. Temprano, el resto del día se te va queriendo repetir.</p>
+      <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="acc-body" id="permBody" hidden>
+      <div id="permisos"></div>
+      <div class="perm-note">
+        <svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+        <p>Gasta el dulce en la cena: después te vas a dormir. Temprano, el resto del día se te va queriendo repetir.</p>
+      </div>
     </div>
   </div>
 
   <div class="card" id="sensCard" hidden>
-    <div class="card-h">
+    <button class="acc-h" id="sensBtn" aria-expanded="false" aria-controls="sensBody"
+            onclick="plegar('sens')" type="button">
       <h2>Cómo te sentiste</h2>
       <span class="count" id="sensCount"></span>
-    </div>
-    <div id="sensBody"></div>
+      <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="acc-body" id="sensBody" hidden></div>
   </div>
 
   <div class="note">
@@ -127,16 +136,6 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
     <div id="mesGrid"></div>
     <div class="mes-sep"><span id="calRange"></span></div>
     <div id="calBody"></div>
-    <div class="pdf-box">
-      <p class="pdf-nota">Para pegarlo en la refri: qué toca desayunar, almorzar y cenar cada día.</p>
-      <div class="btns">
-        <button class="btn btn-p" id="menuPdfMes" type="button">
-          <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v5"/><path d="M9.5 14.5L12 17l2.5-2.5"/></svg>
-          PDF del mes
-        </button>
-        <button class="btn btn-s" id="menuPdfSemana" type="button">La semana</button>
-      </div>
-    </div>
   </div>
 
   <div class="card">
@@ -146,16 +145,6 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
       <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
     </button>
     <div class="acc-body" id="buyBody" hidden></div>
-    <div class="pdf-box">
-      <p class="pdf-nota" id="pdfNota">Agrupada por sección del mercado, con las cantidades ya sumadas y casillas para marcar.</p>
-      <div class="btns">
-        <button class="btn btn-p" id="pdfMes" type="button">
-          <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v5"/><path d="M9.5 14.5L12 17l2.5-2.5"/></svg>
-          PDF del mes
-        </button>
-        <button class="btn btn-s" id="pdfSemana" type="button">Solo la semana</button>
-      </div>
-    </div>
   </div>
 
   <div class="card">
@@ -164,6 +153,22 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
       <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
     </button>
     <div class="acc-body" id="accBody" hidden></div>
+  </div>
+
+  <!-- Una sola caja para imprimir. Antes habia cuatro botones de PDF repartidos
+       en dos cajas grises casi identicas, dos de ellos con el mismo texto
+       "PDF del mes": el periodo se elige UNA vez y despues eliges que papel. -->
+  <div class="card" id="cardImprimir">
+    <div class="card-h"><h2>Para imprimir</h2></div>
+    <div class="seg" id="pdfRango" role="group" aria-label="Qué periodo imprimir">
+      <button type="button" class="on" data-r="mes">El mes</button>
+      <button type="button" data-r="semana">Esta semana</button>
+    </div>
+    <p class="pdf-nota" id="pdfNota"></p>
+    <div class="btns">
+      <button class="btn btn-p" id="pdfMenu" type="button"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v5"/><path d="M9.5 14.5L12 17l2.5-2.5"/></svg>Menú</button>
+      <button class="btn btn-p" id="pdfCompras" type="button"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v5"/><path d="M9.5 14.5L12 17l2.5-2.5"/></svg>Compras</button>
+    </div>
   </div>
   </section>
 
@@ -237,7 +242,9 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
   <!-- =============================================================== PLAN -->
   <section class="panel" id="panel-plan" role="tabpanel" aria-labelledby="tab-plan">
   <div class="card">
-    <div class="card-h"><h2>Suplementos</h2><span class="count" id="faseTag"></span></div>
+    <!-- sin el rotulo de la fase: ya lo dice la cabecera de la seccion y lo
+         repite el primer punto del riel, tres veces en doscientos pixeles -->
+    <div class="card-h"><h2>Suplementos</h2></div>
     <div class="tl" id="tlFases"></div>
   </div>
 
@@ -259,10 +266,13 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
     </div>
   </div>
 
+  <!-- Borra todo. No puede verse igual que "Editar el plan": va en el color de
+       alerta y pide confirmacion en el propio boton. -->
   <div class="card">
     <div class="btns">
-      <button class="btn btn-s" onclick="reiniciar()" type="button">Reiniciar el progreso</button>
+      <button class="btn btn-x" id="btnReset" type="button">Reiniciar el progreso</button>
     </div>
+    <p class="pdf-nota" id="resetNota">Borra lo que marcaste desde el día 1. El plan y el menú se quedan.</p>
   </div>
   </section>
 
