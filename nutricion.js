@@ -237,13 +237,17 @@ function renderMes() {
       `aria-label="Día ${n}: ${que}">` +
       `<b>${dia}</b><span class="barras">${barra}</span></button>`;
   }
+  /* La celda lleva DOS codigos de color: el fondo es la proteina del almuerzo y
+     la barra de abajo la de la cena. Estaba sin decir en ningun lado, asi que
+     se leia como un color doble sin sentido. */
   html += '</div>' +
     `<div class="mes-leyenda">
        <span><i style="background:${COLOR_PROT.pescado}"></i>Pescado</span>
        <span><i style="background:${COLOR_PROT.pollo}"></i>Pollo</span>
        <span><i style="background:${COLOR_PROT.carne}"></i>Carne</span>
        <span><i style="background:${COLOR_PROT.huevos}"></i>Huevos</span>
-     </div>`;
+     </div>
+     <p class="mes-clave">El fondo del día es el almuerzo; la barra de abajo, la cena.</p>`;
   grid.innerHTML = html;
   grid.querySelectorAll('.mes-cell').forEach(b => {
     b.onclick = () => abrirHojaDia(parseInt(b.dataset.dia, 10));

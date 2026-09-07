@@ -227,7 +227,7 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .m-carne{background:color-mix(in srgb,var(--c-carne) 14%,#fff)}
 .m-omelette,.m-revueltos,.m-bowl,.m-batido,.m-wrap{background:color-mix(in srgb,var(--c-huevos) 16%,#fff)}
 
-.tramo-h{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;padding:0}
+.tramo-h{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;padding:0;min-height:48px}
 .tramo-txt{flex:1;min-width:0}
 .tramo-nom{display:block;font-size:var(--t4);color:var(--g3);font-variant-numeric:tabular-nums}
 .tramo-res{display:block;font-size:var(--t2);font-weight:700;letter-spacing:-.3px;line-height:1.25;margin-top:1px}
@@ -303,21 +303,28 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .corrida-nom{flex:1;min-width:0;font-size:var(--t3);font-weight:600;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .corrida-nom small{display:block;font-size:var(--t5);font-weight:500;color:var(--g3);margin-top:2px}
-.units{display:flex;gap:6px;margin-left:auto}
-.units .u{width:26px;height:26px;border-radius:50%;background:var(--g2);font-size:0;flex-shrink:0;overflow:hidden;
+/* Las raciones dejan de ser bolitas y pasan a ser una BARRA POR TRAMOS, a
+   todo el ancho y en su propia linea.
+
+   Tres razones medidas. (1) Apretadas entre el nombre y el contador quedaban
+   en 26 px, la mitad del minimo, y son el control que mas se toca en el dia:
+   solo el agua son cuatro o cinco toques. (2) El patron no escalaba: con
+   cinco no entraban y con una sobraba media fila vacia; por tramos la fila
+   siempre queda llena, con uno o con cinco. (3) El agua es un tomatodo de dos
+   litros, y un tomatodo se LLENA: unos puntos sueltos no dicen eso, una barra
+   que se va llenando si. Cada tramo mide como minimo 60 x 44. */
+.units{display:flex;gap:5px;flex-basis:100%;order:3;margin:8px 0 0}
+.units .u{flex:1;height:44px;min-width:0;border-radius:var(--r3);background:var(--g2);font-size:0;
   transition:background var(--rapido) var(--suave),transform var(--medio) var(--resorte)}
 .units .u svg,.tok svg{display:none}
 .units .u.on{background:var(--verde)}
-.units .u.extra{background:transparent;box-shadow:inset 0 0 0 2px var(--g2)}
+/* el ultimo tramo es el extra: hueco y mas angosto, para que se lea como
+   "este ya es de propina" y no como uno que falta */
+.units .u.extra{flex:.72;background:transparent;box-shadow:inset 0 0 0 2px var(--g2)}
 .units .u.extra.on{background:var(--verde);box-shadow:none}
-.units .u:active{transform:scale(.8)}
-.corrida-num{font-size:var(--t4);color:var(--g3);font-variant-numeric:tabular-nums;min-width:64px;text-align:right;font-weight:600}
-
-@media (max-width:389px){
-  .units,.toks{flex-basis:100%;order:3;margin:4px 0 0;justify-content:flex-start;gap:8px}
-  .corrida-num,.perm .toks{order:2}
-  .units .u,.tok{width:30px;height:30px}
-}
+.units .u:active{transform:scaleY(.86)}
+.corrida-num{font-size:var(--t4);color:var(--g3);font-variant-numeric:tabular-nums;min-width:64px;text-align:right;
+  font-weight:600;order:2}
 
 /* permisos */
 .perm{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:12px 0;min-height:48px}
@@ -325,8 +332,12 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .perm-info{flex:1;min-width:0}
 .perm-name{font-size:var(--t3);font-weight:600}
 .perm-sub{font-size:var(--t5);color:var(--g3);margin-top:2px}
-.toks{display:flex;gap:6px;margin-left:auto}
-.tok{width:26px;height:26px;border-radius:50%;background:var(--g2);font-size:0;
+/* Los permisos SI caben en su linea: son uno, dos o tres, no cinco. Y que se
+   comporten distinto de las raciones ayuda, porque significan lo contrario:
+   una racion se suma, un permiso se gasta (por eso ademas es ambar y no
+   verde). */
+.toks{display:flex;gap:10px;margin-left:auto;flex-shrink:0}
+.tok{position:relative;width:44px;height:44px;border-radius:50%;background:var(--g2);font-size:0;
   transition:background var(--rapido) var(--suave),transform var(--medio) var(--resorte)}
 .tok.on{background:var(--c-huevos)}
 .tok:active{transform:scale(.8)}
@@ -403,12 +414,15 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .mes-cell.hoy b{font-size:var(--t2)}
 .f-pescado,.f-atun{background:color-mix(in srgb,var(--c-pescado) 28%,#fff)}
 .f-pollo{background:color-mix(in srgb,var(--c-pollo) 32%,#fff)}
-.f-carne{background:color-mix(in srgb,var(--c-carne) 26%,#fff)}
+/* Estaba en 26 % y quedaba a 25 de distancia RGB del pollo: en un chip de
+   44 px eran el mismo color. A 40 % la distancia sube a 43. */
+.f-carne{background:color-mix(in srgb,var(--c-carne) 40%,#fff)}
 .f-omelette,.f-revueltos,.f-bowl,.f-batido,.f-wrap{background:color-mix(in srgb,var(--c-huevos) 30%,#fff)}
 .mes-leyenda{display:flex;gap:13px;margin-top:12px;flex-wrap:wrap}
 .mes-leyenda b{display:none}
 .mes-leyenda span{display:flex;align-items:center;gap:5px;font-size:var(--t5);font-weight:600;color:var(--g3)}
 .mes-leyenda i{width:9px;height:9px;border-radius:50%;display:block;flex-shrink:0}
+.mes-clave{font-size:var(--t5);color:var(--g3);margin-top:7px;line-height:1.5}
 
 /* la semana en detalle */
 .mes-sep{margin:var(--e4) 0 var(--e2);display:flex;align-items:baseline;justify-content:space-between}
@@ -565,10 +579,16 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .avi-state.warn .avi-dot{background:var(--alerta)}
 .avi-row .check{transition:background var(--rapido) var(--suave),border-color var(--rapido) var(--suave),
   transform 340ms var(--resorte)}
+/* Con el push apagado NINGUNO va a sonar, asi que ninguno puede verse verde:
+   arriba el cartel decia "los avisos estan apagados" y abajo habia nueve
+   checks encendidos. Se conserva la marca (que si elegiste ese aviso) pero en
+   gris, que es la verdad: elegido, no activo. */
 .avi-row:not(.off) .check{background:var(--verde);border-color:var(--verde)}
+.sin-push .avi-row:not(.off) .check{background:var(--g3);border-color:var(--g3)}
+.sin-push .avi-row .avi-name{color:var(--g3)}
 .avi-row:not(.off) .check svg{opacity:1;transform:none}
 .avi-row.off .avi-name,.avi-row.off .avi-sub{color:var(--g3)}
-.avi-row input[type="time"]{background:var(--g1);border-radius:var(--r3);padding:8px 10px;min-height:40px;
+.avi-row input[type="time"]{background:var(--g1);border-radius:var(--r3);padding:10px 10px;min-height:44px;
   font-size:var(--t4);font-weight:700;font-variant-numeric:tabular-nums;flex-shrink:0;color:var(--tinta)}
 .avi-row input[type="time"]:disabled{color:var(--g3);opacity:.7}
 .avi-info{flex:1;min-width:0}

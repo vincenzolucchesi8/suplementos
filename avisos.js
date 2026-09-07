@@ -135,6 +135,11 @@ function renderAvisos() {
         { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).replace(',', '')
     : '';
 
+  /* Mientras el push no este activo NINGUNO de estos avisos se manda, asi que
+     la lista entera se pinta apagada: si no, el cartel dice "estan apagados" y
+     debajo hay nueve checks verdes diciendo lo contrario. */
+  cont.classList.toggle('sin-push', estadoPush !== 'activo');
+
   cont.innerHTML =
     `<div class="avi-state ${clase}"><span class="avi-dot"></span><p>${texto}</p></div>` +
     (estadoPush === 'activo' && noArranco
