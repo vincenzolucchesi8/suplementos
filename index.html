@@ -235,10 +235,12 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
     <div class="card-h"><h2>Constancia</h2><span class="count" id="totalDias"></span></div>
     <div class="heat-scroll"><div class="heat-grid" id="heatGrid"></div></div>
     <div class="heat-legend">
-      <span class="leg"><i class="l-full"></i>Todo</span>
-      <span class="leg"><i class="l-partial"></i>Parcial</span>
-      <span class="leg"><i class="l-none"></i>Nada</span>
-      <span class="leg"><i class="l-future"></i>Próximo</span>
+      <!-- "Nada" decia una cosa que la app no sabe: no marcar no es no hacer.
+           Lo mismo que el informe para Alexia dice de los dias sin registro. -->
+      <span class="leg"><i class="l-full"></i>Completo</span>
+      <span class="leg"><i class="l-partial"></i>A medias</span>
+      <span class="leg"><i class="l-none"></i>Sin marcar</span>
+      <span class="leg"><i class="l-future"></i>Aún no</span>
     </div>
   </div>
   </section>
