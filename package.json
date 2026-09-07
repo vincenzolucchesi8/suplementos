@@ -6,7 +6,7 @@
   "scripts": {
     "menu": "node menu/construir.js",
     "validar": "node menu/validar.js",
-    "build": "node menu/construir.js && node menu/validar.js"
+    "build": "node menu/validar.js"
   },
   "repository": {
     "type": "git",

@@ -1,4 +1,11 @@
 /* Emite menu/menu.json: las 4 semanas mas el catalogo completo y las reglas.
+
+   OJO: esto NO corre en el despliegue, y no debe volver a hacerlo. El menu es
+   el plan de Vinz, no un artefacto de build: se genera a mano, se revisa y se
+   commitea. Cuando corria en cada deploy le cambiaban los platos de la semana
+   sin que nadie tocara nada, porque el barajado dependia del motor de JS (ver
+   la nota de barajarBien en generador.js). Regenerar es `npm run menu`, a
+   proposito, mirando el diff.
    La logica del generador vive en generador.js, que tambien corre en el
    navegador para rearmar el menu cuando cambian las reglas del plan.
    Despues, `validar.js` vuelve a medir el resultado de forma independiente.

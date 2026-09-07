@@ -38,5 +38,5 @@
     }
   ],
   "outputDirectory": ".",
-  "buildCommand": "node menu/construir.js && node menu/validar.js"
+  "buildCommand": "node menu/validar.js"
 }

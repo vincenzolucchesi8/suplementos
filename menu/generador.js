@@ -24,6 +24,24 @@
     const pick = arr => arr[Math.floor(rnd() * arr.length)];
     const barajar = arr => arr.map(x => [rnd(), x]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
 
+    /* Fisher-Yates de verdad.
+
+       Antes esto era `arr.sort(() => rnd() - 0.5)`, que NO es un barajado: es
+       un comparador inconsistente, y con un comparador inconsistente el
+       resultado de sort() depende del algoritmo del motor. O sea que el mismo
+       codigo con la MISMA semilla daba un menu distinto en el Node de esta
+       maquina y en el de Vercel -- y como el menu se regeneraba en cada
+       despliegue, a Vinz le cambiaban los platos de la semana sin que nadie
+       tocara nada. */
+    const barajarBien = arr => {
+      const a2 = arr.slice();
+      for (let i = a2.length - 1; i > 0; i--) {
+        const j = Math.floor(rnd() * (i + 1));
+        const t = a2[i]; a2[i] = a2[j]; a2[j] = t;
+      }
+      return a2;
+    };
+
     // ---------- Paso 1: patron de proteinas, por busqueda con poda ----------
     function patronSemana(ultimaCena) {
       const LUNCH = ['pollo', 'pescado', 'atun', 'carne'];
@@ -77,7 +95,7 @@
 
       for (let intento = 0; intento < 3000; intento++) {
         const objetivo = R.cerealMin + Math.floor(rnd() * (R.cerealMax - R.cerealMin + 1));
-        const idx = [0, 1, 2, 3, 4, 5, 6].sort(() => rnd() - 0.5).slice(0, objetivo);
+        const idx = barajarBien([0, 1, 2, 3, 4, 5, 6]).slice(0, objetivo);
         const out = dias.map((d, i) => {
           let almC, cenC;
           if (idx.includes(i)) {
