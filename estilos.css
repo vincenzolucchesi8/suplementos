@@ -36,10 +36,15 @@
 
   --resorte:cubic-bezier(.48,1.47,.3,.98);   /* el resorte medido del reel */
   --suave:cubic-bezier(.32,.72,0,1);
+  --fino:cubic-bezier(.2,.8,.25,1);          /* lo chico: menos brusco al arrancar */
+  --hundir:cubic-bezier(.4,0,.6,1);          /* el toque baja recto y rapido */
   --salto:460ms; --rapido:180ms; --medio:280ms;
 
-  --sombra-1:0 2px 6px rgba(18,23,26,.07);
-  --sombra-2:0 14px 30px -14px rgba(18,23,26,.4);
+  /* Las sombras llevan el matiz de la casa, no negro plano: una sombra neutra
+     sobre papel se lee gris sucia. Y van en dos capas, una de contacto corta y
+     otra de ambiente larga, que es lo que da la sensacion de peso. */
+  --sombra-1:0 1px 2px rgba(10,60,45,.10), 0 3px 8px rgba(10,60,45,.06);
+  --sombra-2:0 12px 28px -10px rgba(10,60,45,.30), 0 28px 56px -24px rgba(10,60,45,.24);
 }
 
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -90,6 +95,9 @@ img{max-width:100%;display:block}
 h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bottom:0}
 .count,.card-h .count{font-size:var(--t3);font-weight:500;color:var(--g3);letter-spacing:-.1px;flex-shrink:0}
 .panel[hidden]{display:none}
+/* la seccion que se va se retira; sin esto el cambio es un corte seco */
+@keyframes seRetira{to{opacity:0;transform:translateY(-10px) scale(.985)}}
+.panel.se-va{animation:seRetira 150ms var(--fino) forwards;pointer-events:none}
 /* entrada escalonada: la clase la pone el JS, asi que sin JS todo se ve igual */
 .panel.entra > *{animation:asoma 420ms var(--suave) both;animation-delay:var(--retraso,0ms)}
 
@@ -122,8 +130,8 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .fichas{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:var(--e4)}
 .ficha{background:var(--g1);border-radius:var(--r1);padding:15px 16px 16px;min-height:132px;
   display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;text-align:left;width:100%;
-  transition:transform var(--rapido) var(--suave)}
-.ficha:active{transform:scale(.975)}
+  transition:transform 340ms var(--resorte)}
+.ficha:active{transform:scale(.972);transition:transform 90ms var(--hundir)}
 .ficha.viva{background:var(--verde-suave)}
 .ficha .lin{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .ficha .rot{font-size:var(--t4);font-weight:600;color:var(--g3)}
@@ -529,39 +537,57 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .goo{position:absolute;left:0;right:0;bottom:0;top:-58px;pointer-events:none}
 .saltando .goo{filter:url(#goo)}
 .superficie{position:absolute;left:0;right:0;bottom:0;height:58px;border-radius:var(--r5);background:#fff}
-.burbuja{position:absolute;width:35px;height:35px;border-radius:50%;background:var(--verde);
+/* DOS capas anidadas, una por eje. Es la unica forma de que el arco sea fluido:
+   CSS aplica la curva ENTRE CADA PAR DE KEYFRAMES, asi que un resorte sobre un
+   arco de cuatro keyframes corre cuatro veces con su rebote y la burbuja avanza
+   a saltos y hasta retrocede (medido: 150 -> 191 -> 186 -> 185 -> 221). Con el
+   eje X en su propia capa, el resorte corre UNA vez de origen a destino. */
+.burbuja-x{position:absolute;width:35px;height:35px;
   left:calc(var(--anchoTab)/2 - 17.5px);top:64px;       /* 58 de la capa + 6 dentro de la barra */
   transform:translateX(calc(var(--i) * var(--anchoTab)))}
+.burbuja{width:100%;height:100%;border-radius:50%;background:var(--verde)}
 
 /* el icono viaja pegado a la burbuja pero FUERA del filtro, que lo derretiria */
 .burbuja-ico{position:absolute;width:35px;height:35px;top:6px;
   left:calc(var(--anchoTab)/2 - 17.5px);pointer-events:none;
   transform:translateX(calc(var(--i) * var(--anchoTab)))}
-.burbuja-ico span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.ico-y{position:absolute;inset:0}
+.burbuja-ico .ico-y > span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
 .burbuja-ico svg{width:19px;height:19px;stroke:#fff;stroke-width:2.1;fill:none;stroke-linecap:round;stroke-linejoin:round}
 
-/* El arco: sale de la barra, cruza por arriba y vuelve a entrar. Empieza y
-   termina en cero, o sea DENTRO: nunca se queda asomada. */
-@keyframes salta{
-  0%  {transform:translateX(calc(var(--de) * var(--anchoTab)))                translateY(0)}
-  24% {transform:translateX(calc(var(--de) * var(--anchoTab)))                translateY(-40px)}
-  50% {transform:translateX(calc((var(--de) + var(--a)) * var(--anchoTab)/2)) translateY(-50px)}
-  76% {transform:translateX(calc(var(--a)  * var(--anchoTab)))                translateY(-38px)}
-  100%{transform:translateX(calc(var(--a)  * var(--anchoTab)))                translateY(0)}
+/* El cruce: UN solo resorte de origen a destino, con su 6,3 % de sobrepaso. */
+@keyframes cruzaX{
+  from{transform:translateX(calc(var(--de) * var(--anchoTab)))}
+  to  {transform:translateX(calc(var(--a)  * var(--anchoTab)))}
+}
+/* El salto: sube rapido y frena, se queda un instante arriba, y cae acelerando.
+   Las curvas van POR KEYFRAME porque una sola ease-in-out daria un vaiven
+   simetrico, no un salto con gravedad. Usa la propiedad translate, no transform,
+   para no pelearse con el estiron de la gota. */
+@keyframes arcoY{
+  0%  {translate:0 0;      animation-timing-function:cubic-bezier(.18,.72,.3,1)}
+  46% {translate:0 -50px;  animation-timing-function:cubic-bezier(.55,0,.75,.45)}
+  100%{translate:0 0}
 }
 /* al despegar y al aterrizar se estira, como una gota de verdad */
-@keyframes gota{0%{scale:1 1}16%{scale:.84 1.2}50%{scale:1.06 .95}84%{scale:.86 1.18}100%{scale:1 1}}
+@keyframes gota{0%{scale:1 1}14%{scale:.86 1.18}46%{scale:1.05 .96}84%{scale:.88 1.14}100%{scale:1 1}}
 /* dos capas de icono que se cruzan: reemplazar el DOM a mitad de vuelo
    reiniciaria la animacion y el icono del destino apareceria en el origen */
 @keyframes seVa {0%{opacity:1;scale:1}   28%{opacity:0;scale:.45} 100%{opacity:0;scale:.45}}
 @keyframes llega{0%{opacity:0;scale:.45} 46%{opacity:0;scale:.45} 100%{opacity:1;scale:1}}
-.saltando .burbuja-ico{animation:salta var(--salto) var(--resorte) forwards}
-.saltando .burbuja{animation:salta var(--salto) var(--resorte) forwards, gota var(--salto) var(--suave)}
+.saltando .burbuja-x,
+.saltando .burbuja-ico{animation:cruzaX var(--salto) var(--resorte) forwards}
+.saltando .burbuja,
+.saltando .ico-y{animation:arcoY var(--salto) linear}
+.saltando .burbuja{animation:arcoY var(--salto) linear, gota var(--salto) var(--suave)}
 .burbuja-ico .sale {animation:seVa  var(--salto) var(--suave) forwards}
 .burbuja-ico .entra{animation:llega var(--salto) var(--suave) forwards}
 
 .tabs-pill{position:absolute;inset:0;display:flex;border-radius:var(--r5);
-  box-shadow:var(--sombra-1),var(--sombra-2)}
+  /* el filete claro de arriba y el oscuro de abajo dan el canto de un objeto:
+     sin ellos la barra es un rectangulo blanco pegado sobre el papel */
+  box-shadow:var(--sombra-1),var(--sombra-2),
+    inset 0 1px 0 rgba(255,255,255,.9), inset 0 -1px 0 rgba(10,60,45,.06)}
 /* el icono arriba y el rotulo abajo: el circulo cae detras del icono */
 .tab{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;
   justify-content:flex-start;gap:2px;padding:5px 2px 0;border-radius:var(--r5);
@@ -636,6 +662,17 @@ footer .ver{margin-left:8px;opacity:.7}
 .ed-x{position:relative;width:32px;height:32px;border-radius:50%;background:#fff;color:var(--g3);flex-shrink:0;
   display:flex;align-items:center;justify-content:center;font-size:16px}
 
+/* El toque, en todo lo pulsable: baja RECTO y rapido (90 ms) y vuelve con el
+   resorte (340 ms). Un solo tiempo para ida y vuelta se siente de goma. */
+.btn,.dish-swap,.tramo-todo,.engrane,.dnav,.st,.dnav-btn,.sheet-x,.sheet-atras,
+.seg button,.mes-cell,.item,.buy-item,.opt,.cal-row{
+  transition:transform 340ms var(--resorte),box-shadow 200ms var(--fino),
+             background var(--rapido) var(--fino),color var(--rapido) var(--fino)}
+.btn:active,.dish-swap:active,.tramo-todo:active,.engrane:active,.dnav:active,
+.st:active,.dnav-btn:active,.sheet-x:active,.sheet-atras:active,.seg button:active,
+.mes-cell:active,.item:active,.buy-item:active,.opt:active,.cal-row:active{
+  transition:transform 90ms var(--hundir),box-shadow 90ms var(--hundir)}
+
 /* ---------------------------------------------------------- celebracion */
 @keyframes celebra{
   0%{transform:none}
@@ -681,7 +718,8 @@ footer .ver{margin-left:8px;opacity:.7}
 /* ------------------------------------------------------------------------- */
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .cae > *,.brota > *,.cae .esc i,.cae .anillo .ring-fg,.cae .tramo::before{animation:none!important}
+  .cae > *,.brota > *,.cae .esc i,.cae .anillo .ring-fg,.cae .tramo::before,
+  .panel.se-va{animation:none!important}
   *,*::before,*::after{animation-duration:.001ms!important;animation-delay:0ms!important;
     transition-duration:.001ms!important;transition-delay:0ms!important}
   .burbuja,.burbuja-ico{animation:none!important}

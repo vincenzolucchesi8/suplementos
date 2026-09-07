@@ -49,7 +49,7 @@
 
   let actual = Math.max(0, tabs.findIndex(t => t.classList.contains('on')));
   pon('--i', actual);
-  ico.innerHTML = `<span>${svgDe(actual)}</span>`;
+  ico.innerHTML = `<span class="ico-y"><span>${svgDe(actual)}</span></span>`;
 
   /* Salta la burbuja a la pestana n. La llama navegacion.js DESPUES de cambiar
      de seccion, asi que la pantalla ya cambio: la burbuja es el acuse de
@@ -61,14 +61,15 @@
     pon('--i', n);
 
     if (menos.matches) {
-      ico.innerHTML = `<span>${svgDe(n)}</span>`;
+      ico.innerHTML = `<span class="ico-y"><span>${svgDe(n)}</span></span>`;
       actual = n;
       return;
     }
     // los dos iconos conviven y se cruzan con el mismo reloj que la burbuja:
     // reemplazar el DOM a mitad de vuelo reinicia la animacion y el icono del
     // destino aparecería en el origen
-    ico.innerHTML = `<span class="sale">${svgDe(actual)}</span><span class="entra">${svgDe(n)}</span>`;
+    ico.innerHTML = `<span class="ico-y"><span class="sale">${svgDe(actual)}</span>` +
+      `<span class="entra">${svgDe(n)}</span></span>`;
     nav.classList.remove('saltando');
     void nav.offsetWidth;                        // reinicia la animacion
     nav.classList.add('saltando');

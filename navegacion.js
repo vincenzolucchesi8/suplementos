@@ -12,26 +12,51 @@ const TAB_KEY = 'seccion';
 
 function irASeccion(nombre, opciones) {
   if (!SECCIONES.includes(nombre)) nombre = 'hoy';
+
+  const saliendo = document.querySelector('.panel:not([hidden])');
+  const destino = document.getElementById('panel-' + nombre);
+  const menos = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* La pestana y la burbuja cambian AL INSTANTE, siempre. El acuse de recibo no
+     puede esperar a una animacion: eso es lo que hace que una app se sienta
+     lenta aunque dure poco. */
   SECCIONES.forEach(s => {
-    const panel = document.getElementById('panel-' + s);
     const tab = document.getElementById('tab-' + s);
-    if (!panel || !tab) return;
+    if (!tab) return;
     const activo = s === nombre;
-    panel.hidden = !activo;
     tab.classList.toggle('on', activo);
     tab.setAttribute('aria-selected', activo ? 'true' : 'false');
     tab.setAttribute('tabindex', activo ? '0' : '-1');
   });
   localStorage.setItem(TAB_KEY, nombre);
-  // el metaball de la barra viaja a la pestana nueva (movimiento.js)
   if (typeof saltarChip === 'function') saltarChip(SECCIONES.indexOf(nombre));
-  entradaEscalonada(document.getElementById('panel-' + nombre));
-  if (!opciones || opciones.scroll !== false) window.scrollTo({ top: 0, behavior: 'auto' });
-  // La lista de compras se pinta al entrar, no antes: es la vista mas cara
-  if (nombre === 'comidas' && typeof renderNutricion === 'function') renderNutricion();
-  // La cascada va DESPUES de pintar: si corre antes, las celdas del mes todavia
-  // no existen y nacen sin retraso, o sea todas a la vez.
-  if (typeof escalonar === 'function') escalonar(document.getElementById('panel-' + nombre), 90);
+
+  const mostrar = () => {
+    SECCIONES.forEach(s => {
+      const panel = document.getElementById('panel-' + s);
+      if (panel) { panel.hidden = s !== nombre; panel.classList.remove('se-va'); }
+    });
+    entradaEscalonada(destino);
+    if (!opciones || opciones.scroll !== false) window.scrollTo({ top: 0, behavior: 'auto' });
+    // La lista de compras se pinta al entrar, no antes: es la vista mas cara
+    if (nombre === 'comidas' && typeof renderNutricion === 'function') renderNutricion();
+    // La cascada va DESPUES de pintar: si corre antes, las celdas del mes
+    // todavia no existen y nacen sin retraso, o sea todas a la vez.
+    if (typeof escalonar === 'function') escalonar(destino, 90);
+  };
+
+  /* La seccion que se va se retira antes de que entre la nueva; sin esto el
+     cambio es un corte seco. Si se toca otra pestana antes de que termine, el
+     temporizador se reemplaza y manda la ultima: nunca quedan dos abiertas. */
+  if (saliendo && destino && saliendo !== destino && !menos) {
+    saliendo.classList.add('se-va');
+    clearTimeout(irASeccion._t);
+    irASeccion._t = setTimeout(mostrar, 150);
+  } else {
+    clearTimeout(irASeccion._t);
+    if (saliendo) saliendo.classList.remove('se-va');
+    mostrar();
+  }
 }
 
 function montarSecciones() {
