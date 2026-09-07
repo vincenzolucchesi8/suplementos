@@ -152,6 +152,22 @@ function pendientesDelDia(ctx) {
   return n;
 }
 
+/* Los avisos que el servidor sabe mandar, con su hora. Tiene que ir a la par
+   de AVISOS en avisos.js: si se agrega uno alla y no aca, el telefono lo
+   muestra en la lista y no suena nunca. */
+const POR_DEFECTO = {
+  ayunas: { on: true, hora: '07:00' },
+  desayuno: { on: true, hora: '08:00' },
+  media: { on: true, hora: '11:00' },
+  almuerzo: { on: true, hora: '13:00' },
+  agua: { on: true, hora: '16:00' },
+  merienda: { on: true, hora: '17:30' },
+  cena: { on: true, hora: '20:00' },
+  pesaje: { on: true, hora: '07:00' },
+  compras: { on: true, hora: '18:00' },
+  cierre: { on: true, hora: '21:30' },
+};
+
 function tocaHoy(avisoId, ctx) {
   const def = { pesaje: 'miercoles', compras: 'finSemana' }[avisoId] || 'diario';
   if (def === 'miercoles') return ctx.dow === 3;
@@ -200,8 +216,14 @@ module.exports = async (req, res) => {
 
     const pendientes = [];
 
+    /* La configuracion guardada solo tiene los avisos que existian cuando el
+       telefono la mando por ultima vez. Un aviso NUEVO no estaria ahi y no se
+       mandaria nunca, sin error y sin forma de notarlo: se rellena con su hora
+       por defecto hasta que el telefono empuje la config otra vez. */
+    const cfg = Object.assign({}, POR_DEFECTO, s.cfg || {});
+
     // Avisos de la agenda
-    Object.entries(s.cfg || {}).forEach(([avisoId, c]) => {
+    Object.entries(cfg).forEach(([avisoId, c]) => {
       if (!c || c.on === false) return;
       const h = aMinutos(c.hora);
       if (h === null) return;
