@@ -51,6 +51,19 @@
 
     proteinaPolvoMax: 3,   // "no tiene por que ser diario"
 
+    /* Alexia lo pide en su ultima pagina: "estar atento a las sensaciones
+       corporales (hinchazon, ligereza) y animicas (vitalidad, bajones de
+       energia)". Se pregunta al final del dia, que es cuando se puede
+       responder: a las 8 de la manana nadie sabe como le fue. */
+    sensaciones: {
+      desdeHora: 18,
+      aspectos: [
+        { id: 'energia', name: 'Energía', opciones: ['Baja', 'Normal', 'Alta'] },
+        { id: 'digestion', name: 'Digestión', opciones: ['Pesada', 'Normal', 'Ligera'] },
+        { id: 'sueno', name: 'Sueño', opciones: ['Malo', 'Normal', 'Bueno'] },
+      ],
+    },
+
     // Suplementos por tramo del programa
     fases: [
       { nombre: 'Arranque', desde: 1, hasta: 5, nota: 'Estás en el arranque. La berberina va suave (solo 1 al día) para que tu estómago se acostumbre antes de pasar a dos tomas.', items: [
@@ -80,6 +93,9 @@
     const base = JSON.parse(JSON.stringify(PLAN_DEFECTO));
     if (!p || typeof p !== 'object') return base;
     const out = Object.assign(base, p);
+    if (!out.sensaciones || !Array.isArray(out.sensaciones.aspectos) || !out.sensaciones.aspectos.length) {
+      out.sensaciones = base.sensaciones;
+    }
     ['raciones', 'permisos', 'semanales', 'fases'].forEach(k => {
       if (!Array.isArray(out[k]) || !out[k].length) out[k] = base[k];
     });

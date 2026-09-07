@@ -62,8 +62,19 @@ function resumenDelPeriodo(hasta) {
     semanas.push(fila);
   }
 
+  // Como se sintio: lo que Alexia pide mirar y hasta ahora no se registraba
+  const sens = ((PLAN.sensaciones || {}).aspectos || []).map(a => {
+    const cuentas = a.opciones.map(() => 0);
+    let respondidos = 0;
+    dias.forEach(d => {
+      const v = parseInt(localStorage.getItem(`${dsDiaG(d)}:F:${a.id}`) || '', 10);
+      if (v >= 1 && v <= a.opciones.length) { cuentas[v - 1]++; respondidos++; }
+    });
+    return { name: a.name, opciones: a.opciones, cuentas, respondidos };
+  }).filter(a => a.respondidos > 0);
+
   return {
-    dias: dias.length, sinRegistro, desde: dsDiaG(1), hasta: dsDiaG(hasta),
+    dias: dias.length, sinRegistro, desde: dsDiaG(1), hasta: dsDiaG(hasta), sens,
     objetivos: [
       { que: 'Las 3 comidas principales', n: tresComidas, pct: pct(tresComidas),
         nota: 'desayuno, almuerzo y cena' },
@@ -124,10 +135,10 @@ function generarInforme(devolver) {
       doc.text(o.nota, COL_NOTA, y);
     }
     doc.setFont('helvetica', 'normal').setFontSize(9).setTextColor(...GRIS);
-    doc.text(`${o.n} de ${R.dias} días`, ANCHO - M - 24, y, { align: 'right' });
+    doc.text(`${o.n} de ${R.dias} días`, ANCHO - M - 27, y, { align: 'right' });
 
     // La barra dice de un vistazo lo que el numero dice exacto
-    const x0 = ANCHO - M - 21, ancho = 12;
+    const x0 = ANCHO - M - 24, ancho = 12;
     doc.setFillColor(232, 238, 245);
     doc.roundedRect(x0, y - 2.6, ancho, 3.2, 1.6, 1.6, 'F');
     if (o.pct > 0) {
@@ -198,6 +209,22 @@ function generarInforme(devolver) {
     doc.text(`${p}%`, ANCHO - M, y, { align: 'right' });
     y += 6.4;
   });
+
+  // ---- Como te sentiste
+  if (R.sens.length) {
+    y += 4;
+    titulo('Cómo te sentiste', 'lo que anotaste al cerrar el día');
+    R.sens.forEach(a => {
+      doc.setFont('helvetica', 'normal').setFontSize(9.5).setTextColor(...TINTA);
+      doc.text(a.name, M + 1, y);
+      const partes = a.opciones.map((op, i) => `${op} ${a.cuentas[i]}`).join('   ');
+      doc.setFont('helvetica', 'normal').setFontSize(9).setTextColor(...GRIS);
+      doc.text(partes, M + 45, y);
+      doc.setFont('helvetica', 'normal').setFontSize(8.5).setTextColor(...GRIS);
+      doc.text(`${a.respondidos} de ${R.dias} días`, ANCHO - M, y, { align: 'right' });
+      y += 6.4;
+    });
+  }
 
   // ---- Pie
   doc.setFont('helvetica', 'normal').setFontSize(7.5).setTextColor(...GRIS);

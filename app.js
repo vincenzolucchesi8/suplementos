@@ -256,6 +256,7 @@ function render(){
 
   renderHoy();
   renderPermisos();
+  renderSensaciones();
   renderSemana();
   renderPeso();
   renderFases();
@@ -397,6 +398,51 @@ function renderHoy(){
   const o = obligatorio(selDia);
   document.getElementById('contador').textContent = `${o.hechos} de ${o.total}`;
   document.getElementById('doneMsg').style.display = (o.hechos===o.total && o.total>0) ? 'flex':'none';
+}
+
+/* Como te sentiste. Aparece al final del dia porque a las 8 de la manana
+   nadie puede responderlo, y se queda visible si ya hay algo respondido o si
+   estas mirando un dia pasado. */
+function horaLima(){
+  const h = new Date().toLocaleString('en-GB', {timeZone:'America/Lima', hour:'2-digit', hour12:false});
+  return parseInt(h, 10);
+}
+function renderSensaciones(){
+  const card = document.getElementById('sensCard');
+  const cont = document.getElementById('sensBody');
+  if(!card || !cont) return;
+  const cfg = (PLAN.sensaciones || {});
+  const aspectos = cfg.aspectos || [];
+  const respondido = aspectos.some(a => !!localStorage.getItem(`${selDate}:F:${a.id}`));
+  const toca = selDate !== HOY || respondido || horaLima() >= (cfg.desdeHora || 18);
+  card.hidden = !toca || !aspectos.length;
+  if(card.hidden) return;
+
+  const cuenta = document.getElementById('sensCount');
+  const hechos = aspectos.filter(a => !!localStorage.getItem(`${selDate}:F:${a.id}`)).length;
+  if(cuenta) cuenta.textContent = `${hechos} de ${aspectos.length}`;
+
+  cont.innerHTML = '';
+  aspectos.forEach(a=>{
+    const key = `${selDate}:F:${a.id}`;
+    const val = localStorage.getItem(key);
+    const fila = document.createElement('div');
+    fila.className = 'sens' + (val ? ' on' : '');
+    fila.innerHTML = `<span class="sens-nom">${a.name}</span>`;
+    const seg = document.createElement('div');
+    seg.className = 'seg';
+    a.opciones.forEach((op, i)=>{
+      const n = String(i+1);
+      const bt = document.createElement('button');
+      bt.type='button'; bt.textContent = op;
+      bt.className = val===n ? 'on' : '';
+      bt.setAttribute('aria-pressed', val===n ? 'true':'false');
+      bt.onclick = ()=>{ setMark(key, val===n ? '0' : n); render(); };
+      seg.appendChild(bt);
+    });
+    fila.appendChild(seg);
+    cont.appendChild(fila);
+  });
 }
 
 function tapUnit(id, i, cap){
@@ -648,7 +694,7 @@ function reiniciar(){
     else location.reload();
   }
 }
-document.getElementById('ver').textContent = 'Versión 10 · ' + HOY;
+document.getElementById('ver').textContent = 'Versión 11 · ' + HOY;
 render();
 fullSync();
 
