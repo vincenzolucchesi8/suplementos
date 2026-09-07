@@ -697,11 +697,16 @@ function tapUnit(id, i, cap){
 
 // Card "Tus permisos": lo que se gasta sin pasarse
 const CAP_P = p => p.tope + 3;   // margen para registrar un exceso
+/* Los permisos de HOY. Los que se cuentan por semana (la Coca zero, comer
+   fuera) se fueron a la card "Esta semana" de Progreso, que es donde ya vive
+   todo lo semanal. Mezclados aqui no se entendian: veias tres fichas y dos
+   estaban apagadas porque las gastaste el martes, cosa que desde el jueves no
+   hay como adivinar ni como corregir. Si es de la semana, se ve en la semana. */
 function renderPermisos(){
   const cont = document.getElementById('permisos');
   cont.innerHTML = '';
   let libres = 0, total = 0;
-  PERMISOS.forEach(p=>{
+  PERMISOS.filter(p=>p.ciclo!=='semana').forEach(p=>{
     const cap    = CAP_P(p);
     const esSemana = p.ciclo==='semana';
     const usados = esSemana ? semanaCount(selSemana(),'P',p.id,cap) : diaCount(selDate,'P',p.id,cap);
@@ -729,7 +734,8 @@ function renderPermisos(){
     el.innerHTML = `<div class="perm-info"><div class="perm-name">${p.name}</div><div class="perm-sub">${sub}</div></div><div class="toks">${toks}</div>`;
     cont.appendChild(el);
   });
-  document.getElementById('permCount').textContent = `${libres} disponibles`;
+  document.getElementById('permCount').textContent =
+    total ? `${libres} de ${total} hoy` : '';
 }
 // Tocar una ficha libre gasta el permiso; tocar una ya gastada hoy lo devuelve.
 function tapPerm(id, i){
@@ -751,6 +757,24 @@ function renderSemana(){
   const d1 = dsDiaG((w-1)*7+1), d7 = dsDiaG(w*7);
   const f = s => s.slice(8)+'/'+s.slice(5,7);
   document.getElementById('wkRange').textContent = `Semana ${w} · ${f(d1)} al ${f(d7)}`;
+
+  /* Y al final, los permisos que se cuentan por semana. Van con la misma
+     forma que las frecuencias porque son lo mismo visto al reves: una es un
+     minimo que hay que alcanzar y el otro un tope que no hay que pasar. */
+  const filaSemanal = (nombre, nota, n, tope, onMas, onMenos, esTope) => {
+    const over = esTope && n > tope;
+    const el = document.createElement('div');
+    el.className = 'wk' + (over ? ' over' : (esTope ? (n <= tope && n > 0 ? ' ok' : '') : (n >= tope ? ' ok' : '')));
+    el.innerHTML =
+      `<div class="wk-info"><div class="wk-name">${nombre}</div><div class="wk-goal">${nota}</div></div>`+
+      `<div class="wk-ctrl"><span class="wk-val">${n} / ${tope}</span><div class="stepper">`+
+        `<button class="st" ${n<=0?'disabled':''} data-m="1" aria-label="Quitar uno a ${nombre}">−</button>`+
+        `<button class="st" data-p="1" aria-label="Sumar uno a ${nombre}">+</button>`+
+      `</div></div>`;
+    el.querySelector('[data-m]').onclick = onMenos;
+    el.querySelector('[data-p]').onclick = onMas;
+    return el;
+  };
 
   SEMANALES.forEach(s=>{
     const cap = (s.alto||s.meta)+3;
@@ -776,6 +800,21 @@ function renderSemana(){
         `</div>`+
       `</div>`;
     cont.appendChild(el);
+  });
+
+  PERMISOS.filter(p=>p.ciclo==='semana').forEach(p=>{
+    const cap = CAP_P(p);
+    const usados = semanaCount(w,'P',p.id,cap);
+    const nota = usados > p.tope ? `Te pasaste por ${usados-p.tope}` : p.sub;
+    cont.appendChild(filaSemanal(p.name, nota, usados, p.tope,
+      ()=>{ bump(selDate,'P',p.id,cap,+1); render(); },
+      ()=>{ // se quita del dia elegido, y si ahi no hay, del ultimo de la semana que tenga
+        const dias = diasDeSemana(w).filter(ds=>ds<=HOY);
+        for(const ds of [selDate, ...dias.slice().reverse()]){
+          if(diaCount(ds,'P',p.id,cap)>0){ bump(ds,'P',p.id,cap,-1); break; }
+        }
+        render();
+      }, true));
   });
 }
 function tapWk(id, cap, delta){
@@ -1051,7 +1090,7 @@ function reiniciar(){
   else location.reload();
 }
 document.getElementById('btnReset').onclick = reiniciar;
-document.getElementById('ver').textContent = 'Versión 19 · ' + HOY;
+document.getElementById('ver').textContent = 'Versión 20 · ' + HOY;
 render();
 fullSync();
 

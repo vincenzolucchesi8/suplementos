@@ -541,12 +541,9 @@ function abrirHojaDia(dia) {
       bloque.appendChild(filaOpcion(m, comida, true, [], () => abrirHojaOpciones(dia, comida)));
       cont.appendChild(bloque);
     });
-    const ver = document.createElement('div');
-    ver.className = 'btns';
-    ver.style.marginTop = '20px';
-    ver.innerHTML = `<button class="btn btn-s" type="button" style="flex:1">Ver este día en Hoy</button>`;
-    ver.querySelector('button').onclick = () => { cerrarHoja(); jumpDay(dia); irASeccion('hoy'); };
-    cont.appendChild(ver);
+    /* Aqui habia un "Ver este día en Hoy" que no tenia sentido: jumpDay recorta
+       al dia de hoy, asi que tocarlo en un dia futuro -- que es cuando se
+       abre este panel -- te llevaba a hoy y parecia que no hacia nada. */
     cont.insertAdjacentHTML('beforeend',
       `<div class="sheet-nota"><p>Toca un plato para cambiarlo. Lo que elijas manda en la lista de compras y en el PDF.</p></div>`);
   });

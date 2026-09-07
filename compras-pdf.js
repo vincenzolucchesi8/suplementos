@@ -162,7 +162,8 @@ function generarPDF(w1, w2, devolver) {
 
   const nombre = `Compras ${fechaLarga(desde)} al ${fechaLarga(hasta)}.pdf`.replace(/\s+/g, ' ');
   if (devolver) return { cuantos, semanas, nombre, datos: doc.output('datauristring') };
-  doc.save(nombre);
+  // en el iPhone instalado no se puede descargar: se comparte
+  entregarPDF(doc, nombre);
   return { cuantos, semanas, nombre };
 }
 

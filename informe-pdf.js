@@ -249,7 +249,8 @@ function generarInforme(devolver) {
 
   const nombre = `Informe consulta ${R.hasta}.pdf`;
   if (devolver) return { nombre, resumen: R, datos: doc.output('datauristring') };
-  doc.save(nombre);
+  // en el iPhone instalado no se puede descargar: se comparte
+  entregarPDF(doc, nombre);
   return { nombre, resumen: R };
 }
 

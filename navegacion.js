@@ -112,6 +112,10 @@ function irASeccion(nombre, opciones) {
     if (!opciones || opciones.scroll !== false) window.scrollTo({ top: 0, behavior: 'auto' });
     // La lista de compras se pinta al entrar, no antes: es la vista mas cara
     if (nombre === 'comidas' && typeof renderNutricion === 'function') renderNutricion();
+    /* La libreria de PDF se pide al entrar a las secciones que la usan, en
+       tiempo muerto. Pedirla al tocar el boton rompia el primer PDF de cada
+       sesion: el await se come la activacion del toque. */
+    if ((nombre === 'comidas' || nombre === 'progreso') && typeof precargarPDF === 'function') precargarPDF();
     // La cascada va DESPUES de pintar: si corre antes, las celdas del mes
     // todavia no existen y nacen sin retraso, o sea todas a la vez.
     // Y comparte el reflujo con entradaEscalonada: dos reflujos sincronos

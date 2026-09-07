@@ -117,7 +117,8 @@ function generarMenuPDF(desde, hasta, devolver) {
   pie();
   const nombre = `Menú ${fechaLarga(dias[0].ds)} al ${fechaLarga(dias[dias.length - 1].ds)}.pdf`;
   if (devolver) return { nombre, dias: dias.length, datos: doc.output('datauristring') };
-  doc.save(nombre);
+  // en el iPhone instalado no se puede descargar: se comparte
+  entregarPDF(doc, nombre);
   return { nombre, dias: dias.length };
 }
 
