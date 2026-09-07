@@ -914,6 +914,10 @@ function toggleComer(){
       `<ul>${s.lo.map(x=>`<li>${x}</li>`).join('')}</ul></div>`
     ).join('');
   }
+  if(!open){
+    if(typeof escalonar === 'function') escalonar(body, 60);
+    if(typeof desplegar === 'function') desplegar(body);
+  }
 }
 
 /* Habia un boton flotante con un check que marcaba el dia entero de un toque.

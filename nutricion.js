@@ -497,7 +497,11 @@ function toggleCompras() {
   const abierto = b.getAttribute('aria-expanded') === 'true';
   b.setAttribute('aria-expanded', abierto ? 'false' : 'true');
   body.hidden = abierto;
-  if (!abierto) renderCompras();
+  if (!abierto) {
+    renderCompras();
+    if (typeof escalonar === 'function') escalonar(body, 60);
+    if (typeof desplegar === 'function') desplegar(body);
+  }
 }
 
 /* Se engancha al render principal del tablero */

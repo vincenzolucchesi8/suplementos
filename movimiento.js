@@ -99,6 +99,11 @@ const CASCADAS = [
   ['.avi-row', 45],
   ['.frec', 70],
   ['.ficha', 90],
+  ['.opt', 40],                 // las opciones de plato, en la hoja
+  ['.buy-item', 22],            // la lista de compras
+  ['.rec', 70],
+  ['.dish-part', 80],
+  ['.cell', 6],                 // el mapa de constancia
 ];
 
 function escalonar(raiz, base) {
@@ -114,6 +119,24 @@ function escalonar(raiz, base) {
   clearTimeout(raiz._cae);
   // rescate: si algo no llegara a animarse, no puede quedarse invisible
   raiz._cae = setTimeout(() => raiz.classList.remove('cae'), 2000);
+}
+
+/* Despliega un bloque que acaba de dejar de estar hidden. El alto se mide
+   DESPUES de mostrarlo, que es cuando existe de verdad: con hidden puesto,
+   scrollHeight da 0 y la animacion iria de cero a cero. */
+function desplegar(el) {
+  if (!el || el.hidden || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // Un bloque muy largo (la lista de compras mide 2.600 px) desplegandose en
+  // 340 ms cambia el alto del documento a una velocidad que hace saltar el
+  // scroll, y ademas solo se ve la parte de arriba. Pasado el alto de la
+  // pantalla, entra solo con la cascada de sus filas.
+  if (el.scrollHeight > innerHeight) return;
+  el.style.setProperty('--alto', el.scrollHeight + 'px');
+  el.classList.remove('abriendo');
+  void el.offsetWidth;
+  el.classList.add('abriendo');
+  clearTimeout(el._abre);
+  el._abre = setTimeout(() => { el.classList.remove('abriendo'); el.style.removeProperty('--alto'); }, 460);
 }
 
 /* ---------------------------------------------------------------------------

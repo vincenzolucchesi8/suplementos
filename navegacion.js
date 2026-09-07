@@ -76,6 +76,8 @@ function pintarHoja() {
   body.innerHTML = '';
   paso.pintar(body);
   body.scrollTop = 0;
+  // el contenido de la hoja entra como una secuencia, no de golpe
+  if (typeof escalonar === 'function') escalonar(body, 60);
 }
 
 function abrirHoja(titulo, pintar) {
