@@ -1,5 +1,5 @@
 // Dia 1 del programa (igual que el recordatorio de Slack)
-const INICIO = '2026-09-01';
+const INICIO = PLAN.inicio;   // sale del plan, ya no esta cableado
 const HOY = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Lima' });
 const diaPrograma = Math.floor((Date.parse(HOY + 'T00:00:00Z') - Date.parse(INICIO + 'T00:00:00Z')) / 86400000) + 1;
 const semana = Math.ceil(diaPrograma / 7);
@@ -33,8 +33,8 @@ const IC_LEAF = '<svg viewBox="0 0 24 24"><path d="M4 20c0-8 6-14 16-15 0 10-5 1
 const mealIcon = m => m==='Desayuno' ? IC_DAWN : (m==='Almuerzo' ? IC_SUN : IC_MOON);
 
 /* ---------------- Suplementos: protocolo Longevity 01 ---------------- */
-// Las fases viven en protocolo-lib.js: el servidor las necesita para los avisos
-const suplDeDia = dia => ProtocoloLib.suplDeDia(dia);
+// Las fases salen del plan, que tambien lee el servidor para armar los avisos
+const suplDeDia = dia => PlanLib.suplDeDia(PLAN, dia);
 
 /* ---------------- Nutricion: plan de Alexia Macher ---------------- */
 // Comidas y verduras: se marcan. Cuentan para el anillo del dia.
@@ -46,56 +46,29 @@ const COMIDAS = [
   {meal:'Cena', name:'Verduras en la cena', dose:'Al menos ⅓ del plato', tag:'⅓', id:'v3'},
 ];
 
-// Raciones que se llenan. El agua cuenta para el anillo al llegar a la meta.
-const RACIONES = [
-  {id:'agua', name:'Agua', meta:6, extra:2, unit:IC_DROP, hint:'ideal 8', anillo:true},
-  {id:'inf',  name:'Infusión',      meta:1, extra:0, unit:IC_LEAF, hint:'', anillo:false},
-  {id:'fs',   name:'Frutos secos o palta', meta:1, extra:1, unit:IC_LEAF, hint:'hasta 2', anillo:false},
-];
+// Raciones, permisos y frecuencias salen del plan. El icono es lo unico que no
+// viaja en el documento: es cosa de la interfaz, no del plan.
+const ICONOS = { gota: IC_DROP, hoja: IC_LEAF };
+const RACIONES = PLAN.raciones.map(r => ({ ...r, unit: ICONOS[r.icono] || IC_DROP }));
+const PERMISOS = PLAN.permisos;
+const SEMANALES = PLAN.semanales;
 
-// Permisos: se gastan sin pasarse. Nunca suman al anillo.
-const PERMISOS = [
-  {id:'postre', name:'Postre o dulce',   tope:1, ciclo:'dia',    sub:'1 al día'},
-  {id:'choco',  name:'Chocolate >70%',   tope:2, ciclo:'dia',    sub:'máximo 2 al día'},
-  {id:'coca',   name:'Coca zero',        tope:3, ciclo:'semana', sub:'3 por semana'},
-  {id:'fuera',  name:'Comer fuera', tope:2, ciclo:'semana', sub:'1 o 2 por semana'},
-];
-
-// Frecuencias de la semana. tipo 'min' = meta a alcanzar; 'max' = tope a no cruzar.
-const SEMANALES = [
-  {id:'pesc',  name:'Pescado',            tipo:'min', meta:3, alto:4, goal:'3 a 4 días · se llena con el menú'},
-  {id:'menes', name:'Menestras o quinoa', tipo:'min', meta:2, alto:3, goal:'2 a 3 días · se llena con el menú'},
-  {id:'fuerza',name:'Entrenamiento de fuerza', tipo:'min', meta:3, alto:5, goal:'rutina semanal'},
-  {id:'roja',  name:'Carne roja',         tipo:'max', meta:2, goal:'máximo 2 veces · se llena con el menú'},
-];
-
-const refFases = [
-  {nombre:'Arranque', when:'Día 1 a 5', rango:[1,5], lo:[
-    'Complejo de vitaminas: 1 cápsula con el almuerzo',
-    'Berberina: solo 1 cápsula al día (tolerancia)',
-    'Omega 3: 2 softgels en el almuerzo y 2 en la cena',
-  ]},
-  {nombre:'Dosis completa', when:'Día 6 a semana 8', rango:[6,56], lo:[
-    'Complejo de vitaminas: 1 cápsula con el almuerzo',
-    'Berberina: 1 en el almuerzo y 1 en la cena',
-    'Omega 3: 2 softgels en el almuerzo y 2 en la cena',
-  ]},
-  {nombre:'Solo vitaminas', when:'Semana 9 a 12', rango:[57,84], lo:[
-    'Complejo de vitaminas: 1 cápsula con el almuerzo',
-    'El Omega 3 y la berberina ya cumplieron sus 8 semanas',
-  ]},
-  {nombre:'Control médico', when:'Semana 12', rango:[85,99999], lo:[
-    'Repetir análisis (vitamina D, B12, homocisteína, triglicéridos, insulina)',
-    'Ajustar con el médico. Alexia mantiene el complejo diario',
-  ]},
-];
-
-const notas = {
-  'Fase 1':'Estás en el arranque. La berberina va suave (solo 1 al día) para que tu estómago se acostumbre antes de pasar a dos tomas.',
-  'Fase 2':'Dosis completa. Toma todo con las comidas principales: el complejo necesita algo de grasa para absorber bien la vitamina D3.',
-  'Fase 3':'El Omega 3 y la berberina ya cumplieron sus 8 semanas. Desde acá sigue solo el complejo de vitaminas.',
-  'Fase 4':'Toca repetir análisis y ajustar el plan con tu médico. Alexia mantiene el complejo diario, el protocolo lo bajaba a 2 o 3 veces por semana: eso se define en consulta.',
-};
+// La linea de fases y su nota salen del plan: describir los suplementos en dos
+// lugares distintos garantiza que un dia digan cosas diferentes.
+const refFases = PLAN.fases.map(f => {
+  const porNombre = {};
+  (f.items || []).forEach(it => {
+    (porNombre[it.name] = porNombre[it.name] || { dose: it.dose, comidas: [] }).comidas.push(it.meal);
+  });
+  return {
+    nombre: f.nombre,
+    when: f.hasta > 9000 ? `Desde el día ${f.desde}` : `Día ${f.desde} a ${f.hasta}`,
+    rango: [f.desde, f.hasta],
+    lo: Object.entries(porNombre).map(([n, d]) =>
+      `${n}: ${d.dose} en ${d.comidas.map(c => c.toLowerCase()).join(' y ')}`),
+  };
+});
+const notas = PLAN.fases.reduce((a, f) => (a[f.nombre] = f.nota || '', a), {});
 
 // Referencia del plan: las opciones tal como las dejó la nutricionista
 const QUE_COMER = [
@@ -144,32 +117,6 @@ const RING_CIRC = 339.29;
 const DIA_SEMANA = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
 
 // ---------- Sincronizacion entre dispositivos ----------
-/* La sincronizacion ya no va a Supabase: el free tier pausaba el proyecto y el
-   tablero se quedaba en modo local sin avisar. Ahora escribe contra la API
-   propia, en un almacenamiento privado que no se pausa. El formato de claves
-   y el merge por ultima escritura son los mismos, asi nada de lo ya marcado
-   se pierde en la mudanza. */
-const API = '/api';
-
-// La casa del tablero es protocolo.papelito.online. La direccion vieja de
-// GitHub Pages sigue viva pero sin API, asi que manda a la nueva.
-if(location.hostname.endsWith('github.io')){
-  location.replace('https://protocolo.papelito.online/' + location.hash);
-}
-
-// Clave del tablero. Llega una vez por el enlace (#k=...) y queda guardada.
-function tokenApp(){
-  const m = /[#&]k=([^&]+)/.exec(location.hash||'');
-  if(m){
-    localStorage.setItem('app_token', decodeURIComponent(m[1]));
-    history.replaceState(null,'',location.pathname+location.search);
-  }
-  return localStorage.getItem('app_token') || '';
-}
-const TOKEN = tokenApp();
-const cabeceras = () => Object.assign({'Content-Type':'application/json'}, TOKEN ? {'x-token':TOKEN} : {});
-const cloudOn = () => true;
-
 const DKEY = /^\d{4}-\d{2}-\d{2}:/;
 const metaLoad = () => { try { return JSON.parse(localStorage.getItem('__sync_meta')||'{}'); } catch(e){ return {}; } };
 const metaSave = m => localStorage.setItem('__sync_meta', JSON.stringify(m));
@@ -315,6 +262,7 @@ function render(){
   renderHeat();
   if(typeof renderNutricion === 'function') renderNutricion();
   if(typeof montarBotonInforme === 'function') montarBotonInforme();
+  if(typeof montarCardPlan === 'function') montarCardPlan();
   if(typeof renderAvisos === 'function') renderAvisos();
 }
 

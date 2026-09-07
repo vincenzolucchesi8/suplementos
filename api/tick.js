@@ -7,9 +7,9 @@
    hiciste la cosa es exactamente lo que hace que la gente apague los avisos. */
 const webpush = require('web-push');
 const MenuLib = require('../menu-lib.js');
-const ProtocoloLib = require('../protocolo-lib.js');
+const PlanLib = require('../plan-lib.js');
 const MENU = require('../menu/menu.json');
-const { listarSubs, borrarSub, leerTick, guardarTick, leerEstado } = require('./_almacen');
+const { listarSubs, borrarSub, leerTick, guardarTick, leerEstado, leerPlan } = require('./_almacen');
 
 const TOLERANCIA_MIN = 90;   // si el cron estuvo caido mas de esto, no se dispara tarde
 
@@ -42,7 +42,7 @@ const vasosDeAgua = (estado, fecha) => {
 /* Arma el texto y los botones de cada aviso. Devuelve null si hoy no toca. */
 function armar(avisoId, ctx) {
   const { fecha, dia, comidas, estado } = ctx;
-  const supl = ProtocoloLib.suplDeDia(dia).items;
+  const supl = PlanLib.suplDeDia(ctx.plan, dia).items;
   const listaSupl = m => supl.filter(s => s.meal === m).map(s => `${s.name} (${s.dose})`).join(', ');
   const clavesSupl = m => supl.filter(s => s.meal === m).map(s => `${fecha}:${m}:${s.id}`);
 
@@ -144,6 +144,8 @@ module.exports = async (req, res) => {
   const datos = await leerTick();
   const subs = await listarSubs();
   const estado = await leerEstado();
+  // Las fases y la fecha de arranque salen del plan guardado, no del codigo
+  const plan = PlanLib.normalizar(await leerPlan());
   const ahora = new Date();
   const enviados = datos.enviados || {};
   const mandados = [];
@@ -153,14 +155,14 @@ module.exports = async (req, res) => {
   for (const s of subs) {
     const zona = s.zona || 'America/Lima';
     const { fecha, minutos, dow } = enZona(zona, ahora);
-    const inicio = s.inicio || '2026-09-01';
+    const inicio = plan.inicio || s.inicio || '2026-09-01';
     const dia = Math.floor((Date.parse(fecha + 'T00:00:00Z') - Date.parse(inicio + 'T00:00:00Z')) / 86400000) + 1;
     const off = c => {
       const v = estado[`${fecha}:MO:${c}`];
       return v && v.v ? (parseInt(v.v, 10) || 0) : 0;
     };
     const comidas = dia > 0 ? MenuLib.resolverDia(MENU, dia, off) : null;
-    const ctx = { fecha, dia, dow, comidas, estado };
+    const ctx = { fecha, dia, dow, comidas, estado, plan };
 
     const pendientes = [];
 

@@ -1,5 +1,5 @@
 {
- "generado": "2026-09-06",
+ "generado": "2026-09-07",
  "fuente": "Plan nutricional de Alexia Macher, 1-09-2026",
  "reglas": {
   "pescadoMin": 3,
@@ -10,6 +10,23 @@
   "cerealMax": 3,
   "proteinaPolvoMax": 3
  },
+ "variedad": {
+  "almuerzo": {
+   "pollo": 3,
+   "pescado": 3,
+   "atun": 1,
+   "carne": 2
+  },
+  "cena": {
+   "pollo": 3,
+   "pescado": 2,
+   "carne": 2,
+   "huevos": 3
+  },
+  "omeletteMin": 1,
+  "huevoDesMin": 1
+ },
+ "semilla": 20260906,
  "cats": {
   "proteina": "Carnes y pescado",
   "verduras": "Verduleria",
@@ -463,6 +480,1072 @@
     "paso": 1
    }
   }
+ },
+ "catalogo": {
+  "DESAYUNOS": [
+   {
+    "id": "d_omelette_esp",
+    "t": "Omelette de 3 huevos con mozzarella y espinaca",
+    "d": "Con media palta pequeña y 1 paquete de salmas si te provoca",
+    "tags": [
+     "huevos"
+    ],
+    "ing": [
+     [
+      "huevo",
+      3
+     ],
+     [
+      "mozzarella",
+      2
+     ],
+     [
+      "espinaca",
+      1
+     ],
+     [
+      "palta",
+      0.5
+     ]
+    ]
+   },
+   {
+    "id": "d_omelette_champ",
+    "t": "Omelette de 3 huevos con mozzarella y champiñones",
+    "d": "Con media palta pequeña y 1 paquete de salmas si te provoca",
+    "tags": [
+     "huevos"
+    ],
+    "ing": [
+     [
+      "huevo",
+      3
+     ],
+     [
+      "mozzarella",
+      2
+     ],
+     [
+      "champinon",
+      1
+     ],
+     [
+      "palta",
+      0.5
+     ]
+    ]
+   },
+   {
+    "id": "d_revueltos_pavo",
+    "t": "Huevos revueltos con pavo",
+    "d": "3 huevos con 2 lonchas de pavo, media palta pequeña y 1 fruta",
+    "tags": [
+     "huevos",
+     "fruta"
+    ],
+    "ing": [
+     [
+      "huevo",
+      3
+     ],
+     [
+      "pavo_lonchas",
+      2
+     ],
+     [
+      "palta",
+      0.5
+     ],
+     [
+      "manzana",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "d_revueltos_jamón",
+    "t": "Huevos revueltos con jamón cocido",
+    "d": "3 huevos con 2 lonchas de jamón, media palta pequeña y 1 fruta",
+    "tags": [
+     "huevos",
+     "fruta"
+    ],
+    "ing": [
+     [
+      "huevo",
+      3
+     ],
+     [
+      "jamon_lonchas",
+      2
+     ],
+     [
+      "palta",
+      0.5
+     ],
+     [
+      "mandarina",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "d_wrap_pollo",
+    "t": "Wrap integral de pollo deshilachado",
+    "d": "Con media palta, tomate en rodajas, lechuga, 1 punto de mayonesa light y 1 fruta",
+    "tags": [
+     "pollo",
+     "fruta"
+    ],
+    "ing": [
+     [
+      "wrap",
+      1
+     ],
+     [
+      "pollo_deshila",
+      80
+     ],
+     [
+      "palta",
+      0.5
+     ],
+     [
+      "tomate",
+      0.5
+     ],
+     [
+      "lechuga",
+      1
+     ],
+     [
+      "mayonesa",
+      1
+     ],
+     [
+      "manzana",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "d_batido_plátano",
+    "t": "Batido de proteína con plátano y maní",
+    "d": "1 vaso grande de leche, 1 scoop de proteína, 1 cda de chía o linaza, 1 plátano y 1 cdta de mantequilla de maní",
+    "tags": [
+     "proteina_polvo",
+     "fruta"
+    ],
+    "ing": [
+     [
+      "leche",
+      1
+     ],
+     [
+      "proteina",
+      1
+     ],
+     [
+      "chia",
+      1
+     ],
+     [
+      "platano",
+      1
+     ],
+     [
+      "mani",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "d_batido_lúcuma",
+    "t": "Batido de proteína con lúcuma",
+    "d": "1 vaso grande de leche, 1 scoop de proteína, 1 cda de chía o linaza y pulpa de lúcuma al gusto",
+    "tags": [
+     "proteina_polvo",
+     "fruta"
+    ],
+    "ing": [
+     [
+      "leche",
+      1
+     ],
+     [
+      "proteina",
+      1
+     ],
+     [
+      "chia",
+      1
+     ],
+     [
+      "lucuma",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "d_bowl_mango",
+    "t": "Bowl de yogurt proteico con granola y mango",
+    "d": "8 cdas de yogurt proteico, 3 cdas de granola y media taza de mango picado",
+    "tags": [
+     "lacteo",
+     "fruta"
+    ],
+    "ing": [
+     [
+      "yogurt_prot",
+      8
+     ],
+     [
+      "granola",
+      3
+     ],
+     [
+      "mango",
+      0.5
+     ]
+    ]
+   },
+   {
+    "id": "d_bowl_manzana",
+    "t": "Bowl de yogurt proteico con granola y manzana",
+    "d": "8 cdas de yogurt proteico, 3 cdas de granola y 1 manzana picada",
+    "tags": [
+     "lacteo",
+     "fruta"
+    ],
+    "ing": [
+     [
+      "yogurt_prot",
+      8
+     ],
+     [
+      "granola",
+      3
+     ],
+     [
+      "manzana",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "d_bowl_papaya",
+    "t": "Bowl de yogurt proteico con granola y papaya",
+    "d": "8 cdas de yogurt proteico, 3 cdas de granola y papaya picada",
+    "tags": [
+     "lacteo",
+     "fruta"
+    ],
+    "ing": [
+     [
+      "yogurt_prot",
+      8
+     ],
+     [
+      "granola",
+      3
+     ],
+     [
+      "papaya",
+      1
+     ]
+    ]
+   }
+  ],
+  "PROT_ALM": [
+   {
+    "id": "p_pollo_plancha",
+    "k": "pollo",
+    "corto": "Pollo a la plancha",
+    "t": "2 filetes medianos de pollo a la plancha",
+    "ing": [
+     [
+      "pollo_filete",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "p_pollo_horno",
+    "k": "pollo",
+    "corto": "Pollo al horno con hierbas",
+    "t": "2 filetes medianos de pollo al horno con hierbas",
+    "ing": [
+     [
+      "pollo_filete",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "p_pollo_sudado",
+    "k": "pollo",
+    "corto": "Pollo sudado con tomate y cebolla",
+    "t": "2 filetes medianos de pollo sudados con tomate y cebolla",
+    "ing": [
+     [
+      "pollo_filete",
+      2
+     ],
+     [
+      "tomate",
+      1
+     ],
+     [
+      "cebolla",
+      0.5
+     ]
+    ]
+   },
+   {
+    "id": "p_bonito",
+    "k": "pescado",
+    "corto": "Bonito a la plancha",
+    "t": "1 filete grande de bonito a la plancha",
+    "ing": [
+     [
+      "bonito",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_trucha",
+    "k": "pescado",
+    "corto": "Trucha al horno",
+    "t": "1 filete grande de trucha al horno",
+    "ing": [
+     [
+      "trucha",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_perico",
+    "k": "pescado",
+    "corto": "Perico a la plancha",
+    "t": "1 filete grande de perico a la plancha",
+    "ing": [
+     [
+      "perico",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_jurel",
+    "k": "pescado",
+    "corto": "Jurel al horno",
+    "t": "1 filete grande de jurel al horno",
+    "ing": [
+     [
+      "jurel",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_merluza",
+    "k": "pescado",
+    "corto": "Merluza al vapor",
+    "t": "1 filete grande de merluza al vapor",
+    "ing": [
+     [
+      "merluza",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_atun",
+    "k": "atun",
+    "corto": "Atún con huevo cocido",
+    "t": "1 lata de atún al natural y 1 huevo cocido",
+    "ing": [
+     [
+      "atun_lata",
+      1
+     ],
+     [
+      "huevo",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_res",
+    "k": "carne",
+    "corto": "Res a la plancha",
+    "t": "1 filete grande de res a la plancha",
+    "ing": [
+     [
+      "res_filete",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_lomo",
+    "k": "carne",
+    "corto": "Lomo a la plancha",
+    "t": "1 filete grande de lomo a la plancha",
+    "ing": [
+     [
+      "lomo_filete",
+      1
+     ]
+    ]
+   }
+  ],
+  "PROT_CEN": [
+   {
+    "id": "p_pollo_plancha",
+    "k": "pollo",
+    "corto": "Pollo a la plancha",
+    "t": "2 filetes medianos de pollo a la plancha",
+    "ing": [
+     [
+      "pollo_filete",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "p_pollo_horno",
+    "k": "pollo",
+    "corto": "Pollo al horno con hierbas",
+    "t": "2 filetes medianos de pollo al horno con hierbas",
+    "ing": [
+     [
+      "pollo_filete",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "p_pollo_sudado",
+    "k": "pollo",
+    "corto": "Pollo sudado con tomate y cebolla",
+    "t": "2 filetes medianos de pollo sudados con tomate y cebolla",
+    "ing": [
+     [
+      "pollo_filete",
+      2
+     ],
+     [
+      "tomate",
+      1
+     ],
+     [
+      "cebolla",
+      0.5
+     ]
+    ]
+   },
+   {
+    "id": "p_bonito",
+    "k": "pescado",
+    "corto": "Bonito a la plancha",
+    "t": "1 filete grande de bonito a la plancha",
+    "ing": [
+     [
+      "bonito",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_trucha",
+    "k": "pescado",
+    "corto": "Trucha al horno",
+    "t": "1 filete grande de trucha al horno",
+    "ing": [
+     [
+      "trucha",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_perico",
+    "k": "pescado",
+    "corto": "Perico a la plancha",
+    "t": "1 filete grande de perico a la plancha",
+    "ing": [
+     [
+      "perico",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_jurel",
+    "k": "pescado",
+    "corto": "Jurel al horno",
+    "t": "1 filete grande de jurel al horno",
+    "ing": [
+     [
+      "jurel",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_merluza",
+    "k": "pescado",
+    "corto": "Merluza al vapor",
+    "t": "1 filete grande de merluza al vapor",
+    "ing": [
+     [
+      "merluza",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_res",
+    "k": "carne",
+    "corto": "Res a la plancha",
+    "t": "1 filete grande de res a la plancha",
+    "ing": [
+     [
+      "res_filete",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "p_lomo",
+    "k": "carne",
+    "corto": "Lomo a la plancha",
+    "t": "1 filete grande de lomo a la plancha",
+    "ing": [
+     [
+      "lomo_filete",
+      1
+     ]
+    ]
+   }
+  ],
+  "CARB_ALM": [
+   {
+    "id": "c_quinoa",
+    "k": "quinoa",
+    "t": "1 taza de quinoa cocida",
+    "ing": [
+     [
+      "quinoa",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "c_lentejas",
+    "k": "menestras",
+    "t": "1 taza de lentejas cocidas",
+    "ing": [
+     [
+      "lenteja",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "c_garbanzos",
+    "k": "menestras",
+    "t": "1 taza de garbanzos cocidos",
+    "ing": [
+     [
+      "garbanzo",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "c_frejol",
+    "k": "menestras",
+    "t": "1 taza de frejol canario cocido",
+    "ing": [
+     [
+      "frejol",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "c_papa",
+    "k": "otro",
+    "t": "1 papa pequeña sancochada",
+    "ing": [
+     [
+      "papa",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "c_camote",
+    "k": "otro",
+    "t": "Medio camote mediano al horno",
+    "ing": [
+     [
+      "camote",
+      0.5
+     ]
+    ]
+   },
+   {
+    "id": "c_ñoquis",
+    "k": "otro",
+    "t": "1 taza de ñoquis",
+    "ing": [
+     [
+      "noquis",
+      1
+     ]
+    ]
+   }
+  ],
+  "CARB_CEN": [
+   {
+    "id": "cc_quinoa",
+    "k": "quinoa",
+    "t": "Tres cuartos de taza de quinoa cocida",
+    "ing": [
+     [
+      "quinoa",
+      0.75
+     ]
+    ]
+   },
+   {
+    "id": "cc_papa",
+    "k": "otro",
+    "t": "Media papa pequeña sancochada",
+    "ing": [
+     [
+      "papa",
+      0.5
+     ]
+    ]
+   },
+   {
+    "id": "cc_ñoquis",
+    "k": "otro",
+    "t": "Tres cuartos de taza de ñoquis",
+    "ing": [
+     [
+      "noquis",
+      0.75
+     ]
+    ]
+   }
+  ],
+  "GRASA_ALM": [
+   {
+    "id": "g_palta",
+    "t": "Media palta pequeña",
+    "ing": [
+     [
+      "palta",
+      0.5
+     ]
+    ]
+   },
+   {
+    "id": "g_aceitunas",
+    "t": "6 a 8 aceitunas",
+    "ing": [
+     [
+      "aceituna",
+      1
+     ]
+    ]
+   }
+  ],
+  "VERDURAS": [
+   {
+    "id": "v_mixta",
+    "t": "Ensalada de lechuga, tomate y pepino",
+    "ing": [
+     [
+      "lechuga",
+      1
+     ],
+     [
+      "tomate",
+      1
+     ],
+     [
+      "pepino",
+      0.5
+     ],
+     [
+      "aceite",
+      1
+     ],
+     [
+      "limon",
+      0.5
+     ]
+    ]
+   },
+   {
+    "id": "v_criolla",
+    "t": "Ensalada criolla de cebolla, tomate y limón",
+    "ing": [
+     [
+      "cebolla",
+      0.5
+     ],
+     [
+      "tomate",
+      1
+     ],
+     [
+      "limon",
+      1
+     ],
+     [
+      "aceite",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "v_brócoli",
+    "t": "Brócoli y zanahoria al vapor",
+    "ing": [
+     [
+      "brocoli",
+      1
+     ],
+     [
+      "zanahoria",
+      1
+     ],
+     [
+      "aceite",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "v_zapallito",
+    "t": "Zapallito italiano y vainitas salteados",
+    "ing": [
+     [
+      "zapallito",
+      1
+     ],
+     [
+      "vainita",
+      1
+     ],
+     [
+      "aceite",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "v_rúcula",
+    "t": "Ensalada de rúcula, tomate cherry y pepino",
+    "ing": [
+     [
+      "rucula",
+      1
+     ],
+     [
+      "cherry",
+      1
+     ],
+     [
+      "pepino",
+      0.5
+     ],
+     [
+      "aceite",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "v_esparrago",
+    "t": "Espárragos y zanahoria al horno",
+    "ing": [
+     [
+      "esparrago",
+      1
+     ],
+     [
+      "zanahoria",
+      1
+     ],
+     [
+      "aceite",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "v_coliflor",
+    "t": "Coliflor al horno con hojas verdes",
+    "ing": [
+     [
+      "coliflor",
+      1
+     ],
+     [
+      "lechuga",
+      1
+     ],
+     [
+      "aceite",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "v_betarraga",
+    "t": "Ensalada de betarraga rallada, lechuga y pepino",
+    "ing": [
+     [
+      "betarraga",
+      1
+     ],
+     [
+      "lechuga",
+      1
+     ],
+     [
+      "pepino",
+      0.5
+     ],
+     [
+      "aceite",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "v_espinaca",
+    "t": "Espinaca salteada con champiñones",
+    "ing": [
+     [
+      "espinaca",
+      1
+     ],
+     [
+      "champinon",
+      1
+     ],
+     [
+      "aceite",
+      1
+     ]
+    ]
+   }
+  ],
+  "OMELETTES": [
+   {
+    "id": "o_champ",
+    "corto": "Omelette con champiñones",
+    "t": "Omelette de 3 huevos con champiñones",
+    "d": "Con media palta pequeña. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+    "ing": [
+     [
+      "huevo",
+      3
+     ],
+     [
+      "champinon",
+      1
+     ],
+     [
+      "palta",
+      0.5
+     ]
+    ]
+   },
+   {
+    "id": "o_espinaca",
+    "corto": "Omelette con espinaca y tomate",
+    "t": "Omelette de 3 huevos con espinaca y tomate",
+    "d": "Con 2 lonchas de gouda. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+    "ing": [
+     [
+      "huevo",
+      3
+     ],
+     [
+      "espinaca",
+      1
+     ],
+     [
+      "tomate",
+      1
+     ],
+     [
+      "gouda",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "o_verduras",
+    "corto": "Omelette con zapallito y tomate",
+    "t": "Omelette de 3 huevos con zapallito y tomate",
+    "d": "Con media palta pequeña. Si tienes hambre, 1 wrap integral o 1 paquete de salmas",
+    "ing": [
+     [
+      "huevo",
+      3
+     ],
+     [
+      "zapallito",
+      1
+     ],
+     [
+      "tomate",
+      1
+     ],
+     [
+      "palta",
+      0.5
+     ]
+    ]
+   }
+  ],
+  "POSTRES": [
+   {
+    "t": "1 trocito de chocolate >70%",
+    "ing": [
+     [
+      "chocolate",
+      1
+     ]
+    ]
+   },
+   {
+    "t": "1 dulce o postre, el que se te antoje",
+    "ing": []
+   }
+  ],
+  "MEDIA_MANANA": [
+   {
+    "t": "1 fruta y 1 puñado de frutos secos (12 a 15 unidades)",
+    "ing": [
+     [
+      "manzana",
+      1
+     ],
+     [
+      "frutos_secos",
+      1
+     ]
+    ]
+   },
+   {
+    "t": "1 trocito de chocolate >70% y 1 puñado de frutos secos",
+    "ing": [
+     [
+      "chocolate",
+      1
+     ],
+     [
+      "frutos_secos",
+      1
+     ]
+    ]
+   },
+   {
+    "t": "1 yogurt proteico individual de sabor",
+    "ing": [
+     [
+      "yogurt_indiv",
+      1
+     ]
+    ]
+   },
+   {
+    "t": "1 café o infusion con 1 trocito de chocolate >70%",
+    "ing": [
+     [
+      "chocolate",
+      1
+     ]
+    ]
+   }
+  ],
+  "MERIENDA": [
+   {
+    "t": "1 yogurt proteico de sabor",
+    "ing": [
+     [
+      "yogurt_indiv",
+      1
+     ]
+    ]
+   },
+   {
+    "t": "1 fruta y 1 barrita de proteína",
+    "ing": [
+     [
+      "uva",
+      1
+     ],
+     [
+      "barrita",
+      1
+     ]
+    ]
+   },
+   {
+    "t": "Preentreno: 1 plátano",
+    "ing": [
+     [
+      "platano",
+      1
+     ]
+    ]
+   },
+   {
+    "t": "Preentreno: bowl de yogurt proteico con granola y medio plátano",
+    "ing": [
+     [
+      "yogurt_prot",
+      6
+     ],
+     [
+      "granola",
+      3
+     ],
+     [
+      "platano",
+      0.5
+     ]
+    ]
+   },
+   {
+    "t": "Preentreno: jugo de lúcuma con leche",
+    "ing": [
+     [
+      "lucuma",
+      1
+     ],
+     [
+      "leche",
+      0.5
+     ]
+    ]
+   }
+  ]
  },
  "dias": [
   {

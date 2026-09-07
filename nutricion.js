@@ -17,8 +17,36 @@ const LETRA = { Desayuno: 'D', Almuerzo: 'A', Cena: 'C' };
 function cargarMenu() {
   return fetch('menu/menu.json', { cache: 'no-cache' })
     .then(r => (r.ok ? r.json() : Promise.reject(new Error(r.status))))
-    .then(m => { MENU = m; render(); })
+    .then(m => {
+      MENU = m;
+      // menu.json se genero con las reglas de fabrica. Si el plan guardado tiene
+      // otras, se rearma aca mismo: el generador tambien corre en el navegador.
+      if (typeof PlanLib !== 'undefined' && !PlanLib.mismasReglas(PlanLib.reglasDeMenu(PLAN), m.reglas)) {
+        rearmarMenu();
+      }
+      render();
+    })
     .catch(() => { /* sin menu el tablero funciona igual, solo sin platos */ });
+}
+
+/* Rearma las 4 semanas con las reglas del plan. Los topes de variedad se
+   acomodan a las reglas: con un minimo de pescado alto, el tope viejo dejaria
+   el problema sin solucion. */
+function rearmarMenu() {
+  if (!MENU || !MENU.catalogo || typeof Generador === 'undefined') return { ok: false };
+  const R = PlanLib.reglasDeMenu(PLAN);
+  const V = {
+    almuerzo: { pollo: 3, pescado: Math.max(3, R.pescadoMax), atun: 1, carne: Math.max(2, R.carneMax) },
+    cena: { pollo: 3, pescado: Math.max(2, R.pescadoMax - 1), carne: Math.max(2, R.carneMax), huevos: 3 },
+    omeletteMin: 1, huevoDesMin: 1,
+  };
+  try {
+    MENU.dias = Generador.generar(MENU.catalogo, R, V, MENU.semilla || 20260906);
+    MENU.reglas = R;
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e.message };
+  }
 }
 
 /* La resolucion del dia vive en menu-lib.js porque tambien la usa el servidor

@@ -659,3 +659,55 @@
     .dia::before{left:5px}
     .tramo-dot{left:-23px}
   }
+
+  /* ============================================================
+     Editor del plan. Formulario, no tablero: cada fila es una
+     cosa que la nutricionista cambia en una consulta.
+     ============================================================ */
+  .ed-sec{margin-bottom:22px}
+  .ed-sec:last-of-type{margin-bottom:0}
+  .ed-h{margin-bottom:4px}
+  .ed-h span{font-size:11px;font-weight:800;color:var(--txt2);text-transform:uppercase;letter-spacing:.9px}
+  .ed-sub{font-size:12px;color:var(--txt3);line-height:1.5;margin-bottom:11px}
+  .ed-fila{
+    display:flex;align-items:center;gap:12px;min-height:54px;
+    padding:0 14px;margin-bottom:7px;border-radius:var(--r-item);
+    background:var(--card2);border:1px solid var(--line);
+  }
+  .ed-fila:last-child{margin-bottom:0}
+  .ed-lbl{flex:1;min-width:0;font-size:14px;font-weight:600;color:var(--ink);letter-spacing:-.1px}
+  .ed-num,.ed-fecha{
+    flex-shrink:0;min-height:40px;padding:8px 11px;
+    border:1px solid var(--line);border-radius:11px;background:#fff;
+    font-family:inherit;font-size:15px;font-weight:700;color:var(--ink);
+    font-variant-numeric:tabular-nums;
+  }
+  .ed-num{width:72px;text-align:center}
+  .ed-fecha{width:150px;font-size:14px}
+  .ed-num:focus,.ed-fecha:focus{outline:none;border-color:var(--acc-line)}
+
+  .ed-fase{margin-bottom:14px;padding:13px 14px;border-radius:var(--r-item);background:var(--card2);border:1px solid var(--line)}
+  .ed-fase:last-child{margin-bottom:0}
+  .ed-fase-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
+  .ed-fase-h b{font-size:14px;font-weight:700;color:var(--ink);letter-spacing:-.1px}
+  .ed-fase-h span{font-size:11.5px;color:var(--txt3);font-weight:600;white-space:nowrap}
+  .ed-supl{display:flex;gap:6px;margin-bottom:7px;align-items:center}
+  .ed-supl:last-of-type{margin-bottom:0}
+  .ed-sel,.ed-txt,.ed-dosis{
+    min-height:40px;padding:8px 9px;border:1px solid var(--line);border-radius:10px;background:#fff;
+    font-family:inherit;font-size:13px;color:var(--ink);min-width:0;
+  }
+  .ed-sel{flex:0 0 84px;font-weight:600}
+  .ed-txt{flex:1.6}
+  .ed-dosis{flex:1;color:var(--txt2)}
+  .ed-sel:focus,.ed-txt:focus,.ed-dosis:focus{outline:none;border-color:var(--acc-line)}
+  .ed-x{
+    flex:0 0 32px;height:40px;border:1px solid var(--line);border-radius:10px;background:#fff;
+    color:var(--txt3);font-size:19px;line-height:1;cursor:pointer;font-family:inherit;
+  }
+  .ed-x:hover{color:var(--over);border-color:var(--over-line)}
+  .ed-mas{
+    width:100%;margin-top:9px;min-height:40px;border:1px dashed #cbd6e4;border-radius:10px;
+    background:none;color:var(--txt2);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;
+  }
+  .ed-mas:hover{color:var(--acc-d);border-color:var(--acc-line)}

@@ -199,6 +199,14 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
 
   <section class="panel" id="panel-plan" role="tabpanel" aria-labelledby="tab-plan">
   <div class="card">
+    <div class="card-h"><h2>El plan</h2></div>
+    <p class="pdf-nota" id="planNombre" style="margin:0 0 14px"></p>
+    <div class="btns" style="margin-bottom:0">
+      <button class="btn btn-s" id="planBtn" type="button" style="flex:1">Editar el plan</button>
+    </div>
+  </div>
+
+  <div class="card">
     <div class="card-h"><h2>Plan de suplementos</h2></div>
     <div class="tl" id="tlFases"></div>
   </div>
@@ -246,7 +254,10 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
   <div class="sheet-body" id="sheetBody"></div>
 </div>
 
-<script src="protocolo-lib.js" defer></script>
+<script src="plan-lib.js" defer></script>
+<script src="api-cliente.js" defer></script>
+<script src="plan.js" defer></script>
+<script src="menu/generador.js" defer></script>
 <script src="menu-lib.js" defer></script>
 <script src="app.js" defer></script>
 <script src="nutricion.js" defer></script>
@@ -255,5 +266,6 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
 <script src="compras-pdf.js" defer></script>
 <script src="informe-pdf.js" defer></script>
 <script src="navegacion.js" defer></script>
+<script src="plan-editor.js" defer></script>
 </body>
 </html>

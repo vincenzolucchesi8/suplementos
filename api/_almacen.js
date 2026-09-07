@@ -23,6 +23,7 @@ const BASE = 'datos/base.json';
 const DELTAS = 'datos/d/';
 const SUBS = 'datos/subs/';
 const TICK = 'datos/tick.json';
+const PLAN = 'datos/plan.json';
 const TOPE_PARCHES = 25;   // pasado esto se compacta la base
 
 async function leerJSON(ruta, porDefecto) {
@@ -100,6 +101,10 @@ const guardarSub = registro =>
 const borrarSub = endpoint =>
   del(`${SUBS}${idDeEndpoint(endpoint)}.json`).catch(() => {});
 
+// ---------------- El plan (un solo escritor, documento completo) ----------------
+const leerPlan = () => leerJSON(PLAN, null);
+const guardarPlan = p => escribirJSON(PLAN, p);
+
 // ---------------- Bitacora del cron (un solo escritor) ----------------
 const leerTick = () => leerJSON(TICK, { enviados: {}, snooze: [] });
 const guardarTick = d => escribirJSON(TICK, d);
@@ -125,6 +130,6 @@ const leerCuerpo = req => new Promise(res => {
 module.exports = {
   leerEstado, guardarParche, compactar, fusionar,
   listarSubs, guardarSub, borrarSub,
-  leerTick, guardarTick,
+  leerTick, guardarTick, leerPlan, guardarPlan,
   autorizado, leerCuerpo,
 };
