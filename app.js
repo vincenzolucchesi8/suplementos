@@ -147,7 +147,9 @@ const metaLoad = () => { try { return JSON.parse(localStorage.getItem('__sync_me
 const metaSave = m => localStorage.setItem('__sync_meta', JSON.stringify(m));
 
 // Marca/desmarca (o guarda un valor, como el peso) + sella la hora + agenda sync
+let ultimaMarca = null;   // el nodo que acaba de marcarse, para darle su pop
 function setMark(key, val){
+  ultimaMarca = val === '1' ? key : null;
   if(val==='0' || val===null) localStorage.removeItem(key);
   else localStorage.setItem(key, val);
   const m = metaLoad(); m[key] = Date.now(); metaSave(m);
@@ -371,7 +373,9 @@ function renderHoy(){
     const abierto = c === activo;
 
     const tramo = document.createElement('div');
-    tramo.className = 'tramo' + (abierto?' ahora':'') + (listo?' listo':'');
+    // el tramo entero se cierra con el ultimo toque: ese check tambien salta
+    const cerroAhora = listo && ultimaMarca && ultimaMarca.startsWith(`${selDate}:${c}:`);
+    tramo.className = 'tramo' + (abierto?' ahora':'') + (listo?' listo':'') + (cerroAhora?' recien':'');
 
     // Que se come, para que el tramo cerrado igual lo diga
     const m = menuHoy ? (c==='Desayuno'?menuHoy.desayuno : c==='Almuerzo'?menuHoy.almuerzo : menuHoy.cena) : null;
@@ -409,7 +413,7 @@ function renderHoy(){
       const key = `${selDate}:${it.meal}:${it.id}`;
       const on = marcado(key);
       const el = document.createElement('div');
-      el.className = 'item fino'+(on?' on':'');
+      el.className = 'item fino'+(on?' on':'')+(key===ultimaMarca?' recien':'');
       el.setAttribute('role','button'); el.setAttribute('tabindex','0');
       el.setAttribute('aria-pressed', on?'true':'false');
       const toggle = ()=>{
@@ -441,7 +445,8 @@ function renderHoy(){
     let units='';
     for(let i=1;i<=cap;i++){
       const on = marcado(`${selDate}:R:${r.id}${i}`);
-      units += `<button class="u${on?' on':''}${i>r.meta?' extra':''}" onclick="tapUnit('${r.id}',${i},${cap})" aria-label="${r.name} ${i}">${r.unit}</button>`;
+      const k = `${selDate}:R:${r.id}${i}`;
+      units += `<button class="u${on?' on':''}${i>r.meta?' extra':''}${k===ultimaMarca?' recien':''}" onclick="tapUnit('${r.id}',${i},${cap})" aria-label="${r.name} ${i}">${r.unit}</button>`;
     }
     box.innerHTML =
       `<span class="corrida-nom">${r.name}</span>`+

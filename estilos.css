@@ -186,10 +186,11 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .meal-h{display:flex;align-items:baseline;gap:9px;margin-bottom:var(--e2)}
 .meal-ic{display:none}
 .meal-name{font-size:var(--t1);font-weight:700;letter-spacing:-.6px}
-.corrida{display:flex;align-items:center;gap:12px;padding:13px 0;min-height:48px}
+.corrida{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:13px 0;min-height:48px}
 .corrida + .corrida{border-top:1px solid var(--g2)}
-.corrida-nom{flex:1;font-size:var(--t3);font-weight:600}
-.units{display:flex;gap:6px}
+.corrida-nom{flex:1;min-width:0;font-size:var(--t3);font-weight:600;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.units{display:flex;gap:6px;margin-left:auto}
 .units .u{width:26px;height:26px;border-radius:50%;background:var(--g2);font-size:0;flex-shrink:0;overflow:hidden;
   transition:background var(--rapido) var(--suave),transform var(--medio) var(--resorte)}
 .units .u svg,.tok svg{display:none}
@@ -199,13 +200,19 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .units .u:active{transform:scale(.8)}
 .corrida-num{font-size:var(--t4);color:var(--g3);font-variant-numeric:tabular-nums;min-width:46px;text-align:right;font-weight:600}
 
+@media (max-width:389px){
+  .units,.toks{flex-basis:100%;order:3;margin:4px 0 0;justify-content:flex-start;gap:8px}
+  .corrida-num,.perm .toks{order:2}
+  .units .u,.tok{width:30px;height:30px}
+}
+
 /* permisos */
-.perm{display:flex;align-items:center;gap:12px;padding:12px 0;min-height:48px}
+.perm{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:12px 0;min-height:48px}
 .perm + .perm{border-top:1px solid var(--g2)}
 .perm-info{flex:1;min-width:0}
 .perm-name{font-size:var(--t3);font-weight:600}
 .perm-sub{font-size:var(--t5);color:var(--g3);margin-top:2px}
-.toks{display:flex;gap:6px}
+.toks{display:flex;gap:6px;margin-left:auto}
 .tok{width:26px;height:26px;border-radius:50%;background:var(--g2);font-size:0;
   transition:background var(--rapido) var(--suave),transform var(--medio) var(--resorte)}
 .tok.on{background:var(--c-huevos)}
@@ -551,6 +558,13 @@ footer .ver{margin-left:8px;opacity:.7}
   100%{transform:none}
 }
 .celebra{animation:celebra 700ms var(--resorte)}
+
+/* El pop del check. La clase la pone renderHoy sobre el nodo que ACABA de
+   marcarse; sin ella el nodo nace ya en su estado final y no anima nada. */
+@keyframes pop{0%{transform:scale(.5)}55%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes popTic{0%{opacity:0;transform:scale(.2) rotate(-18deg)}60%{opacity:1}100%{opacity:1;transform:none}}
+.item.recien .check,.units .u.recien,.tramo.recien .tramo-ok{animation:pop 400ms var(--resorte)}
+.item.recien .check svg,.tramo.recien .tramo-ok svg{animation:popTic 320ms var(--resorte) 70ms both}
 
 /* entrada escalonada: la usa movimiento.js sobre las filas nuevas */
 @keyframes asoma{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
