@@ -347,6 +347,18 @@ function tramoQueVa(plan){
   return pend.includes(reloj) ? reloj : pend[0];
 }
 
+/* Cierra un tramo entero de un toque. Marca solo lo que falta, asi que volver
+   a tocarlo no desmarca nada: para quitar una toma se toca esa toma. */
+function marcarTramo(comida, items){
+  const faltan = items.filter(it => !marcado(`${selDate}:${it.meal}:${it.id}`));
+  if(!faltan.length) return;
+  faltan.forEach(it => setMark(`${selDate}:${it.meal}:${it.id}`, '1'));
+  ultimaMarca = `${selDate}:${comida}:${faltan[faltan.length-1].id}`;
+  if(typeof sincronizarFrecuencias === 'function') sincronizarFrecuencias(selDia);
+  if(navigator.vibrate) navigator.vibrate(14);
+  render();
+}
+
 function abrirTramo(comida){
   tramoAbierto = (tramoAbierto === comida) ? '__ninguno' : comida;
   renderHoy();
@@ -397,8 +409,13 @@ function renderHoy(){
       `<span class="tramo-res">${resumen}</span></span>`+
       (listo
         ? `<span class="tramo-ok"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>`
-        : `<span class="tramo-cnt">${total - faltan} de ${total}</span>`);
-    cab.onclick = ()=> abrirTramo(c);
+        : (abierto
+            ? `<span class="tramo-todo">Marcar ${faltan === total ? 'las ' + total : 'las ' + faltan + ' que faltan'}</span>`
+            : `<span class="tramo-cnt">${total - faltan} de ${total}</span>`));
+    cab.onclick = ev => {
+      if (ev.target.closest('.tramo-todo')) { marcarTramo(c, del); return; }
+      abrirTramo(c);
+    };
     tramo.appendChild(cab);
 
     const body = document.createElement('div');

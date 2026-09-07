@@ -154,6 +154,13 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .tramo-res{display:block;font-size:var(--t2);font-weight:700;letter-spacing:-.3px;line-height:1.25;margin-top:1px}
 .tramo.listo .tramo-res{color:var(--g3)}
 .tramo-cnt{font-size:var(--t5);font-weight:600;color:var(--g3);flex-shrink:0;margin-top:7px}
+/* el atajo del tramo abierto: dice exactamente cuantas marca */
+.tramo-todo{flex-shrink:0;margin-top:2px;background:var(--verde-suave);color:var(--verde);
+  border-radius:var(--r5);padding:9px 13px;font-size:var(--t5);font-weight:700;line-height:1.2;
+  display:inline-block;min-height:36px;position:relative;
+  transition:transform var(--rapido) var(--suave),background var(--rapido) var(--suave)}
+.tramo-todo::after{content:"";position:absolute;inset:-6px -4px}
+.tramo-h:active .tramo-todo{transform:scale(.95)}
 .tramo-dot,.tramo-ic{display:none}
 
 /* el check: 26 px de dibujo, 44 px de blanco real */
@@ -176,18 +183,19 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .dish-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .dish-name{display:none}
 .dish-sub{font-size:var(--t4);color:var(--g3);margin-bottom:10px}
-.dish-swap{display:inline-flex;align-items:center;gap:6px;background:var(--verde-suave);color:var(--verde);
+.dish-swap{display:inline-flex;align-items:center;gap:6px;background:var(--g1);color:var(--tinta);
   border-radius:var(--r5);padding:11px 16px;font-size:var(--t4);font-weight:700;min-height:44px;
   transition:transform var(--rapido) var(--suave)}
 .dish-swap:active{transform:scale(.95)}
 .dish-swap svg{width:14px;height:14px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;
   stroke-linejoin:round;flex-shrink:0}
-.dish-parts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.dish-part{background:var(--g1);border-radius:var(--r2);padding:10px 6px 9px;text-align:center;
-  font-size:var(--t5);font-weight:600;color:var(--g3);display:flex;flex-direction:column;align-items:center;gap:5px;
-  overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.dish-parts{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:8px}
+.dish-part{background:var(--g1);border-radius:var(--r2);padding:10px 9px 10px;text-align:center;
+  font-size:var(--t5);font-weight:600;color:var(--g3);display:flex;flex-direction:column;align-items:center;gap:6px;
+  overflow:hidden;line-height:1.35}
 .dish-part i{width:34px;height:34px;display:block;background-size:contain;background-position:center;background-repeat:no-repeat}
-.dish-part span{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.dish-part span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  overflow:hidden;max-width:100%}
 .dish-tag{display:inline-block;font-size:var(--t5);font-weight:700;color:var(--verde);margin-top:8px}
 
 /* las tomas del tramo: inset por TONO, sin bordes */

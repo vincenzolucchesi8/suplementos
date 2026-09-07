@@ -126,12 +126,12 @@ function bloquePlato(comida, c) {
 
   const parte = (txt, cls) => {
     const img = imagenParte(txt);
-    return `<span class="dish-part ${cls}">` +
+    return `<span class="dish-part ${cls}" title="${esc(txt)}">` +
       `<i${img ? ` style="background-image:url(${img})"` : ''}></i>` +
       `<span>${esc(txt)}</span></span>`;
   };
   const partes = conDisco
-    ? `<div class="dish-parts">${parte(m.verdura, 'verd')}${parte(m.titulo, 'prot')}${parte(m.carbo, 'carb')}</div>`
+    ? `<div class="dish-parts">${parte(m.verdura, 'verd')}${parte(m.carbo, 'carb')}</div>`
     : '';
   const sub = conDisco
     ? (comida === 'Cena' ? '<div class="dish-sub">Sin grasa extra: basta el aceite de oliva de las verduras</div>' : (m.grasa ? `<div class="dish-sub">Con ${esc(m.grasa.toLowerCase())}</div>` : ''))
