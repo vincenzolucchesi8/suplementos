@@ -33,11 +33,14 @@ const aMinutos = hhmm => {
 
 const marcada = (estado, k) => !!(estado[k] && estado[k].v === '1');
 
-const vasosDeAgua = (estado, fecha) => {
+/* El agua se lleva en cuartos del tomatodo de 2 L: cada marca son 500 ml. */
+const MARCAS_AGUA = 5, LITROS_MARCA = 0.5, META_AGUA = 4;
+const aguaTomada = (estado, fecha) => {
   let n = 0;
-  for (let i = 1; i <= 8; i++) if (marcada(estado, `${fecha}:R:agua${i}`)) n++;
+  for (let i = 1; i <= MARCAS_AGUA; i++) if (marcada(estado, `${fecha}:R:agua${i}`)) n++;
   return n;
 };
+const enLitros = n => (n * LITROS_MARCA).toLocaleString('es-PE');
 
 /* Arma el texto y los botones de cada aviso. Devuelve null si hoy no toca. */
 function armar(avisoId, ctx) {
@@ -49,8 +52,8 @@ function armar(avisoId, ctx) {
   switch (avisoId) {
     case 'ayunas':
       if (marcada(estado, `${fecha}:R:agua1`)) return null;
-      return { titulo: 'Vaso de agua en ayunas',
-        cuerpo: 'Agua tibia antes de cualquier otra cosa.',
+      return { titulo: 'Arranca el tomatodo',
+        cuerpo: 'Los primeros 500 ml, tibios, antes de cualquier otra cosa.',
         marcar: [`${fecha}:R:agua1`], rotuloHecho: 'Ya lo tomé' };
 
     case 'desayuno': {
@@ -78,11 +81,11 @@ function armar(avisoId, ctx) {
     }
 
     case 'agua': {
-      const n = vasosDeAgua(estado, fecha);
-      if (n >= 6) return null;                       // ya llegaste a la meta
-      return { titulo: `Te faltan ${6 - n} vasos de agua`,
-        cuerpo: 'La meta del día es 6, y lo ideal son 8.',
-        marcar: [`${fecha}:R:agua${Math.min(8, n + 1)}`], rotuloHecho: 'Me tomé uno' };
+      const n = aguaTomada(estado, fecha);
+      if (n >= META_AGUA) return null;               // ya lo acabaste
+      return { titulo: `Te falta ${enLitros(META_AGUA - n)} L del tomatodo`,
+        cuerpo: `Llevas ${enLitros(n)} de 2 L. Todavía da el día para acabarlo.`,
+        marcar: [`${fecha}:R:agua${Math.min(MARCAS_AGUA, n + 1)}`], rotuloHecho: 'Otro medio litro' };
     }
 
     case 'merienda':

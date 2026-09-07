@@ -28,7 +28,12 @@
 
     // Lo que se llena cada dia
     raciones: [
-      { id: 'agua', name: 'Agua', meta: 6, extra: 2, hint: 'ideal 8', icono: 'gota', anillo: true },
+      /* Vinz no toma vasos: tiene UN tomatodo de 2 litros y la meta es acabarlo.
+         Se mide en cuartos porque asi es como de verdad se mira una botella
+         (por la mitad, tres cuartos, vacia), no en sorbos contados. El extra
+         cubre el dia que lo rellena. */
+      { id: 'agua', name: 'Agua', meta: 4, extra: 1, hint: 'el tomatodo de 2 L',
+        porMarca: 0.5, unidad: 'L', icono: 'gota', anillo: true },
       { id: 'inf', name: 'Infusión', meta: 1, extra: 0, hint: '', icono: 'hoja', anillo: false },
       { id: 'fs', name: 'Frutos secos o palta', meta: 1, extra: 1, hint: 'hasta 2', icono: 'hoja', anillo: false },
     ],

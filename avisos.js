@@ -10,11 +10,11 @@ const VAPID_PUBLICA = 'BDQ7DfXIB985ikVK2wqbDQ17iH88QPsgzWeTGk3XbNxnXEcEKeGNRbZ_h
 // Los nueve avisos, con la hora que Alexia y el protocolo sugieren.
 // Todo es editable: esto es solo el punto de partida.
 const AVISOS = [
-  { id: 'ayunas', nombre: 'Agua en ayunas', sub: 'El vaso de agua tibia al levantarte', hora: '07:00', cuando: 'diario' },
+  { id: 'ayunas', nombre: 'Agua en ayunas', sub: 'El primer trago del tomatodo, tibio', hora: '07:00', cuando: 'diario' },
   { id: 'desayuno', nombre: 'Desayuno', sub: 'Con el plato que toca hoy', hora: '08:00', cuando: 'diario' },
   { id: 'media', nombre: 'Media mañana', sub: 'Opcional, según el apetito', hora: '11:00', cuando: 'diario' },
   { id: 'almuerzo', nombre: 'Almuerzo y suplementos', sub: 'La toma más importante del protocolo', hora: '13:00', cuando: 'diario' },
-  { id: 'agua', nombre: 'Agua', sub: 'Solo si vas atrasado con los vasos', hora: '16:00', cuando: 'diario' },
+  { id: 'agua', nombre: 'Agua', sub: 'Solo si te falta mucho del tomatodo', hora: '16:00', cuando: 'diario' },
   { id: 'merienda', nombre: 'Merienda', sub: 'Opcional, o preentreno', hora: '17:30', cuando: 'diario' },
   { id: 'cena', nombre: 'Cena, suplementos y postre', sub: 'El dulce del día va acá', hora: '20:00', cuando: 'diario' },
   { id: 'pesaje', nombre: 'Pesaje', sub: 'Miércoles, en ayunas y después del baño', hora: '07:00', cuando: 'miercoles' },

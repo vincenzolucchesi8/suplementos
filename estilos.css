@@ -257,6 +257,7 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .corrida + .corrida{border-top:1px solid var(--g2)}
 .corrida-nom{flex:1;min-width:0;font-size:var(--t3);font-weight:600;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.corrida-nom small{display:block;font-size:var(--t5);font-weight:500;color:var(--g3);margin-top:2px}
 .units{display:flex;gap:6px;margin-left:auto}
 .units .u{width:26px;height:26px;border-radius:50%;background:var(--g2);font-size:0;flex-shrink:0;overflow:hidden;
   transition:background var(--rapido) var(--suave),transform var(--medio) var(--resorte)}
@@ -265,7 +266,7 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .units .u.extra{background:transparent;box-shadow:inset 0 0 0 2px var(--g2)}
 .units .u.extra.on{background:var(--verde);box-shadow:none}
 .units .u:active{transform:scale(.8)}
-.corrida-num{font-size:var(--t4);color:var(--g3);font-variant-numeric:tabular-nums;min-width:46px;text-align:right;font-weight:600}
+.corrida-num{font-size:var(--t4);color:var(--g3);font-variant-numeric:tabular-nums;min-width:64px;text-align:right;font-weight:600}
 
 @media (max-width:389px){
   .units,.toks{flex-basis:100%;order:3;margin:4px 0 0;justify-content:flex-start;gap:8px}

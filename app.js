@@ -536,10 +536,16 @@ function renderHoy(){
       const k = `${selDate}:R:${r.id}${i}`;
       units += `<button class="u${on?' on':''}${i>r.meta?' extra':''}${k===ultimaMarca?' recien':''}" onclick="tapUnit('${r.id}',${i},${cap})" aria-label="${r.name} ${i}">${r.unit}</button>`;
     }
+    /* Si la racion trae porMarca, se muestra en su propia unidad: "1,5 de 2 L"
+       dice algo, "3 de 4" no dice nada. */
+    const cifra = r.porMarca
+      ? `${(n * r.porMarca).toLocaleString('es-PE')} de ${(r.meta * r.porMarca).toLocaleString('es-PE')} ${r.unidad || ''}`.trim()
+      : `${n} de ${r.meta}`;
     box.innerHTML =
-      `<span class="corrida-nom">${r.name}</span>`+
+      `<span class="corrida-nom">${r.name}` +
+        (r.hint ? `<small>${r.hint}</small>` : '') + `</span>`+
       `<span class="units">${units}</span>`+
-      `<span class="corrida-num">${n} de ${r.meta}</span>`;
+      `<span class="corrida-num">${cifra}</span>`;
     rw.appendChild(box);
   });
   cont.appendChild(rw);
