@@ -651,7 +651,7 @@ footer .ver{margin-left:8px;opacity:.7}
    .cae > * porque los hijos directos del panel ya los anima .entra: dos
    animaciones sobre el mismo nodo se pisan y gana una sola, al azar. */
 .cae .tramo,.cae .corrida,.cae .cal-row,.cae .wk,.cae .sien,.cae .tl-item,
-.cae .avi-row,.cae .frec,.cae .opt,.cae .buy-item,.cae .rec,
+.cae .avi-row,.cae .frec,.cae .opt,.cae .buy-item,.cae .rec,.cae .perm,
 .cae .dish-part{animation:asoma 420ms var(--suave) both;animation-delay:var(--retraso,0ms)}
 
 /* lo que es un punto o una celda nace chico y se asienta con el resorte */

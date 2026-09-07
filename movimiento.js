@@ -104,6 +104,7 @@ const CASCADAS = [
   ['.rec', 70],
   ['.dish-part', 80],
   ['.cell', 6],                 // el mapa de constancia
+  ['.perm', 60],                // los permisos del dia
 ];
 
 function escalonar(raiz, base) {
