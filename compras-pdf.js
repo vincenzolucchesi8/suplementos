@@ -171,6 +171,6 @@ function montarBotonesPDF() {
   const btn = document.getElementById('pdfCompras');
   if (!btn) return;
   const w = selSemana();
-  btn.disabled = !(MENU && window.jspdf);
-  btn.onclick = () => (rangoPDF === 'mes' ? generarPDF(w, w + 3) : generarPDF(w, w));
+  btn.disabled = !MENU;
+  btn.onclick = conPDF(btn, () => (rangoPDF === 'mes' ? generarPDF(w, w + 3) : generarPDF(w, w)));
 }

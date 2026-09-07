@@ -15,7 +15,11 @@ const ID_COMIDA = { Desayuno: 'm1', Almuerzo: 'm2', Cena: 'm3' };
 const LETRA = { Desayuno: 'D', Almuerzo: 'A', Cena: 'C' };
 
 function cargarMenu() {
-  return fetch('menu/menu.json', { cache: 'no-cache' })
+  /* Sin 'no-cache': son 135 KB que solo cambian cuando se despliega, y el
+     service worker guarda el menu en un cache con el nombre de la version, o
+     sea que un despliegue nuevo lo vuelve a bajar solo. Antes se revalidaba
+     en cada arranque. */
+  return fetch('menu/menu.json')
     .then(r => (r.ok ? r.json() : Promise.reject(new Error(r.status))))
     .then(m => {
       MENU = m;
@@ -53,10 +57,50 @@ function rearmarMenu() {
    al armar el texto de cada aviso. */
 function menuBase(dia) { return MENU ? MenuLib.menuBase(MENU, dia) : null; }
 
+/* Un plato PROPIO, escrito por ti. El plan de Alexia trae 24 opciones, pero
+   el dia que comes otra cosa no hay donde ponerlo: o mientes marcando lo que
+   no comiste, o lo dejas en blanco y el dia no cierra. Se guarda como texto en
+   la misma estructura que todo lo demas (asi viaja al otro aparato solo) y
+   lleva su familia de proteina, para que las frecuencias de la semana no se
+   queden cojas. */
+const PROPIOS = { pescado: 'Pescado', pollo: 'Pollo', carne: 'Carne roja', huevos: 'Huevos', otro: 'Otra cosa' };
+
+function platoPropio(dia, comida) {
+  const txt = valorDe(`${dsDiaG(dia)}:MP:${CLAVE_DE[comida]}`);
+  if (!txt) return null;
+  try {
+    const o = JSON.parse(txt);
+    if (!o || !o.titulo) return null;
+    return { id: 'propio', titulo: o.titulo, corto: o.titulo, propio: true,
+             protK: o.protK && o.protK !== 'otro' ? o.protK : undefined,
+             detalle: o.protK && PROPIOS[o.protK] ? PROPIOS[o.protK] : '' };
+  } catch (e) { return null; }
+}
+
+function guardarPropio(dia, comida, titulo, protK) {
+  const k = `${dsDiaG(dia)}:MP:${CLAVE_DE[comida]}`;
+  if (titulo) setMark(k, JSON.stringify({ titulo, protK: protK || 'otro' }));
+  else setMark(k, '0');
+  sincronizarFrecuencias(dia);
+  render();
+}
+
 function comidasDeDia(dia) {
   if (!MENU) return null;
   const ds = dsDiaG(dia);
-  return MenuLib.resolverDia(MENU, dia, c => parseInt(valorDe(`${ds}:MO:${c}`) || '0', 10) || 0);
+  const r = MenuLib.resolverDia(MENU, dia, c => parseInt(valorDe(`${ds}:MO:${c}`) || '0', 10) || 0);
+  if (!r) return r;
+  // lo propio pisa al plan, sin tocar el menu de base
+  ['Desayuno', 'Almuerzo', 'Cena'].forEach(comida => {
+    const mio = platoPropio(dia, comida);
+    if (!mio) return;
+    const clave = comida === 'Desayuno' ? 'desayuno' : comida === 'Almuerzo' ? 'almuerzo' : 'cena';
+    // carboK fuera tambien: si no, un plato tuyo heredaria las menestras del
+    // plan y la frecuencia de la semana contaria algo que no comiste
+    r[clave] = { ...r[clave], ...mio, verdura: undefined, carbo: undefined,
+                 carboK: undefined, grasa: undefined, tipo: 'propio' };
+  });
+  return r;
 }
 
 /* ---------- El disco del metodo del plato ----------
@@ -79,9 +123,31 @@ function platoSVG(tipo) {
   return `<svg viewBox="0 0 42 42" aria-hidden="true">${d}<circle cx="21" cy="21" r="19.2" fill="none" stroke="#fff" stroke-width="1.6"/></svg>`;
 }
 
-/* Que ilustracion le toca a cada plato. Se agrupa por FAMILIA, no por
-   preparacion: bonito, trucha y jurel comparten la de pescado, porque doce
-   ilustraciones que se leen bien valen mas que cuarenta genericas. */
+/* Que ilustracion le toca a cada plato.
+
+   Antes se agrupaba por FAMILIA de proteina, con el argumento de que a 52 px
+   doce dibujos buenos valen mas que cuarenta genericos. El argumento es cierto
+   para dibujos genericos y falso para estos: "Pollo a la plancha", "Pollo al
+   horno con hierbas" y "Pollo sudado con tomate y cebolla" salian con el mismo
+   pollo a la parrilla, o sea que la ilustracion no decia nada que el titulo no
+   dijera ya. Ahora cada uno de los 24 platos del menu tiene el suyo, dibujado
+   para que se distinga por SILUETA y color dominante -- pescado entero contra
+   filete, salsa roja contra parrilla, relleno que asoma -- que es lo unico que
+   se lee a ese tamano. La familia se queda de respaldo: un plato tuyo o uno
+   que no tenga dibujo propio cae ahi en vez de quedarse en blanco. */
+const IMG_PLATO = {
+  d_revueltos_pavo: 'd_revueltos_pavo', 'd_revueltos_jamón': 'd_revueltos_jamon',
+  d_omelette_esp: 'd_omelette_esp', d_omelette_champ: 'd_omelette_champ',
+  d_bowl_papaya: 'd_bowl_papaya', d_bowl_manzana: 'd_bowl_manzana', d_bowl_mango: 'd_bowl_mango',
+  'd_batido_plátano': 'd_batido_platano', 'd_batido_lúcuma': 'd_batido_lucuma',
+  d_wrap_pollo: 'd_wrap_pollo',
+  p_jurel: 'p_jurel', p_merluza: 'p_merluza', p_bonito: 'p_bonito', p_perico: 'p_perico',
+  p_trucha: 'p_trucha', p_atun: 'p_atun',
+  p_pollo_plancha: 'p_pollo_plancha', p_pollo_horno: 'p_pollo_horno', p_pollo_sudado: 'p_pollo_sudado',
+  p_res: 'p_res', p_lomo: 'p_lomo',
+  o_verduras: 'o_verduras', o_espinaca: 'o_espinaca', o_champ: 'o_champ',
+};
+
 const IMG_DESAYUNO = [
   [/omelette/i, 'omelette'], [/revuelt/i, 'revueltos'], [/wrap/i, 'wrap'],
   [/batido/i, 'batido'], [/bowl|yogurt/i, 'bowl'],
@@ -97,8 +163,16 @@ function familiaDe(m, comida) {
   return { pescado: 'pescado', atun: 'atun', carne: 'carne', pollo: 'pollo' }[m.protK] || 'pollo';
 }
 const imagenDe = (m, comida) => {
+  const propia = m && m.id && IMG_PLATO[m.id];
+  if (propia) return `img/platos/${propia}.webp`;
   const f = familiaDe(m, comida);
   return f ? `img/${f}.webp` : null;
+};
+// respaldo: si un dibujo propio faltara, cae al de su familia en vez de dejar
+// un hueco gris. Va como atributo para que no dependa de que corra ningun JS
+const respaldoImg = (m, comida) => {
+  const f = familiaDe(m, comida);
+  return f ? ` onerror="this.onerror=null;this.src='img/${f}.webp'"` : '';
 };
 
 /* De la palabra del ingrediente a su ilustracion. Se busca por raiz porque el
@@ -139,7 +213,7 @@ function bloquePlato(comida, c) {
 
   const img = imagenDe(m, comida);
   el.innerHTML =
-    (img ? `<img class="dish-img" src="${img}" alt="" loading="lazy">` : '') +
+    (img ? `<img class="dish-img" src="${img}" alt="" loading="lazy"${respaldoImg(m, comida)}>` : '') +
     `<div class="dish-body">
        <div class="dish-top">
          <button class="dish-swap" type="button"><svg viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>Cambiar el plato</button>
@@ -307,7 +381,7 @@ function renderCalendario() {
     const imgSem = imagenDe(c.almuerzo, 'Almuerzo');
     b.innerHTML =
       `<div class="cal-day"><b>${fecha.getUTCDate()}</b><span>${DOW_CORTO[fecha.getUTCDay()]}</span></div>
-       ${imgSem ? `<img class="cal-img" src="${imgSem}" alt="" loading="lazy">` : ''}
+       ${imgSem ? `<img class="cal-img" src="${imgSem}" alt="" loading="lazy"${respaldoImg(c.almuerzo, 'Almuerzo')}>` : ''}
        <div class="cal-info">
          <div class="cal-main">${esc(c.almuerzo.corto || c.almuerzo.titulo)}</div>
          <div class="cal-sub">Cena: ${esc(c.cena.corto || c.cena.titulo)}</div>
@@ -365,7 +439,7 @@ function filaOpcion(m, comida, seleccionada, ayer, alElegir, conDisco2) {
   const repite = m.protK && ayer.includes(m.protK) && m.protK !== 'huevos';
   b.innerHTML =
     (() => { const img = imagenDe(m, comida);
-      return img ? `<img class="opt-plate" src="${img}" alt="" loading="lazy">`
+      return img ? `<img class="opt-plate" src="${img}" alt="" loading="lazy"${respaldoImg(m, comida)}>`
                  : (conDisco ? `<span class="opt-plate">${platoSVG(comida === 'Cena' ? 'cena' : 'almuerzo')}</span>` : ''); })() +
     `<span class="opt-info">
        <span class="opt-name">${esc(m.corto || m.titulo)}</span>
@@ -384,13 +458,65 @@ function abrirHojaOpciones(dia, comida) {
     const actual = platoDe(c, comida);
     opcionesDe(dia, comida).forEach(m => {
       cont.appendChild(filaOpcion(m, comida, m.id === actual.id, ayer, () => {
+        const antes = parseInt(valorDe(`${dsDiaG(dia)}:MO:${CLAVE_DE[comida]}`) || '0', 10) || 0;
+        const comoSeLlamaba = actual.corto || actual.titulo;
         elegirPlato(dia, comida, m.off);
         volverHoja();
+        /* Antes esto pasaba en silencio: la hoja se cerraba y el riel mostraba
+           otra cosa. Ahora se dice que quedo y se puede deshacer sin tener que
+           acordarse de cual era el de antes. */
+        if (typeof avisar === 'function' && m.id !== actual.id) {
+          avisar(`${comida}: ${m.corto || m.titulo}`,
+            { texto: 'Deshacer', hacer: () => {
+                elegirPlato(dia, comida, antes);
+                avisar(`${comida}: ${comoSeLlamaba}`);
+              } });
+        }
       }, false));
     });
+    cont.appendChild(bloquePropio(dia, comida));
     cont.insertAdjacentHTML('beforeend',
       `<div class="sheet-nota"><p>Son las opciones del plan de Alexia. No aparecen las que te dejarían dos tomas de huevo el mismo día.</p></div>`);
   });
+}
+
+/* Escribir lo que comiste de verdad. Va al final de la hoja: primero el plan,
+   y la salida despues. */
+function bloquePropio(dia, comida) {
+  const mio = platoPropio(dia, comida);
+  const el = document.createElement('div');
+  el.className = 'propio';
+  el.innerHTML =
+    `<div class="propio-h">Comí otra cosa</div>` +
+    `<input type="text" id="propioTxt" maxlength="60" autocapitalize="sentences" ` +
+      `placeholder="Qué comiste" value="${mio ? esc(mio.titulo) : ''}">` +
+    `<div class="propio-fam" id="propioFam">` +
+      Object.entries(PROPIOS).map(([k, n]) =>
+        `<button type="button" data-k="${k}"${(mio && (mio.protK || 'otro') === k) || (!mio && k === 'otro') ? ' class="on"' : ''}>${n}</button>`).join('') +
+    `</div>` +
+    `<div class="btns">` +
+      `<button class="btn btn-p" id="propioOk" type="button">Guardar</button>` +
+      (mio ? `<button class="btn btn-s" id="propioNo" type="button">Quitar</button>` : '') +
+    `</div>`;
+  const fam = el.querySelector('#propioFam');
+  fam.querySelectorAll('button').forEach(b => {
+    b.onclick = () => fam.querySelectorAll('button').forEach(o => o.classList.toggle('on', o === b));
+  });
+  el.querySelector('#propioOk').onclick = () => {
+    const txt = el.querySelector('#propioTxt').value.trim();
+    if (!txt) { el.querySelector('#propioTxt').focus(); return; }
+    const k = (fam.querySelector('.on') || {}).dataset;
+    guardarPropio(dia, comida, txt, k ? k.k : 'otro');
+    cerrarHoja();
+    if (typeof avisar === 'function') avisar(`${comida}: ${txt}`);
+  };
+  const quitar = el.querySelector('#propioNo');
+  if (quitar) quitar.onclick = () => {
+    guardarPropio(dia, comida, null);
+    cerrarHoja();
+    if (typeof avisar === 'function') avisar(`${comida}: vuelve el plan`);
+  };
+  return el;
 }
 
 const etiquetaDiaCorto = dia => {

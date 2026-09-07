@@ -285,10 +285,30 @@ function bump(ds, tipo, id, cap, delta){
 }
 
 // Lo obligatorio de un dia: suplementos + comidas + verduras + llegar a la meta de agua
+/* Una comida se puede SALTAR: no es lo mismo "todavia no" que "hoy no comi".
+   Sin este estado, un dia en que te saltas el desayuno no se puede cerrar
+   nunca y el porcentaje se queda clavado, asi que la app te miente el resto
+   del dia. Lo saltado no cuenta ni arriba ni abajo: sale del total. */
+const saltado = (ds, comida) => marcado(`${ds}:X:${comida}`);
+const saltarComida = (comida, si) => {
+  setMark(`${selDate}:X:${comida}`, si ? '1' : '0');
+  if(si){
+    // lo que ya estuviera marcado de esa comida deja de estarlo: no lo comiste
+    [...suplDeDia(selDia).items, ...COMIDAS].filter(i=>i.meal===comida)
+      .forEach(it => { if(marcado(`${selDate}:${it.meal}:${it.id}`)) setMark(`${selDate}:${it.meal}:${it.id}`, '0'); });
+  }
+  if(typeof sincronizarFrecuencias === 'function') sincronizarFrecuencias(selDia);
+  if(navigator.vibrate) navigator.vibrate(10);
+  tramoAbierto = si ? null : comida;
+  render();
+  if(typeof avisar === 'function') avisar(si ? `${comida} marcado como no comido` : `${comida} vuelve a contar`);
+};
+
 function obligatorio(dia){
   const ds = dsDiaG(dia);
-  const supl = suplDeDia(dia).items.map(it=>({ok:marcado(`${ds}:${it.meal}:${it.id}`)}));
-  const com  = COMIDAS.map(it=>({ok:marcado(`${ds}:${it.meal}:${it.id}`)}));
+  const vale = it => !saltado(ds, it.meal);
+  const supl = suplDeDia(dia).items.filter(vale).map(it=>({ok:marcado(`${ds}:${it.meal}:${it.id}`)}));
+  const com  = COMIDAS.filter(vale).map(it=>({ok:marcado(`${ds}:${it.meal}:${it.id}`)}));
   const agua = [{ok: racionCount(ds,'agua',8) >= 6}];
   const todo = [...supl, ...com, ...agua];
   return {total: todo.length, hechos: todo.filter(x=>x.ok).length};
@@ -394,8 +414,9 @@ function tramoDelReloj(){
 
 function pendientesDe(comida, plan){
   const todos = [...plan.items, ...COMIDAS].filter(i=>i.meal===comida);
+  if(saltado(selDate, comida)) return {total: todos.length, faltan: 0, salt: true};
   const faltan = todos.filter(it=> !marcado(`${selDate}:${it.meal}:${it.id}`));
-  return {total: todos.length, faltan: faltan.length};
+  return {total: todos.length, faltan: faltan.length, salt: false};
 }
 
 function tramoQueVa(plan){
@@ -445,14 +466,15 @@ function renderHoy(){
   ['Desayuno','Almuerzo','Cena'].forEach(c=>{
     const del = todos.filter(i=>i.meal===c);
     if(!del.length) return;
-    const {total, faltan} = pendientesDe(c, plan);
+    const {total, faltan, salt} = pendientesDe(c, plan);
     const listo = faltan === 0;
     const abierto = c === activo;
 
     const tramo = document.createElement('div');
     // el tramo entero se cierra con el ultimo toque: ese check tambien salta
     const cerroAhora = listo && ultimaMarca && ultimaMarca.startsWith(`${selDate}:${c}:`);
-    tramo.className = 'tramo' + (abierto?' ahora':'') + (listo?' listo':'') + (cerroAhora?' recien':'');
+    tramo.className = 'tramo' + (abierto?' ahora':'') + (listo && !salt?' listo':'') +
+      (salt?' saltado':'') + (cerroAhora && !salt?' recien':'');
 
     // Que se come, para que el tramo cerrado igual lo diga
     const m = menuHoy ? (c==='Desayuno'?menuHoy.desayuno : c==='Almuerzo'?menuHoy.almuerzo : menuHoy.cena) : null;
@@ -474,12 +496,18 @@ function renderHoy(){
       `<span class="tramo-res">${resumen}</span></span>`+
       /* El atajo "Marcar las N" solo se gana su sitio con DOS o mas
          pendientes. Con una sola, la fila de abajo es el control y estaban los
-         dos a quince pixeles: dos botones para exactamente la misma accion. */
-      (listo
-        ? `<span class="tramo-ok"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>`
-        : (abierto && faltan >= 2
-            ? `<span class="tramo-todo">Marcar las ${faltan}${faltan === total ? '' : ' que faltan'}</span>`
-            : (total > 1 ? `<span class="tramo-cnt">${total - faltan} de ${total}</span>` : '')));
+         dos a quince pixeles: dos botones para exactamente la misma accion.
+         Y el chevron esta siempre: sin el, un tramo ya hecho parecia cerrado
+         para siempre y no habia forma de adivinar que se podia reabrir para
+         desmarcarlo. */
+      (salt
+        ? `<span class="tramo-salt">No comiste</span>`
+        : listo
+          ? `<span class="tramo-ok"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>`
+          : (abierto && faltan >= 2
+              ? `<span class="tramo-todo">Marcar las ${faltan}${faltan === total ? '' : ' que faltan'}</span>`
+              : (total > 1 ? `<span class="tramo-cnt">${total - faltan} de ${total}</span>` : ''))) +
+      `<svg class="tramo-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>`;
     cab.onclick = ev => {
       if (ev.target.closest('.tramo-todo')) { marcarTramo(c, del); return; }
       abrirTramo(c);
@@ -494,6 +522,20 @@ function renderHoy(){
     if(typeof bloquePlato === 'function' && menuHoy){
       const plato = bloquePlato(c, menuHoy);
       if(plato){ plato.classList.add('fino'); body.appendChild(plato); }
+    }
+    if(salt){
+      const av = document.createElement('div');
+      av.className = 'salt-aviso';
+      av.innerHTML = `<p>Este ${c.toLowerCase()} no cuenta hoy.</p>`;
+      const volver = document.createElement('button');
+      volver.type = 'button'; volver.className = 'dish-swap';
+      volver.textContent = 'Sí lo comí';
+      volver.onclick = () => saltarComida(c, false);
+      av.appendChild(volver);
+      body.appendChild(av);
+      tramo.appendChild(body);
+      linea.appendChild(tramo);
+      return;
     }
     del.forEach(it=>{
       const key = `${selDate}:${it.meal}:${it.id}`;
@@ -514,6 +556,13 @@ function renderHoy(){
         `<div class="info"><span class="name">${it.name}</span><span class="dose">${it.tag || it.dose}</span></div>`;
       body.appendChild(el);
     });
+    /* Saltar la comida vive DEBAJO de las tomas, no arriba: primero lo que vas
+       a hacer casi siempre, y al final la salida. */
+    const no = document.createElement('button');
+    no.type = 'button'; no.className = 'dish-swap salt-btn';
+    no.textContent = `No comí este ${c.toLowerCase()}`;
+    no.onclick = () => saltarComida(c, true);
+    body.appendChild(no);
     tramo.appendChild(body);
     linea.appendChild(tramo);
   });
@@ -1002,7 +1051,7 @@ function reiniciar(){
   else location.reload();
 }
 document.getElementById('btnReset').onclick = reiniciar;
-document.getElementById('ver').textContent = 'Versión 18 · ' + HOY;
+document.getElementById('ver').textContent = 'Versión 19 · ' + HOY;
 render();
 fullSync();
 

@@ -27,12 +27,26 @@ function resumenDelPeriodo(hasta) {
   const cuenta = (fn) => dias.filter(fn).length;
   const pct = n => dias.length ? Math.round(n / dias.length * 100) : 0;
 
-  // Objetivo 1: las tres ingestas principales
+  /* Objetivo 1: las tres ingestas principales.
+
+     Una comida que Vinz marco como NO COMIDA se informa aparte, no como
+     incumplimiento: es exactamente el mismo criterio que el resto del
+     documento -- un dato que el no dio no puede presentarse como un dato
+     malo, y aqui si lo dio, dijo que no comio. */
+  const COMS = ['Desayuno', 'Almuerzo', 'Cena'];
   const tresComidas = cuenta(d => {
     const ds = dsDiaG(d);
-    return ['m1', 'm2', 'm3'].every((id, i) =>
-      marcado(`${ds}:${['Desayuno', 'Almuerzo', 'Cena'][i]}:${id}`));
+    return COMS.every((c, i) => marcado(`${ds}:${c}:${['m1', 'm2', 'm3'][i]}`));
   });
+  const saltadas = {};
+  dias.forEach(d => {
+    const ds = dsDiaG(d);
+    COMS.forEach(c => { if (marcado(`${ds}:X:${c}`)) saltadas[c] = (saltadas[c] || 0) + 1; });
+  });
+  const totalSaltadas = Object.values(saltadas).reduce((a, c) => a + c, 0);
+  const notaSaltadas = totalSaltadas
+    ? Object.entries(saltadas).map(([c, n]) => `${n} ${c.toLowerCase()}${n === 1 ? '' : 's'}`).join(', ')
+    : '';
 
   // Objetivo 2: agua e infusion
   const seisVasos = cuenta(d => racionCount(dsDiaG(d), 'agua', 8) >= 6);
@@ -77,7 +91,9 @@ function resumenDelPeriodo(hasta) {
     dias: dias.length, sinRegistro, desde: dsDiaG(1), hasta: dsDiaG(hasta), sens,
     objetivos: [
       { que: 'Las 3 comidas principales', n: tresComidas, pct: pct(tresComidas),
-        nota: 'desayuno, almuerzo y cena' },
+        nota: totalSaltadas
+          ? `desayuno, almuerzo y cena · ${notaSaltadas} marcados como no comidos`
+          : 'desayuno, almuerzo y cena' },
       { que: '6 vasos de agua o más', n: seisVasos, pct: pct(seisVasos),
         nota: `${promVasos} vasos al día en promedio` },
       { que: '1 infusión al día', n: conInfusion, pct: pct(conInfusion), nota: '' },
@@ -241,12 +257,12 @@ function montarBotonInforme() {
   const btn = document.getElementById('infBtn');
   const nota = document.getElementById('infNota');
   if (!btn) return;
-  btn.disabled = !window.jspdf;
+  btn.disabled = false;
   const conRegistro = (() => { let n = 0; for (let d = 1; d <= diaPrograma; d++) if (diaTieneRegistro(d)) n++; return n; })();
   if (nota) {
     nota.textContent = conRegistro
       ? `Cubre tus ${conRegistro} día${conRegistro === 1 ? '' : 's'} con registro, del día 1 a hoy. Los días que no marcaste nada quedan fuera del cálculo, no cuentan como incumplidos.`
       : 'Todavía no hay nada marcado, así que el informe saldría vacío.';
   }
-  btn.onclick = () => generarInforme();
+  btn.onclick = conPDF(btn, () => generarInforme());
 }

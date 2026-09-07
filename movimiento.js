@@ -233,3 +233,45 @@ function golpecito(el) {
   }, { passive: true });
   mirar();
 })();
+
+/* ---------------------------------------------------------------------------
+   Aviso corto (toast)
+
+   Hasta ahora cambiar el plato no decia nada: tocabas una opcion, la hoja se
+   cerraba y el riel de abajo mostraba otra cosa. Si no estabas mirando esa
+   parte de la pantalla, el cambio pasaba en silencio -- y no habia forma de
+   deshacerlo sin volver a entrar y acordarte de cual era el de antes.
+
+   Vive encima de la barra, se va solo, y puede llevar UNA accion.
+   --------------------------------------------------------------------------- */
+function avisar(texto, accion) {
+  let el = document.getElementById('aviso');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'aviso';
+    el.className = 'aviso';
+    el.setAttribute('role', 'status');
+    document.body.appendChild(el);
+  }
+  el.innerHTML = '';
+  const t = document.createElement('span');
+  t.textContent = texto;
+  el.appendChild(t);
+  if (accion && accion.texto) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = accion.texto;
+    b.onclick = () => { cerrar(); accion.hacer(); };
+    el.appendChild(b);
+  }
+  el.classList.remove('yendose');
+  void el.offsetWidth;
+  el.classList.add('puesto');
+  clearTimeout(el._t);
+  const cerrar = () => {
+    clearTimeout(el._t);
+    el.classList.add('yendose');
+    setTimeout(() => { el.classList.remove('puesto', 'yendose'); }, 200);
+  };
+  el._t = setTimeout(cerrar, accion ? 5200 : 2600);
+}

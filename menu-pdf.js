@@ -124,8 +124,8 @@ function generarMenuPDF(desde, hasta, devolver) {
 function montarBotonesMenuPDF() {
   const btn = document.getElementById('pdfMenu');
   if (!btn) return;
-  btn.disabled = !(MENU && window.jspdf);
-  btn.onclick = () => {
+  btn.disabled = !MENU;
+  btn.onclick = conPDF(btn, () => {
     if (rangoPDF === 'mes') {
       const base = (typeof mesBase === 'number' && mesBase) || 1;
       generarMenuPDF(base, base + 27);
@@ -133,5 +133,5 @@ function montarBotonesMenuPDF() {
       const w = selSemana();
       generarMenuPDF((w - 1) * 7 + 1, w * 7);
     }
-  };
+  });
 }

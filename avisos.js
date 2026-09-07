@@ -208,6 +208,29 @@ function renderAvisos() {
 // El service worker avisa cuando se marco algo desde una notificacion
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.addEventListener('message', ev => {
-    if (ev.data && ev.data.tipo === 'marcado') fullSync().then(render);
+    if (!ev.data) return;
+    if (ev.data.tipo === 'marcado') { fullSync().then(render); return; }
+
+    /* Version nueva instalada. NO se recarga en el momento: estarias tocando
+       algo y la pantalla se te iria debajo del dedo. Se espera a que vuelvas
+       a la app, que en una PWA instalada es cuando de verdad "abres" -- y una
+       PWA no se cierra, se suspende, asi que sin esto podrias quedarte dias
+       con la version vieja corriendo.
+
+       La guarda va por CONTENIDO (el nombre del cache), no por un booleano:
+       un si/no en sessionStorage funciona la primera vez y bloquea todas las
+       siguientes para siempre. */
+    if (ev.data.tipo === 'nueva-version') {
+      const sello = 'recargado_' + ev.data.cache;
+      if (sessionStorage.getItem(sello)) return;
+      const recargar = () => {
+        if (document.visibilityState !== 'visible') return;
+        sessionStorage.setItem(sello, '1');
+        location.reload();
+      };
+      document.addEventListener('visibilitychange', recargar);
+      // y si ya estabas fuera cuando llego, al volver se dispara solo
+      if (document.visibilityState === 'hidden') recargar();
+    }
   });
 }

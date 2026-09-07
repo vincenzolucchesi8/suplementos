@@ -58,5 +58,7 @@ const salida = {
   },
 };
 
-fs.writeFileSync(path.join(__dirname, 'menu.json'), JSON.stringify(salida, null, 1), 'utf8');
+// compacto: con sangria de un espacio pesaba 135 KB y son 78; se descarga en
+// cada arranque y nadie lo lee a mano
+fs.writeFileSync(path.join(__dirname, 'menu.json'), JSON.stringify(salida), 'utf8');
 console.log('menu.json escrito con', dias.length, 'dias');

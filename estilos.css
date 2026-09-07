@@ -881,3 +881,56 @@ button:active{transform:scale(.97);transition:transform 90ms var(--hundir)}
   .burbuja,.burbuja-x,.burbuja-ico,.ico-y{transition:opacity 170ms ease!important}
   .panel.se-va{opacity:1}
 }
+
+/* ------------------------------------------------------- aviso corto (toast)
+   Encima de la barra, con sitio para UNA accion. Entra desde abajo, que es de
+   donde nace, y se va sola. */
+.aviso{position:fixed;left:14px;right:14px;bottom:calc(84px + env(safe-area-inset-bottom));
+  z-index:45;display:none;align-items:center;gap:12px;
+  background:var(--tinta);color:#fff;border-radius:var(--r2);padding:13px 15px;
+  font-size:var(--t4);font-weight:600;line-height:1.4;
+  box-shadow:0 10px 26px -12px rgba(10,60,45,.55)}
+.aviso.puesto{display:flex;animation:asomaAviso var(--paso) var(--curva) both}
+.aviso.yendose{animation:vaseAviso 180ms var(--curva) forwards}
+.aviso span{flex:1;min-width:0}
+.aviso button{flex-shrink:0;min-height:36px;padding:0 12px;border-radius:var(--r5);
+  background:rgba(255,255,255,.16);color:#fff;font-size:var(--t4);font-weight:700;
+  transition:background var(--rapido) var(--curva)}
+.aviso button:active{background:rgba(255,255,255,.3)}
+@keyframes asomaAviso{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes vaseAviso{to{opacity:0;transform:translateY(10px)}}
+
+/* ------------------------------------------------- una comida que no comiste
+   No es lo mismo "todavia no" que "hoy no comi": sin este estado, el dia no se
+   podia cerrar nunca y el porcentaje se quedaba clavado mintiendo. */
+.tramo-salt{font-size:var(--t5);font-weight:700;color:var(--g3);background:var(--g1);
+  border-radius:var(--r5);padding:5px 11px;flex-shrink:0;align-self:center}
+.tramo.saltado .tramo-res,.tramo.saltado .tramo-nom{color:var(--g3)}
+.tramo.saltado .marcador{opacity:.45;filter:grayscale(1)}
+.salt-aviso{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:var(--g1);border-radius:var(--r2);padding:12px 14px;margin-top:6px}
+.salt-aviso p{font-size:var(--t4);color:var(--g3)}
+.salt-aviso .dish-swap{padding:11px 0;flex-shrink:0}
+/* la salida va al final del tramo y en voz baja: se usa poco */
+.salt-btn{margin-top:4px;font-size:var(--t5)}
+
+/* el chevron de la cabecera del tramo: sin el, un tramo ya hecho parecia
+   cerrado para siempre y no habia como adivinar que se podia reabrir */
+.tramo-chev{width:16px;height:16px;stroke:var(--g3);stroke-width:2;fill:none;stroke-linecap:round;
+  flex-shrink:0;align-self:center;margin-left:2px;
+  transition:transform var(--medio) var(--curva)}
+.tramo.ahora .tramo-chev{transform:rotate(180deg)}
+
+/* --------------------------------------------------------- un plato propio
+   El plan trae 24 opciones; el dia que comes otra cosa no habia donde
+   ponerlo, asi que o mentias marcando lo que no comiste o el dia no cerraba.
+   Va al FINAL de la hoja: primero el plan, y la salida despues. */
+.propio{border-top:1px solid var(--g2);margin-top:var(--e3);padding-top:var(--e2)}
+.propio-h{font-size:var(--t3);font-weight:700;letter-spacing:-.2px;margin-bottom:10px}
+.propio input{width:100%;background:var(--g1);border-radius:var(--r3);padding:13px 15px;
+  min-height:48px;font-size:var(--t3)}
+.propio-fam{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 14px}
+.propio-fam button{min-height:44px;padding:0 13px;border-radius:var(--r5);background:var(--g1);
+  color:var(--g3);font-size:var(--t5);font-weight:600;
+  transition:background var(--rapido) var(--curva),color var(--rapido) var(--curva)}
+.propio-fam button.on{background:var(--tinta);color:#fff}
