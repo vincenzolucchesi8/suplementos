@@ -722,10 +722,16 @@ footer .ver{margin-left:8px;opacity:.7}
 /* ------------------------------------------------------------------------- */
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .cae > *,.brota > *,.cae .esc i,.cae .anillo .ring-fg,.cae .tramo::before,
-  .panel.se-va{animation:none!important}
-  *,*::before,*::after{animation-duration:.001ms!important;animation-delay:0ms!important;
-    transition-duration:.001ms!important;transition-delay:0ms!important}
-  .burbuja,.burbuja-ico{animation:none!important}
-  .panel.entra > *{animation:none}
+  /* Se apaga el MOVIMIENTO, no toda la respuesta. Con todo apagado la app queda
+     muerta: no confirma un toque, no se ve que algo cambio, y eso no es lo que
+     pide el ajuste. Lo que marea es el desplazamiento, no un fundido corto. */
+  *,*::before,*::after{animation:none!important}
+  *,*::before,*::after{
+    transition-property:opacity,color,background-color,border-color,box-shadow,fill,stroke!important;
+    transition-duration:170ms!important;transition-delay:0ms!important}
+  /* La burbuja no vuela: aparece ya en la pestana nueva. OJO: no se le puede
+     poner transform:none, porque el transform es lo que la COLOCA en su
+     pestana; sin el se queda clavada en la primera para siempre. */
+  .burbuja,.burbuja-x,.burbuja-ico,.ico-y{transition:opacity 170ms ease!important}
+  .panel.se-va{opacity:1}
 }
