@@ -229,7 +229,7 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .ficha .lin .anillo{margin:-4px -2px -4px 0}
 .anillo circle{fill:none;stroke-linecap:round}
 .ring-bg{stroke:rgba(14,122,95,.16)}
-.ring-fg{stroke:var(--verde);transition:stroke-dashoffset 620ms var(--curva),opacity 140ms linear}
+.ring-fg{stroke:var(--verde);transition:stroke-dashoffset 620ms var(--curva),opacity 140ms var(--curva)}
 .ring-fg[data-cero="1"]{opacity:0}
 /* al entrar a Hoy el anillo se dibuja desde cero en vez de aparecer lleno */
 .cae .anillo .ring-fg{animation:dibujaAnillo 620ms var(--curva) both;animation-delay:120ms}
