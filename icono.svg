@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
+  <!--
+    Mi protocolo · la marca
+
+    La capsula es el unico objeto que existe en este mundo, y su silueta se lee
+    a cualquier tamano: probada a 58, 40, 29 y 20 px antes de elegirla. Las dos
+    mitades con el traslape del borde son las de una capsula de verdad, y eso
+    es lo que la separa de un icono generico de salud, que siempre es un
+    simbolo (cruz, hoja, corazon, pulso) y nunca una cosa.
+
+    La diagonal de -32 grados no es decorativa: de pie la forma se leia como
+    bateria o barra de carga.
+
+    Colores del sistema de la app: tinta #12171A, papel #F7F8F7, verde #0E7A5F.
+  -->
+  <rect width="180" height="180" fill="#12171A"/>
+  <g transform="rotate(-32 90 92)">
+    <path d="M62 62a28 28 0 0 1 56 0v30H62z" fill="#F7F8F7"/>
+    <path d="M62 92h56v30a28 28 0 0 1-56 0z" fill="#0E7A5F"/>
+    <rect x="58" y="86" width="64" height="13" rx="6.5" fill="#F7F8F7"/>
+  </g>
+</svg>

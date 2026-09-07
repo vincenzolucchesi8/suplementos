@@ -1,11 +1,11 @@
 // Service worker del tablero de protocolo (suplementos, comidas y peso).
 // Estrategia: la pagina va por RED primero (siempre fresca; offline cae al cache).
 // Assets estaticos por cache primero. La API NUNCA se cachea.
-const CACHE = 'protocolo-v19';
+const CACHE = 'protocolo-v20';
 const ASSETS = [
   './', './index.html', './estilos.css', './plan-lib.js', './api-cliente.js', './plan.js', './menu/generador.js',
   './menu-lib.js', './app.js', './nutricion.js', './avisos.js', './plan-editor.js',
-  './compras-pdf.js', './menu-pdf.js', './informe-pdf.js', './navegacion.js', './movimiento.js', './vendor/jspdf.umd.min.js',
+  './compras-pdf.js', './menu-pdf.js', './informe-pdf.js', './navegacion.js', './movimiento.js', './instalar.js', './vendor/jspdf.umd.min.js',
   './menu/menu.json', './manifest.json', './icon-192.png', './icon-512.png', './icon-180.png',
   './img/pescado.webp', './img/pollo.webp', './img/carne.webp', './img/atun.webp', './img/omelette.webp', './img/revueltos.webp', './img/bowl.webp', './img/batido.webp', './img/wrap.webp', './img/palta.webp', './img/quinoa.webp', './img/menestras.webp',
 ];

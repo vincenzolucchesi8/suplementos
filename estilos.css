@@ -91,6 +91,25 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 /* entrada escalonada: la clase la pone el JS, asi que sin JS todo se ve igual */
 .panel.entra > *{animation:asoma 420ms var(--suave) both;animation-delay:var(--retraso,0ms)}
 
+/* Cartel de instalar (solo iPhone y solo una vez). Va arriba del todo porque
+   sin instalar no hay avisos: no es un adorno, es la unica forma de que la app
+   sirva completa. */
+.instalar{display:flex;align-items:flex-start;gap:12px;background:var(--tinta);color:#fff;
+  border-radius:var(--r1);padding:15px 16px;margin-bottom:var(--e3);overflow:hidden;
+  transition:height 320ms var(--suave),opacity 220ms var(--suave),margin 320ms var(--suave),padding 320ms var(--suave)}
+.instalar.yendose{height:0!important;opacity:0;margin-bottom:0;padding-top:0;padding-bottom:0}
+.ins-ico{width:42px;height:42px;border-radius:11px;flex-shrink:0}
+.ins-txt{flex:1;min-width:0}
+.ins-txt > b{display:block;font-size:var(--t3);font-weight:700;letter-spacing:-.2px;margin-bottom:3px}
+.ins-txt span{display:block;font-size:var(--t4);line-height:1.5;color:#B9C0BC}
+.ins-txt span b{color:#fff;font-weight:700}
+.ins-share{width:13px;height:13px;stroke:#fff;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;
+  vertical-align:-2px;margin:0 1px}
+.ins-x{position:relative;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.12);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center}
+.ins-x::after{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px}
+.ins-x svg{width:13px;height:13px;stroke:#fff;stroke-width:2.4;fill:none;stroke-linecap:round}
+
 /* ------------------------------------------------------------- fichas dato */
 .fichas{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:var(--e4)}
 .ficha{background:var(--g1);border-radius:var(--r1);padding:15px 16px 16px;min-height:132px;
