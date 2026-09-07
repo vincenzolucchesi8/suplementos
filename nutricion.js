@@ -111,16 +111,8 @@ function bloquePlato(comida, c) {
        ${m.cambiado ? '<span class="dish-tag">Cambiado por ti</span>' : ''}
      </div>`;
 
-  el.querySelector('.dish-swap').onclick = () => cambiarPlato(comida);
+  el.querySelector('.dish-swap').onclick = () => abrirHojaOpciones(selDia, comida);
   return el;
-}
-
-function cambiarPlato(comida) {
-  const k = `${selDate}:MO:${LETRA[comida]}`;
-  const n = (parseInt(valorDe(k) || '0', 10) || 0) + 1;
-  setMark(k, String(n));
-  sincronizarFrecuencias(selDia);
-  render();
 }
 
 /* ---------- Las frecuencias de la semana se llenan solas ----------
@@ -146,6 +138,81 @@ function sincronizarFrecuencias(dia) {
   });
 }
 
+/* ---------- El mes de un vistazo ----------
+   Un "mes" son los 28 dias del ciclo del menu, no el mes del calendario: es la
+   unidad en la que el plan realmente se repite. Cada celda lleva dos filetes,
+   almuerzo y cena, con el color de la proteina. De un golpe se ve si hay tres
+   dias de carne seguidos o una semana entera sin pescado. */
+const COLOR_PROT = {
+  pescado: '#4aa3d8', atun: '#4aa3d8', carne: '#b4675f',
+  pollo: '#9aa7b8', huevos: '#e3c079',
+};
+let mesBase = null;   // primer dia del bloque de 28 que se esta mirando
+
+const bloqueDe = dia => Math.floor((dia - 1) / 28) * 28 + 1;
+
+function irMes(delta) {
+  mesBase = Math.max(1, (mesBase || bloqueDe(selDia)) + delta * 28);
+  renderMes();
+}
+
+function renderMes() {
+  const nav = document.getElementById('mesNav');
+  const grid = document.getElementById('mesGrid');
+  if (!grid) return;
+  if (!MENU) { grid.innerHTML = '<p class="dish-sub">Cargando el menú…</p>'; return; }
+
+  const base = mesBase || (mesBase = bloqueDe(selDia));
+  const fin = base + 27;
+  const rango = document.getElementById('mesRange');
+  if (rango) {
+    const f = n => dsDiaG(n).slice(8) + '/' + dsDiaG(n).slice(5, 7);
+    rango.textContent = `${f(base)} al ${f(fin)}`;
+  }
+
+  if (nav) {
+    nav.className = 'daynav mesnav';
+    nav.innerHTML =
+      `<button class="dnav-btn" ${base <= 1 ? 'disabled' : ''} aria-label="Mes anterior">&#8249;</button>` +
+      `<span class="dnav-lbl">Días ${base} al ${fin} del programa</span>` +
+      `<button class="dnav-btn" aria-label="Mes siguiente">&#8250;</button>`;
+    const bs = nav.querySelectorAll('.dnav-btn');
+    bs[0].onclick = () => irMes(-1);
+    bs[1].onclick = () => irMes(1);
+  }
+
+  // Las semanas del programa son de 7 dias corridos, asi que cada columna cae
+  // siempre en el mismo dia de la semana
+  const dowIni = new Date(Date.parse(dsDiaG(base) + 'T00:00:00Z')).getUTCDay();
+  let html = '<div class="mes-grid">';
+  for (let i = 0; i < 7; i++) html += `<div class="mes-dow">${DOW_CORTO[(dowIni + i) % 7]}</div>`;
+  html += '</div><div class="mes-grid" id="mesCeldas">';
+  for (let n = base; n <= fin; n++) {
+    const c = comidasDeDia(n);
+    const ds = dsDiaG(n);
+    const dia = new Date(Date.parse(ds + 'T00:00:00Z')).getUTCDate();
+    const cls = (ds === HOY ? ' hoy' : '') + (n > diaPrograma ? ' futuro' : '') +
+      (Math.ceil(n / 7) === selSemana() ? ' sem' : '');
+    const barras = c
+      ? `<i style="background:${COLOR_PROT[c.almuerzo.protK] || '#9aa7b8'}"></i>` +
+        `<i style="background:${COLOR_PROT[c.cena.protK] || '#9aa7b8'}"></i>`
+      : '';
+    html += `<button type="button" class="mes-cell${cls}" data-dia="${n}" aria-label="Día ${n}">` +
+      `<b>${dia}</b><span class="barras">${barras}</span></button>`;
+  }
+  html += '</div>' +
+    `<div class="mes-leyenda">
+       <span><i style="background:#4aa3d8"></i>Pescado</span>
+       <span><i style="background:#9aa7b8"></i>Pollo</span>
+       <span><i style="background:#b4675f"></i>Carne roja</span>
+       <span><i style="background:#e3c079"></i>Huevos</span>
+     </div>`;
+  grid.innerHTML = html;
+  grid.querySelectorAll('.mes-cell').forEach(b => {
+    b.onclick = () => abrirHojaDia(parseInt(b.dataset.dia, 10));
+  });
+}
+
 /* ---------- Calendario de la semana ---------- */
 const DOW_CORTO = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
 
@@ -158,7 +225,7 @@ function renderCalendario() {
   const w = selSemana();
   const rango = document.getElementById('calRange');
   const d1 = dsDiaG((w - 1) * 7 + 1), d7 = dsDiaG(w * 7);
-  if (rango) rango.textContent = `${d1.slice(8)}/${d1.slice(5, 7)} al ${d7.slice(8)}/${d7.slice(5, 7)}`;
+  if (rango) rango.textContent = `Semana ${w} · ${d1.slice(8)}/${d1.slice(5, 7)} al ${d7.slice(8)}/${d7.slice(5, 7)}`;
 
   for (let n = (w - 1) * 7 + 1; n <= w * 7; n++) {
     const c = comidasDeDia(n);
@@ -185,12 +252,6 @@ function renderCalendario() {
     b.onclick = () => abrirHojaDia(n);
     cont.appendChild(b);
   }
-  cont.insertAdjacentHTML('beforeend',
-    `<div class="cal-legend">
-       <span><i class="pesc" style="background:#4aa3d8"></i>Pescado</span>
-       <span><i class="menes" style="background:var(--pl-carb)"></i>Menestras o quinoa</span>
-       <span><i class="roja" style="background:#b4675f"></i>Carne roja</span>
-     </div>`);
 }
 
 
@@ -396,8 +457,10 @@ function toggleCompras() {
 
 /* Se engancha al render principal del tablero */
 function renderNutricion() {
+  renderMes();
   renderCalendario();
   if (typeof montarBotonesPDF === 'function') montarBotonesPDF();
+  if (typeof montarBotonesMenuPDF === 'function') montarBotonesMenuPDF();
   actualizarCabeceraCompras();
   if (!document.getElementById('buyBody').hidden) renderCompras();
 }

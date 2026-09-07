@@ -1,11 +1,11 @@
 // Service worker del tablero de protocolo (suplementos, comidas y peso).
 // Estrategia: la pagina va por RED primero (siempre fresca; offline cae al cache).
 // Assets estaticos por cache primero. La API NUNCA se cachea.
-const CACHE = 'protocolo-v13';
+const CACHE = 'protocolo-v14';
 const ASSETS = [
   './', './index.html', './estilos.css', './plan-lib.js', './api-cliente.js', './plan.js', './menu/generador.js',
   './menu-lib.js', './app.js', './nutricion.js', './avisos.js', './plan-editor.js',
-  './compras-pdf.js', './informe-pdf.js', './navegacion.js', './vendor/jspdf.umd.min.js',
+  './compras-pdf.js', './menu-pdf.js', './informe-pdf.js', './navegacion.js', './vendor/jspdf.umd.min.js',
   './menu/menu.json', './manifest.json', './icon-192.png', './icon-512.png', './icon-180.png',
 ];
 

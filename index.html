@@ -126,10 +126,23 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
   <section class="panel" id="panel-comidas" role="tabpanel" aria-labelledby="tab-comidas">
   <div class="card">
     <div class="card-h">
-      <h2>Menú de la semana</h2>
-      <span class="count" id="calRange"></span>
+      <h2>Menú del mes</h2>
+      <span class="count" id="mesRange"></span>
     </div>
+    <div class="mesnav" id="mesNav"></div>
+    <div id="mesGrid"></div>
+    <div class="mes-sep"><span id="calRange"></span></div>
     <div id="calBody"></div>
+    <div class="pdf-box">
+      <div class="btns">
+        <button class="btn btn-p" id="menuPdfMes" type="button">
+          <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v5"/><path d="M9.5 14.5L12 17l2.5-2.5"/></svg>
+          PDF del mes
+        </button>
+        <button class="btn btn-s" id="menuPdfSemana" type="button">La semana</button>
+      </div>
+      <p class="pdf-nota">Para pegarlo en la refri: qué toca desayunar, almorzar y cenar cada día.</p>
+    </div>
   </div>
 
   <div class="card">
@@ -272,6 +285,7 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
 <script src="avisos.js" defer></script>
 <script src="vendor/jspdf.umd.min.js" defer></script>
 <script src="compras-pdf.js" defer></script>
+<script src="menu-pdf.js" defer></script>
 <script src="informe-pdf.js" defer></script>
 <script src="navegacion.js" defer></script>
 <script src="plan-editor.js" defer></script>
