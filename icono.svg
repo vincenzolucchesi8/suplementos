@@ -2,21 +2,33 @@
   <!--
     Mi protocolo · la marca
 
-    La capsula es el unico objeto que existe en este mundo, y su silueta se lee
-    a cualquier tamano: probada a 58, 40, 29 y 20 px antes de elegirla. Las dos
-    mitades con el traslape del borde son las de una capsula de verdad, y eso
-    es lo que la separa de un icono generico de salud, que siempre es un
-    simbolo (cruz, hoja, corazon, pulso) y nunca una cosa.
+    EL NUMERO, no un simbolo. 84 son los dias del protocolo: es el hecho que
+    define esta app y no lo tiene ninguna otra.
 
-    La diagonal de -32 grados no es decorativa: de pie la forma se leia como
-    bateria o barra de carga.
+    Se probo contra cinco alternativas montadas sobre una pantalla de inicio de
+    verdad y medidas a 58, 40, 29 y 20 px. Se cayeron todas ahi: las cuatro
+    fases y la cuadricula de los 84 dias se vuelven ruido, el dia en tres
+    bandas se lee como un icono de lista, y el 4 en verde sobre tinta se hunde
+    en el fondo. Un numero aguanta: los digitos son lo ultimo que se pierde al
+    achicar. Antes de todo esto hubo una capsula de medicina; Vinz la rechazo y
+    tenia razon, es el icono por defecto de toda app de suplementos.
 
-    Colores del sistema de la app: tinta #12171A, papel #F7F8F7, verde #0E7A5F.
+    El verde es el FONDO, no un detalle, porque a 20 px un acento fino
+    desaparece. La geometria (146 px de cuerpo, -12 de tracking, -6.75/-0.75 de
+    desplazamiento) salio de converger midiendo la TINTA del PNG renderizado,
+    no de la metrica de la fuente: el tracking negativo y el bearing de cada
+    digito no son simetricos. Resultado: 92 % del ancho con 6 px de aire
+    identico a cada lado.
+
+    Los PNG que de verdad se instalan los genera scratchpad/gen-iconos.js
+    rasterizando en el navegador, que es donde la webfont existe. Este archivo
+    es la fuente de registro: si lo abres suelto necesita la fuente de Google.
   -->
-  <rect width="180" height="180" fill="#12171A"/>
-  <g transform="rotate(-32 90 92)">
-    <path d="M62 62a28 28 0 0 1 56 0v30H62z" fill="#F7F8F7"/>
-    <path d="M62 92h56v30a28 28 0 0 1-56 0z" fill="#0E7A5F"/>
-    <rect x="58" y="86" width="64" height="13" rx="6.5" fill="#F7F8F7"/>
-  </g>
+  <defs>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@800&amp;display=block');</style>
+  </defs>
+  <rect width="180" height="180" fill="#0E7A5F"/>
+  <text x="83.25" y="89.25" text-anchor="middle" dominant-baseline="central"
+        font-family="Schibsted Grotesk, sans-serif" font-weight="800" font-size="146"
+        letter-spacing="-12" fill="#F7F8F7">84</text>
 </svg>
