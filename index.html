@@ -9,7 +9,7 @@
 <title>Mi protocolo · Suplementos, comidas y peso</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script>
 /* La casa del tablero es protocolo.papelito.online. Este redirect va en el HTML
    y no en app.js porque el service worker viejo de GitHub Pages sirve el JS
@@ -17,7 +17,7 @@
 if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.papelito.online/'+location.hash);
 </script>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0fa589">
+<meta name="theme-color" content="#FFFFFF">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Protocolo">
@@ -26,73 +26,66 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
 <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
+
+<!-- El filtro que funde la gota con la barra: un desenfoque seguido de un
+     salto brusco de alfa deja los bordes duros otra vez, y donde dos formas
+     se rozan aparece el cuello liquido. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <filter id="goo"><feGaussianBlur in="SourceGraphic" stdDeviation="6" result="b"/>
+    <feColorMatrix in="b" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -11"/></filter>
+</defs></svg>
+
 <div class="wrap">
 
-  <div class="top">
-    <div class="brand">
-      <div class="logo">
-        <svg viewBox="0 0 24 24"><path d="M3 12h3l2 5 4-10 2 5h7"/></svg>
-      </div>
-      <div>
-        <h1>Mi protocolo</h1>
-        <p>Suplementos y nutrición</p>
-      </div>
+  <header class="top">
+    <div>
+      <div class="rot" id="diaSemana"></div>
+      <h1 id="fecha"></h1>
     </div>
-    <div class="date-chip" id="fecha"></div>
-  </div>
+    <button class="engrane" id="btnAjustes" type="button" aria-label="Ajustes y plan">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 8.9 19a1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 5 8.9a1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9.5a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9.5a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+    </button>
+  </header>
 
+  <!-- ================================================================ HOY -->
   <section class="panel" id="panel-hoy" role="tabpanel" aria-labelledby="tab-hoy">
-  <div class="hero">
-    <div class="hero-grid">
-      <div class="ring-wrap">
-        <svg width="132" height="132" viewBox="0 0 124 124">
-          <defs>
-            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#27c4a7"/>
-              <stop offset="100%" stop-color="#0b8a72"/>
-            </linearGradient>
-          </defs>
-          <circle class="ring-bg" cx="62" cy="62" r="54" fill="none" stroke-width="11"/>
-          <circle class="ring-fg" id="ring" cx="62" cy="62" r="54" fill="none" stroke-width="11"
-                  stroke-dasharray="339.29" stroke-dashoffset="339.29"/>
-        </svg>
-        <div class="ring-center">
-          <div class="ring-pct" id="ringPct">0%</div>
-          <div class="ring-lbl">Hoy</div>
-        </div>
-      </div>
-      <div class="hero-meta">
-        <span class="phase-pill"><span class="dot"></span><span id="faseTag">Fase 1</span></span>
-        <div class="mini-stats">
-          <div class="mini"><b id="dia">1</b><span>Día</span></div>
-          <div class="mini"><b id="semana">1</b><span>Semana</span></div>
-          <div class="mini"><b id="racha">0</b><span>Completos</span></div>
-        </div>
-      </div>
-    </div>
+
+  <div class="daynav" id="dayNav"></div>
+
+  <div class="fichas">
+    <button class="ficha viva" type="button" id="fichaHoy">
+      <span class="lin"><span class="rot">Hoy</span>
+        <svg class="anillo" viewBox="0 0 68 68" aria-hidden="true">
+          <circle class="ring-bg" cx="34" cy="34" r="28" stroke-width="7"/>
+          <circle class="ring-fg" id="ring" cx="34" cy="34" r="28" stroke-width="7"
+                  stroke-dasharray="175.93" stroke-dashoffset="175.93" transform="rotate(-90 34 34)"/>
+        </svg></span>
+      <span>
+        <span class="val"><span id="ringPct">0</span><em>%</em></span>
+        <span class="pie" id="hoyPie"></span>
+      </span>
+    </button>
+    <button class="ficha" type="button" id="fichaPeso">
+      <span class="lin"><span class="rot">Peso</span>
+        <span class="mas"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></span>
+      <svg class="curva" id="pesoMini" viewBox="0 0 120 40" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <span>
+        <span class="val" id="pesoVal">—</span>
+        <span class="pie" id="pesoPie"></span>
+      </span>
+    </button>
   </div>
 
   <div class="card focus">
     <div class="card-h">
-      <h2>Lo importante ahora</h2>
+      <h2>Lo de hoy</h2>
       <span class="count" id="contador">0 de 0</span>
     </div>
-    <div class="daynav" id="dayNav"></div>
     <div id="hoyItems"></div>
     <div class="done-banner" id="doneMsg">
       <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
       Cerraste el día completo
     </div>
-  </div>
-
-  <div class="btns">
-    <button class="btn btn-p" onclick="completarDia()">
-      <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
-      Marcar día completo
-    </button>
-    <button class="btn btn-s" onclick="reiniciar()" title="Reiniciar" aria-label="Reiniciar progreso">
-      <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
-    </button>
   </div>
 
   <div class="card">
@@ -123,10 +116,11 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
   </div>
   </section>
 
+  <!-- ============================================================ COMIDAS -->
   <section class="panel" id="panel-comidas" role="tabpanel" aria-labelledby="tab-comidas">
   <div class="card">
     <div class="card-h">
-      <h2>Menú del mes</h2>
+      <h2>El mes</h2>
       <span class="count" id="mesRange"></span>
     </div>
     <div class="mesnav" id="mesNav"></div>
@@ -134,6 +128,7 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
     <div class="mes-sep"><span id="calRange"></span></div>
     <div id="calBody"></div>
     <div class="pdf-box">
+      <p class="pdf-nota">Para pegarlo en la refri: qué toca desayunar, almorzar y cenar cada día.</p>
       <div class="btns">
         <button class="btn btn-p" id="menuPdfMes" type="button">
           <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v5"/><path d="M9.5 14.5L12 17l2.5-2.5"/></svg>
@@ -141,26 +136,25 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
         </button>
         <button class="btn btn-s" id="menuPdfSemana" type="button">La semana</button>
       </div>
-      <p class="pdf-nota">Para pegarlo en la refri: qué toca desayunar, almorzar y cenar cada día.</p>
     </div>
   </div>
 
   <div class="card">
     <button class="acc-h" id="buyBtn" aria-expanded="false" aria-controls="buyBody" onclick="toggleCompras()">
-      <h2>Lista de compras</h2>
+      <h2>Compras</h2>
       <span class="count" id="buyCount"></span>
       <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
     </button>
     <div class="acc-body" id="buyBody" hidden></div>
     <div class="pdf-box">
+      <p class="pdf-nota" id="pdfNota">Agrupada por sección del mercado, con las cantidades ya sumadas y casillas para marcar.</p>
       <div class="btns">
         <button class="btn btn-p" id="pdfMes" type="button">
           <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v5"/><path d="M9.5 14.5L12 17l2.5-2.5"/></svg>
           PDF del mes
         </button>
-        <button class="btn btn-s" id="pdfSemana" type="button">Solo esta semana</button>
+        <button class="btn btn-s" id="pdfSemana" type="button">Solo la semana</button>
       </div>
-      <p class="pdf-nota" id="pdfNota">Sale de los platos que elegiste, agrupado por sección del mercado y con casillas para marcar.</p>
     </div>
   </div>
 
@@ -173,7 +167,27 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
   </div>
   </section>
 
+  <!-- =========================================================== PROGRESO -->
   <section class="panel" id="panel-progreso" role="tabpanel" aria-labelledby="tab-progreso">
+
+  <div class="fichas">
+    <div class="ficha viva">
+      <span class="rot">Peso</span>
+      <svg class="curva" id="pesoMini2" viewBox="0 0 120 40" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <span><span class="val" id="pesoVal2">—</span><span class="pie" id="pesoPie2"></span></span>
+    </div>
+    <div class="ficha">
+      <span class="rot">Adherencia</span>
+      <svg class="curva" id="adhMini" viewBox="0 0 120 40" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <span><span class="val"><span id="hsAdh">0</span><em>%</em></span><span class="pie" id="adhPie"></span></span>
+    </div>
+  </div>
+
+  <div class="racha">
+    <div class="lin"><span class="val" id="hsRacha">0 días</span><span class="rot">racha</span></div>
+    <div class="dias" id="rachaDias"></div>
+  </div>
+
   <div class="card">
     <div class="card-h">
       <h2>Esta semana</h2>
@@ -182,32 +196,34 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
     <div id="semanaRows"></div>
   </div>
 
-  <div class="card">
+  <div class="card" id="sienCard" hidden>
     <div class="card-h">
-      <h2>Peso</h2>
-      <span class="count" id="pesoCount"></span>
+      <h2>Cómo te sientes</h2>
+      <span class="count">promedio de la semana</span>
     </div>
+    <div id="sienBody"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h2>El peso</h2><span class="count" id="pesoCount"></span></div>
     <div id="pesoBody"></div>
   </div>
 
   <div class="card">
     <div class="card-h"><h2>Para la consulta</h2></div>
-    <div class="btns" style="margin-bottom:0">
-      <button class="btn btn-p" id="infBtn" type="button" style="flex:1">
-        <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v5"/><path d="M9.5 14.5L12 17l2.5-2.5"/></svg>
-        PDF para Alexia
-      </button>
+    <div class="pdf-box">
+      <p class="pdf-nota" id="infNota"></p>
+      <div class="btns">
+        <button class="btn btn-p" id="infBtn" type="button">
+          <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v5"/><path d="M9.5 14.5L12 17l2.5-2.5"/></svg>
+          PDF para Alexia
+        </button>
+      </div>
     </div>
-    <p class="pdf-nota" id="infNota"></p>
   </div>
 
   <div class="card">
-    <div class="card-h"><h2>Consistencia</h2><span class="count" id="totalDias"></span></div>
-    <div class="heat-stats">
-      <div class="heat-stat"><b id="hsAdh">0%</b><span>Adherencia</span></div>
-      <div class="heat-stat"><b id="hsRacha">0</b><span>Racha actual</span></div>
-      <div class="heat-stat"><b id="hsFull">0</b><span>Días completos</span></div>
-    </div>
+    <div class="card-h"><h2>Constancia</h2><span class="count" id="totalDias"></span></div>
     <div class="heat-scroll"><div class="heat-grid" id="heatGrid"></div></div>
     <div class="heat-legend">
       <span class="leg"><i class="l-full"></i>Todo</span>
@@ -218,17 +234,10 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
   </div>
   </section>
 
+  <!-- =============================================================== PLAN -->
   <section class="panel" id="panel-plan" role="tabpanel" aria-labelledby="tab-plan">
   <div class="card">
-    <div class="card-h"><h2>El plan</h2></div>
-    <p class="pdf-nota" id="planNombre" style="margin:0 0 14px"></p>
-    <div class="btns" style="margin-bottom:0">
-      <button class="btn btn-s" id="planBtn" type="button" style="flex:1">Editar el plan</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><h2>Plan de suplementos</h2></div>
+    <div class="card-h"><h2>Suplementos</h2><span class="count" id="faseTag"></span></div>
     <div class="tl" id="tlFases"></div>
   </div>
 
@@ -239,13 +248,31 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
     </div>
     <div id="aviBody"></div>
   </div>
+
+  <div class="card">
+    <div class="card-h"><h2>El plan</h2></div>
+    <div class="pdf-box">
+      <p class="pdf-nota" id="planNombre"></p>
+      <div class="btns">
+        <button class="btn btn-s" id="planBtn" type="button">Editar el plan</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="btns">
+      <button class="btn btn-s" onclick="reiniciar()" type="button">Reiniciar el progreso</button>
+    </div>
+  </div>
   </section>
 
-
   <footer>Elaborado por Vinz Lucchesi<span class="ver" id="ver"></span><span class="ver" id="syncTag"></span></footer>
+</div>
 
-  <nav class="tabs" role="tablist" aria-label="Secciones del tablero">
-    <button class="tab" id="tab-hoy" role="tab" aria-controls="panel-hoy" data-tab="hoy">
+<nav class="tabs" role="tablist" aria-label="Secciones del tablero">
+  <div class="tabs-pill" id="tabsPill">
+    <div class="goo" id="gooCapa"><span class="chip"></span><span class="gota"></span></div>
+    <button class="tab on" id="tab-hoy" role="tab" aria-controls="panel-hoy" data-tab="hoy">
       <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span>Hoy</span>
     </button>
     <button class="tab" id="tab-comidas" role="tab" aria-controls="panel-comidas" data-tab="comidas">
@@ -257,9 +284,11 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
     <button class="tab" id="tab-plan" role="tab" aria-controls="panel-plan" data-tab="plan">
       <svg viewBox="0 0 24 24"><path d="M8 4h9a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M9.5 9h6M9.5 13h6M9.5 17h3"/></svg><span>Plan</span>
     </button>
-  </nav>
-</div>
-
+  </div>
+  <button class="fab" id="fab" type="button" onclick="completarDia()" title="Marcar el día completo" aria-label="Marcar el día completo">
+    <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+  </button>
+</nav>
 
 <div class="sheet-bg" id="sheetBg" hidden></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitulo" hidden>
@@ -289,5 +318,6 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
 <script src="informe-pdf.js" defer></script>
 <script src="navegacion.js" defer></script>
 <script src="plan-editor.js" defer></script>
+<script src="movimiento.js" defer></script>
 </body>
 </html>

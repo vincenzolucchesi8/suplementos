@@ -101,6 +101,19 @@ const imagenDe = (m, comida) => {
   return f ? `img/${f}.webp` : null;
 };
 
+/* De la palabra del ingrediente a su ilustracion. Se busca por raiz porque el
+   menu escribe "Frejol canario" o "Rúcula, tomate cherry y pepino": el primero
+   que matchea manda, asi que el orden importa (menestra antes que frejol no,
+   porque frejol es mas especifico). */
+const IMG_PARTE = [
+  [/aceituna/i, 'aceitunas'], [/palta|aguacate/i, 'palta'], [/brocoli|brócoli/i, 'brocoli'],
+  [/esparrago|espárrago/i, 'esparragos'], [/espinaca/i, 'espinaca'], [/tomate/i, 'tomate'],
+  [/frejol|frijol|lenteja|garbanzo|pallar/i, 'frejol'], [/menestra/i, 'menestras'],
+  [/quinoa|quinua/i, 'quinoa'], [/camote/i, 'camote'], [/papa|ñoqui|noqui/i, 'papa'],
+  [/ensalada|rucula|rúcula|lechuga|verdura|pepino|zapallito|verde/i, 'ensalada'],
+];
+const imagenParte = t => { const p = IMG_PARTE.find(([re]) => re.test(t || '')); return p ? `img/${p[1]}.webp` : null; };
+
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 /* Bloque de propuesta que se inserta arriba de los checks de cada comida */
@@ -111,12 +124,14 @@ function bloquePlato(comida, c) {
   const el = document.createElement('div');
   el.className = 'dish' + (m.cambiado ? ' swapped' : '');
 
+  const parte = (txt, cls) => {
+    const img = imagenParte(txt);
+    return `<span class="dish-part ${cls}">` +
+      `<i${img ? ` style="background-image:url(${img})"` : ''}></i>` +
+      `<span>${esc(txt)}</span></span>`;
+  };
   const partes = conDisco
-    ? `<div class="dish-parts">
-         <span class="dish-part verd"><i></i>${esc(m.verdura)}</span>
-         <span class="dish-part prot"><i></i>${esc(m.titulo)}</span>
-         <span class="dish-part carb"><i></i>${esc(m.carbo)}</span>
-       </div>`
+    ? `<div class="dish-parts">${parte(m.verdura, 'verd')}${parte(m.titulo, 'prot')}${parte(m.carbo, 'carb')}</div>`
     : '';
   const sub = conDisco
     ? (comida === 'Cena' ? '<div class="dish-sub">Sin grasa extra: basta el aceite de oliva de las verduras</div>' : (m.grasa ? `<div class="dish-sub">Con ${esc(m.grasa.toLowerCase())}</div>` : ''))
@@ -127,8 +142,7 @@ function bloquePlato(comida, c) {
     (img ? `<img class="dish-img" src="${img}" alt="" loading="lazy">` : '') +
     `<div class="dish-body">
        <div class="dish-top">
-         <div class="dish-name">${esc(m.corto || m.titulo)}</div>
-         <button class="dish-swap" type="button">Cambiar</button>
+         <button class="dish-swap" type="button"><svg viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>Cambiar el plato</button>
        </div>
        ${sub}${partes}
        ${m.cambiado ? '<span class="dish-tag">Cambiado por ti</span>' : ''}
@@ -167,8 +181,8 @@ function sincronizarFrecuencias(dia) {
    almuerzo y cena, con el color de la proteina. De un golpe se ve si hay tres
    dias de carne seguidos o una semana entera sin pescado. */
 const COLOR_PROT = {
-  pescado: '#4aa3d8', atun: '#4aa3d8', carne: '#b4675f',
-  pollo: '#9aa7b8', huevos: '#e3c079',
+  pescado: '#5A8AAE', atun: '#5A8AAE', carne: '#A24266',
+  pollo: '#C08A3E', huevos: '#D9A441',
 };
 let mesBase = null;   // primer dia del bloque de 28 que se esta mirando
 
@@ -216,20 +230,19 @@ function renderMes() {
     const dia = new Date(Date.parse(ds + 'T00:00:00Z')).getUTCDate();
     const cls = (ds === HOY ? ' hoy' : '') + (n > diaPrograma ? ' futuro' : '') +
       (Math.ceil(n / 7) === selSemana() ? ' sem' : '');
-    const img = c ? imagenDe(c.almuerzo, 'Almuerzo') : null;
-    const barra = c ? `<i style="background:${COLOR_PROT[c.cena.protK] || '#9aa7b8'}"></i>` : '';
-    html += `<button type="button" class="mes-cell${cls}" data-dia="${n}" aria-label="Día ${n}">` +
-      `<b>${dia}</b>` +
-      (img ? `<img src="${img}" alt="" loading="lazy">` : '') +
-      `<span class="barras">${barra}</span></button>`;
+    const fam = c ? familiaDe(c.almuerzo, 'Almuerzo') : null;
+    const barra = c ? `<i style="background:${COLOR_PROT[c.cena.protK] || 'var(--g2)'}"></i>` : '';
+    const que = c ? `${c.almuerzo.corto || c.almuerzo.titulo}, y de cena ${(c.cena.corto || c.cena.titulo).toLowerCase()}` : '';
+    html += `<button type="button" class="mes-cell${cls}${fam ? ' f-' + fam : ''}" data-dia="${n}" ` +
+      `aria-label="Día ${n}: ${que}">` +
+      `<b>${dia}</b><span class="barras">${barra}</span></button>`;
   }
   html += '</div>' +
     `<div class="mes-leyenda">
-       <b>La imagen es el almuerzo · el filete, la cena:</b>
-       <span><i style="background:#4aa3d8"></i>pescado</span>
-       <span><i style="background:#9aa7b8"></i>pollo</span>
-       <span><i style="background:#b4675f"></i>carne roja</span>
-       <span><i style="background:#e3c079"></i>huevos</span>
+       <span><i style="background:${COLOR_PROT.pescado}"></i>Pescado</span>
+       <span><i style="background:${COLOR_PROT.pollo}"></i>Pollo</span>
+       <span><i style="background:${COLOR_PROT.carne}"></i>Carne</span>
+       <span><i style="background:${COLOR_PROT.huevos}"></i>Huevos</span>
      </div>`;
   grid.innerHTML = html;
   grid.querySelectorAll('.mes-cell').forEach(b => {

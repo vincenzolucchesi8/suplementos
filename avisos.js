@@ -136,11 +136,9 @@ function renderAvisos() {
     const check = document.createElement('button');
     check.type = 'button';
     check.className = 'check';
-    check.style.cssText = 'cursor:pointer;padding:0';
     check.setAttribute('aria-pressed', c.on ? 'true' : 'false');
     check.setAttribute('aria-label', (c.on ? 'Apagar' : 'Encender') + ' el aviso de ' + a.nombre);
     check.innerHTML = '<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>';
-    if (c.on) { check.style.background = 'linear-gradient(145deg,var(--acc),var(--acc-d))'; check.style.borderColor = 'var(--acc)'; check.querySelector('svg').style.strokeDashoffset = '0'; }
     check.onclick = () => { const n = cfgLeer(); n[a.id].on = !n[a.id].on; cfgGuardar(n); empujarConfig(); renderAvisos(); };
 
     const info = document.createElement('div');

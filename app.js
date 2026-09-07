@@ -12,17 +12,31 @@ const selSemana = () => Math.ceil(selDia/7);
 function goDay(delta){ selDia = Math.min(diaPrograma, Math.max(1, selDia+delta)); selDate = dsDiaG(selDia); tramoAbierto = null; render(); }
 function volverHoy(){ selDia = diaPrograma; selDate = HOY; tramoAbierto = null; render(); }
 function jumpDay(d){ selDia = Math.min(diaPrograma, Math.max(1, d)); selDate = dsDiaG(selDia); tramoAbierto = null; render(); window.scrollTo({top:0, behavior:'smooth'}); }
+/* La tira de la semana. Reemplaza al par de flechas: se ve donde estas dentro
+   de la semana, que dia vas, y de un vistazo la variedad de proteina (dos
+   puntos por dia, almuerzo y cena). Tocar un dia lo abre. */
 function renderDayNav(){
   const nav = document.getElementById('dayNav'); if(!nav) return;
-  const esHoy = selDate === HOY;
-  const d = new Date(Date.parse(selDate+'T00:00:00Z'));
-  const label = esHoy ? 'Hoy' : ('Día '+selDia+' · '+d.toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long',timeZone:'UTC'}));
-  nav.className = 'daynav'+(esHoy?'':' past');
-  nav.innerHTML =
-    `<button class="dnav-btn" ${selDia<=1?'disabled':''} onclick="goDay(-1)" aria-label="Día anterior">‹</button>`+
-    `<span class="dnav-lbl">${label}</span>`+
-    `<button class="dnav-btn" ${esHoy?'disabled':''} onclick="goDay(1)" aria-label="Día siguiente">›</button>`+
-    (esHoy ? '' : `<button class="dnav-today" onclick="volverHoy()">Hoy</button>`);
+  const w = selSemana();
+  const ini = (w-1)*7 + 1;
+  let html = '';
+  for(let k=0; k<7; k++){
+    const d = ini + k;
+    const ds = dsDiaG(d);
+    const fecha = new Date(Date.parse(ds+'T00:00:00Z'));
+    const dow = fecha.toLocaleDateString('es-PE',{weekday:'short',timeZone:'UTC'}).replace('.','').slice(0,3);
+    const num = fecha.getUTCDate();
+    const c = (typeof comidasDeDia === 'function') ? comidasDeDia(d) : null;
+    const col = k => (typeof COLOR_PROT === 'object' && c) ? (COLOR_PROT[k] || 'var(--g2)') : 'var(--g2)';
+    const pts = c
+      ? `<i style="background:${col(c.almuerzo.protK)}"></i><i style="background:${col(c.cena.protK)}"></i>`
+      : '<i style="background:var(--g2)"></i><i style="background:var(--g2)"></i>';
+    const cls = 'dnav' + (d===selDia ? ' sel' : '') + (d>diaPrograma ? ' fut' : '');
+    html += `<button type="button" class="${cls}" data-d="${d}" aria-label="Día ${d}" `+
+            `${d>diaPrograma?'disabled':''}><em>${dow}</em><b>${num}</b><span class="pts">${pts}</span></button>`;
+  }
+  nav.innerHTML = html;
+  nav.querySelectorAll('.dnav').forEach(b=>{ b.onclick = ()=> jumpDay(parseInt(b.dataset.d,10)); });
 }
 
 const IC_SUN  = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
@@ -30,6 +44,17 @@ const IC_MOON = '<svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7
 const IC_DAWN = '<svg viewBox="0 0 24 24"><path d="M17 18a5 5 0 0 0-10 0"/><path d="M12 2v4M4.2 10.2l1.4 1.4M1 18h2M21 18h2M18.4 11.6l1.4-1.4"/><path d="M3 22h18"/></svg>';
 const IC_DROP = '<svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 10a6 6 0 0 1-12 0c0-3.8 6-10 6-10z"/></svg>';
 const IC_LEAF = '<svg viewBox="0 0 24 24"><path d="M4 20c0-8 6-14 16-15 0 10-5 15-12 15H4z"/><path d="M8 18c2-4 5-7 9-9"/></svg>';
+/* La hora de cada tramo. Sale de los avisos que Vinz tenga puestos, para que el
+   riel diga la hora real y no una escrita a mano en dos sitios distintos. */
+const HORA_DEF = {Desayuno:'8:00', Almuerzo:'13:00', Cena:'20:00'};
+const HORA_COMIDA = new Proxy({}, { get(_, c){
+  try {
+    const cfg = (typeof cfgLeer === 'function') ? cfgLeer() : null;
+    const id = {Desayuno:'desayuno', Almuerzo:'almuerzo', Cena:'cena'}[c];
+    const h = cfg && cfg[id] && cfg[id].hora;
+    return h ? h.replace(/^0/,'') : HORA_DEF[c];
+  } catch(e){ return HORA_DEF[c]; }
+}});
 const mealIcon = m => m==='Desayuno' ? IC_DAWN : (m==='Almuerzo' ? IC_SUN : IC_MOON);
 
 /* ---------------- Suplementos: protocolo Longevity 01 ---------------- */
@@ -113,7 +138,7 @@ const QUE_COMER = [
   ]},
 ];
 
-const RING_CIRC = 339.29;
+const RING_CIRC = 2*Math.PI*28;   // el anillo de la ficha tiene r=28
 const DIA_SEMANA = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
 
 // ---------- Sincronizacion entre dispositivos ----------
@@ -259,22 +284,26 @@ function cerrarElDia(completo){
 
 /* ---------------- Render ---------------- */
 function render(){
-  document.getElementById('fecha').textContent = new Date().toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long'});
-  document.getElementById('dia').textContent = diaPrograma;
-  document.getElementById('semana').textContent = semana;
+  const hoyD = new Date();
+  const $ = id => document.getElementById(id);
+  $('diaSemana').textContent = hoyD.toLocaleDateString('es-PE',{weekday:'long'});
+  $('fecha').textContent = hoyD.toLocaleDateString('es-PE',{day:'numeric',month:'long'});
 
-  // Hero = SIEMPRE hoy
+  // La ficha de arriba es SIEMPRE hoy, mires el dia que mires
   const planHoy = suplDeDia(diaPrograma);
-  document.getElementById('faseTag').textContent = planHoy.fase;
-  document.getElementById('notaFase').textContent = notas[planHoy.fase];
+  const fase = $('faseTag'); if(fase) fase.textContent = planHoy.fase.toLowerCase();
+  $('notaFase').textContent = notas[planHoy.fase];
   const oHoy = obligatorio(diaPrograma);
   const pctHoy = oHoy.total ? Math.round(oHoy.hechos/oHoy.total*100) : 0;
-  document.getElementById('ringPct').textContent = pctHoy+'%';
-  document.getElementById('ring').style.strokeDashoffset = RING_CIRC*(1-pctHoy/100);
+  if(typeof contarHasta === 'function') contarHasta($('ringPct'), pctHoy);
+  else $('ringPct').textContent = pctHoy;
+  $('ring').style.strokeDashoffset = RING_CIRC*(1-pctHoy/100);
+  $('hoyPie').textContent = `${oHoy.hechos} de ${oHoy.total} hechos`;
 
   renderHoy();
   renderPermisos();
   renderSensaciones();
+  renderSien();
   renderSemana();
   renderPeso();
   renderFases();
@@ -348,13 +377,20 @@ function renderHoy(){
     const m = menuHoy ? (c==='Desayuno'?menuHoy.desayuno : c==='Almuerzo'?menuHoy.almuerzo : menuHoy.cena) : null;
     const resumen = m ? (m.corto || m.titulo) : (listo ? 'Listo' : `${total} cosas`);
 
+    // El marcador del riel es la ilustracion del plato: a 48 px se lee que se
+    // come sin leer nada. Un icono generico de sol o luna no dice eso.
+    const fam = (typeof familiaDe === 'function' && m) ? familiaDe(m, c) : null;
+    const img = (typeof imagenDe === 'function' && m) ? imagenDe(m, c) : null;
+
     const cab = document.createElement('button');
     cab.type='button'; cab.className='tramo-h';
     cab.setAttribute('aria-expanded', abierto?'true':'false');
     cab.innerHTML =
-      `<span class="tramo-dot"></span>`+
-      `<span class="tramo-ic">${mealIcon(c)}</span>`+
-      `<span class="tramo-txt"><span class="tramo-nom">${c}</span><span class="tramo-res">${resumen}</span></span>`+
+      `<span class="marcador${fam?' m-'+fam:''}">`+
+        (img ? `<img src="${img}" alt="" loading="lazy">` : '')+
+      `</span>`+
+      `<span class="tramo-txt"><span class="tramo-nom">${c} · ${HORA_COMIDA[c]}</span>`+
+      `<span class="tramo-res">${resumen}</span></span>`+
       (listo
         ? `<span class="tramo-ok"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>`
         : `<span class="tramo-cnt">${total - faltan} de ${total}</span>`);
@@ -463,6 +499,33 @@ function renderSensaciones(){
     fila.appendChild(seg);
     cont.appendChild(fila);
   });
+}
+
+/* Como te sientes, en Progreso: el promedio de la semana por aspecto. Es la
+   misma escala que se responde en Hoy, leida como instrumento y no como
+   pregunta. Si no hay ni una respuesta la seccion no aparece: una fila de
+   barras vacias no informa nada. */
+function renderSien(){
+  const card = document.getElementById('sienCard');
+  const cont = document.getElementById('sienBody');
+  if(!card || !cont) return;
+  const aspectos = (PLAN.sensaciones || {}).aspectos || [];
+  const dias = diasDeSemana(selSemana()).filter(ds => ds <= HOY);
+
+  const filas = aspectos.map(a=>{
+    const vals = dias.map(ds => parseInt(localStorage.getItem(`${ds}:F:${a.id}`),10)).filter(v=>!isNaN(v));
+    if(!vals.length) return null;
+    const n = a.opciones.length;
+    const prom = vals.reduce((x,y)=>x+y,0)/vals.length;
+    return {nombre:a.name, pct: Math.round(prom/n*100), etiqueta: a.opciones[Math.round(prom)-1] || '', veces: vals.length};
+  }).filter(Boolean);
+
+  card.hidden = !filas.length;
+  if(card.hidden) return;
+  cont.innerHTML = filas.map(f=>
+    `<div class="sien"><span class="nm">${f.nombre}</span>`+
+    `<span class="esc"><i style="width:${f.pct}%"></i></span>`+
+    `<span class="v">${f.etiqueta}</span></div>`).join('');
 }
 
 function tapUnit(id, i, cap){
@@ -589,7 +652,7 @@ function renderPeso(){
     const fmt = v => (v>0?'+':'')+v.toFixed(1);
     head =
       `<div class="peso-top">`+
-        `<div class="peso-big">${ult.kg.toFixed(1)}<small>kg</small></div>`+
+        `<div class="peso-big">${ult.kg.toFixed(1).replace('.',',')}<em>kg</em></div>`+
         (dPrev!==null ? `<div class="peso-delta"><b>${fmt(dPrev)} kg</b> desde el pesaje anterior</div>` : '')+
       `</div>`+
       `<div class="peso-sub">${ps.length>1 ? `${fmt(dTot)} kg desde que arrancaste · ` : ''}Último: ${ult.ds.slice(8)}/${ult.ds.slice(5,7)}</div>`;
@@ -616,14 +679,57 @@ function renderPeso(){
       `</svg></div>`;
   }
 
-  const aviso = (esMiercoles && !yaHoy) ? `<div class="peso-sub" style="color:var(--warn);font-weight:700;margin-top:12px">Hoy es miércoles: toca pesarte.</div>` : '';
+  const aviso = (esMiercoles && !yaHoy) ? `<div class="peso-sub" style="color:var(--verde);font-weight:700;margin-top:12px">Hoy es miércoles: toca pesarte.</div>` : '';
   const form =
     `<div class="peso-form">`+
       `<input id="pesoInput" type="number" inputmode="decimal" step="0.1" min="30" max="250" placeholder="Peso de hoy en kg" aria-label="Peso de hoy en kilos">`+
-      `<button onclick="guardarPeso()">Guardar</button>`+
+      `<button class="btn btn-p" onclick="guardarPeso()">Guardar</button>`+
     `</div>`;
   cont.innerHTML = head + chart + aviso + form;
+  pintarFichaPeso(ps);
 }
+
+/* La ficha de peso vive en Hoy y en Progreso. Con menos de dos pesajes una
+   curva miente, asi que en ese caso no se dibuja ninguna: se dice el numero. */
+function pintarFichaPeso(ps){
+  const val = ps.length ? ps[ps.length-1].kg.toFixed(1).replace('.',',') : '—';
+  const pie = !ps.length
+    ? 'Todavía sin pesarte'
+    : (ps.length===1
+        ? 'Primer registro'
+        : `${(ps[ps.length-1].kg-ps[0].kg>0?'+':'−')}${Math.abs(ps[ps.length-1].kg-ps[0].kg).toFixed(1).replace('.',',')} kg en ${ps.length} pesajes`);
+
+  let curva = '';
+  if(ps.length>=2){
+    const kgs = ps.map(p=>p.kg), min=Math.min(...kgs), max=Math.max(...kgs), span=(max-min)||1;
+    const x = i => 6 + i*108/(ps.length-1);
+    const y = v => 33 - ((v-min)/span)*26;
+    const d = ps.map((p,i)=>`${i?'L':'M'}${x(i).toFixed(1)} ${y(p.kg).toFixed(1)}`).join(' ');
+    curva = `<path d="${d}" fill="none" stroke="#7FB8A3" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>`+
+            `<circle cx="${x(ps.length-1).toFixed(1)}" cy="${y(ps[ps.length-1].kg).toFixed(1)}" r="4.5" fill="var(--verde)"/>`;
+  }
+  ['','2'].forEach(sufijo=>{
+    const v = document.getElementById('pesoVal'+sufijo);
+    const p = document.getElementById('pesoPie'+sufijo);
+    const c = document.getElementById('pesoMini'+sufijo);
+    if(v) v.innerHTML = ps.length ? `${val}<em>kg</em>` : '—';
+    if(p) p.textContent = pie;
+    if(c) c.innerHTML = curva;
+  });
+}
+/* La ficha de peso de Hoy es un enlace, no un adorno: te deja escribiendo. */
+(function(){
+  const f = document.getElementById('fichaPeso');
+  if(!f) return;
+  f.onclick = () => {
+    irASeccion('progreso');
+    setTimeout(()=>{
+      const i = document.getElementById('pesoInput');
+      if(i){ i.scrollIntoView({block:'center', behavior:'smooth'}); i.focus(); }
+    }, 260);
+  };
+})();
+
 function guardarPeso(){
   const el = document.getElementById('pesoInput');
   const v = parseFloat(el.value);
@@ -662,13 +768,44 @@ function renderHeat(){
   let start = (diaPrograma>=1 && estadoDia(diaPrograma).full) ? diaPrograma : diaPrograma-1;
   for(let d=start; d>=1 && estadoDia(d).full; d--) streak++;
 
-  document.getElementById('racha').textContent = fullCount;
-  document.getElementById('hsFull').textContent = fullCount;
-  document.getElementById('hsAdh').textContent = adh+'%';
-  document.getElementById('hsRacha').textContent = streak;
-  document.getElementById('totalDias').textContent = `${dueSoFar} de ${PROG_DIAS} días`;
+  const $ = id => document.getElementById(id);
+  const pon = (id, v) => { const e = $(id); if(e) e.textContent = v; };
+  pon('hsFull', fullCount); pon('hsAdh2', adh+'%'); pon('hsRacha2', streak);
+  $('totalDias').textContent = `${dueSoFar} de ${PROG_DIAS} días`;
+  if(typeof contarHasta === 'function') contarHasta($('hsAdh'), adh); else $('hsAdh').textContent = adh;
+  $('hsRacha').textContent = streak === 1 ? '1 día' : streak + ' días';
+  if($('adhPie')) $('adhPie').textContent = dueSoFar ? `${fullCount} de ${dueSoFar} días completos` : 'Todavía sin días';
 
-  const semanas = Math.ceil(PROG_DIAS/7);
+  /* La racha en barras: SOLO catorce dias, no ochenta y cuatro. Con seis dias
+     hechos, un mapa de 84 celdas esta 93 % vacio y se lee como fracaso. */
+  const tira = $('rachaDias');
+  if(tira){
+    const desde = Math.max(1, diaPrograma - 8);
+    let h = '';
+    for(let d=desde; d<desde+14 && d<=PROG_DIAS; d++){
+      let cls = 'future';
+      if(d < diaPrograma){ const e = estadoDia(d); cls = e.full?'full':(e.partial?'partial':'none'); }
+      else if(d === diaPrograma){ cls = 'today'; }
+      else cls = '';
+      h += `<i class="${cls}"></i>`;
+    }
+    tira.innerHTML = h;
+  }
+
+  /* Las barras de adherencia de la ficha: una por dia de la ultima semana. */
+  const mini = $('adhMini');
+  if(mini){
+    let h = '';
+    for(let k=0; k<6; k++){
+      const d = diaPrograma - 5 + k;
+      const alto = (d>=1 && d<=diaPrograma) ? (()=>{ const e=estadoDia(d); return e.exp? Math.max(6, Math.round(e.tk/e.exp*34)) : 6; })() : 6;
+      const col = (d===diaPrograma) ? 'var(--verde)' : '#C6CCC8';
+      h += `<rect x="${3+k*18}" y="${40-alto}" width="13" height="${alto}" rx="3" fill="${col}"/>`;
+    }
+    mini.innerHTML = h;
+  }
+
+  const semanas = Math.min(Math.ceil(PROG_DIAS/7), Math.ceil(diaPrograma/7) + 1);
   let html='';
   for(let w=1; w<=semanas; w++){
     html += `<div class="heat-wk">S${w}</div>`;
@@ -714,7 +851,7 @@ function reiniciar(){
     else location.reload();
   }
 }
-document.getElementById('ver').textContent = 'Versión 14 · ' + HOY;
+document.getElementById('ver').textContent = 'Versión 15 · ' + HOY;
 render();
 fullSync();
 

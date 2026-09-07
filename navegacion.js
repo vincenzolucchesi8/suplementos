@@ -18,10 +18,13 @@ function irASeccion(nombre, opciones) {
     if (!panel || !tab) return;
     const activo = s === nombre;
     panel.hidden = !activo;
+    tab.classList.toggle('on', activo);
     tab.setAttribute('aria-selected', activo ? 'true' : 'false');
     tab.setAttribute('tabindex', activo ? '0' : '-1');
   });
   localStorage.setItem(TAB_KEY, nombre);
+  // el metaball de la barra viaja a la pestana nueva (movimiento.js)
+  if (typeof saltarChip === 'function') saltarChip(SECCIONES.indexOf(nombre));
   entradaEscalonada(document.getElementById('panel-' + nombre));
   if (!opciones || opciones.scroll !== false) window.scrollTo({ top: 0, behavior: 'auto' });
   // La lista de compras se pinta al entrar, no antes: es la vista mas cara
