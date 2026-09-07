@@ -29,10 +29,16 @@ async function planTraer() {
     const norm = PlanLib.normalizar(remoto);
     if (!planIgual(norm, PLAN)) {
       planLocalGuardar(norm);
-      // Una sola recarga por sesion: si algo hiciera que nunca coincidan,
-      // el tablero se queda con el plan nuevo pero no entra en bucle.
-      if (!sessionStorage.getItem('plan_recargado')) {
-        sessionStorage.setItem('plan_recargado', '1');
+      /* La guarda contra el bucle va por el CONTENIDO del plan, no por una
+         bandera de si o no. Con una bandera, el primer plan nuevo se recargaba
+         y todos los siguientes ya no: el tablero guardaba el plan nuevo pero
+         seguia corriendo con el viejo en memoria. En una PWA instalada eso no
+         se arregla solo, porque la app no se cierra nunca, se suspende, y el
+         sessionStorage sobrevive. Paso de verdad: Vinz movio el arranque dos
+         veces y la app se quedo mostrando la fecha de la primera. */
+      const sello = JSON.stringify(sinSello(norm));
+      if (sessionStorage.getItem('plan_recargado') !== sello) {
+        sessionStorage.setItem('plan_recargado', sello);
         location.reload();
       }
     }
@@ -57,3 +63,12 @@ async function planGuardar(nuevo) {
 
 // Se consulta despues del primer pintado, que no debe esperar a la red
 setTimeout(planTraer, 1800);
+
+/* Y cada vez que la app vuelve al frente. Una PWA instalada no se cierra: se
+   suspende y se retoma dias despues con el plan y el dia que tenia. Sin esto,
+   un cambio hecho desde la computadora no llega hasta que el telefono decida
+   descartar la pagina. Se espera un momento para no pegarle a la red en el
+   mismo cuadro en que se vuelve. */
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') setTimeout(planTraer, 600);
+});

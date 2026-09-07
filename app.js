@@ -11,6 +11,19 @@ const faltanDias = antesDeEmpezar ? 1 - diaCrudo : 0;
 const diaPrograma = Math.max(1, diaCrudo);
 const semana = Math.ceil(diaPrograma / 7);
 
+/* Una PWA instalada NO SE CIERRA: se suspende y se retoma. HOY, diaCrudo,
+   diaPrograma y semana se calculan una sola vez al cargar, asi que si la app
+   pasa la noche abierta, al retomarla por la manana sigue creyendo que es
+   ayer: mismo dia del programa, mismo menu, y lo que marques se guarda con la
+   fecha equivocada. Al volver al frente se compara la fecha real y se recarga
+   si cambio. Es la unica forma barata: recalcular en sitio obligaria a
+   convertir en funciones todas las constantes de arranque. */
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+  const ahora = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Lima' });
+  if (ahora !== HOY) location.reload();
+});
+
 // Dia seleccionado en la card "Lo importante ahora" (hoy por defecto; navegable a dias pasados)
 function dsDiaG(d){ return new Date(Date.parse(INICIO+'T00:00:00Z')+(d-1)*86400000).toISOString().split('T')[0]; }
 let selDia = diaPrograma;
