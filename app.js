@@ -694,7 +694,7 @@ function reiniciar(){
     else location.reload();
   }
 }
-document.getElementById('ver').textContent = 'Versión 12 · ' + HOY;
+document.getElementById('ver').textContent = 'Versión 13 · ' + HOY;
 render();
 fullSync();
 

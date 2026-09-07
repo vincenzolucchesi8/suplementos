@@ -79,6 +79,28 @@ function platoSVG(tipo) {
   return `<svg viewBox="0 0 42 42" aria-hidden="true">${d}<circle cx="21" cy="21" r="19.2" fill="none" stroke="#fff" stroke-width="1.6"/></svg>`;
 }
 
+/* Que ilustracion le toca a cada plato. Se agrupa por FAMILIA, no por
+   preparacion: bonito, trucha y jurel comparten la de pescado, porque doce
+   ilustraciones que se leen bien valen mas que cuarenta genericas. */
+const IMG_DESAYUNO = [
+  [/omelette/i, 'omelette'], [/revuelt/i, 'revueltos'], [/wrap/i, 'wrap'],
+  [/batido/i, 'batido'], [/bowl|yogurt/i, 'bowl'],
+];
+function familiaDe(m, comida) {
+  if (!m) return null;
+  if (comida === 'Desayuno') {
+    const t = m.titulo || '';
+    const par = IMG_DESAYUNO.find(([re]) => re.test(t));
+    return par ? par[1] : 'bowl';
+  }
+  if (m.tipo === 'omelette') return 'omelette';
+  return { pescado: 'pescado', atun: 'atun', carne: 'carne', pollo: 'pollo' }[m.protK] || 'pollo';
+}
+const imagenDe = (m, comida) => {
+  const f = familiaDe(m, comida);
+  return f ? `img/${f}.webp` : null;
+};
+
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 /* Bloque de propuesta que se inserta arriba de los checks de cada comida */
@@ -100,8 +122,9 @@ function bloquePlato(comida, c) {
     ? (comida === 'Cena' ? '<div class="dish-sub">Sin grasa extra: basta el aceite de oliva de las verduras</div>' : (m.grasa ? `<div class="dish-sub">Con ${esc(m.grasa.toLowerCase())}</div>` : ''))
     : (m.detalle ? `<div class="dish-sub">${esc(m.detalle)}</div>` : '');
 
+  const img = imagenDe(m, comida);
   el.innerHTML =
-    (conDisco ? `<div class="dish-plate">${platoSVG(comida === 'Cena' ? 'cena' : 'almuerzo')}</div>` : '') +
+    (img ? `<img class="dish-img" src="${img}" alt="" loading="lazy">` : '') +
     `<div class="dish-body">
        <div class="dish-top">
          <div class="dish-name">${esc(m.corto || m.titulo)}</div>
@@ -193,19 +216,20 @@ function renderMes() {
     const dia = new Date(Date.parse(ds + 'T00:00:00Z')).getUTCDate();
     const cls = (ds === HOY ? ' hoy' : '') + (n > diaPrograma ? ' futuro' : '') +
       (Math.ceil(n / 7) === selSemana() ? ' sem' : '');
-    const barras = c
-      ? `<i style="background:${COLOR_PROT[c.almuerzo.protK] || '#9aa7b8'}"></i>` +
-        `<i style="background:${COLOR_PROT[c.cena.protK] || '#9aa7b8'}"></i>`
-      : '';
+    const img = c ? imagenDe(c.almuerzo, 'Almuerzo') : null;
+    const barra = c ? `<i style="background:${COLOR_PROT[c.cena.protK] || '#9aa7b8'}"></i>` : '';
     html += `<button type="button" class="mes-cell${cls}" data-dia="${n}" aria-label="Día ${n}">` +
-      `<b>${dia}</b><span class="barras">${barras}</span></button>`;
+      `<b>${dia}</b>` +
+      (img ? `<img src="${img}" alt="" loading="lazy">` : '') +
+      `<span class="barras">${barra}</span></button>`;
   }
   html += '</div>' +
     `<div class="mes-leyenda">
-       <span><i style="background:#4aa3d8"></i>Pescado</span>
-       <span><i style="background:#9aa7b8"></i>Pollo</span>
-       <span><i style="background:#b4675f"></i>Carne roja</span>
-       <span><i style="background:#e3c079"></i>Huevos</span>
+       <b>La imagen es el almuerzo · el filete, la cena:</b>
+       <span><i style="background:#4aa3d8"></i>pescado</span>
+       <span><i style="background:#9aa7b8"></i>pollo</span>
+       <span><i style="background:#b4675f"></i>carne roja</span>
+       <span><i style="background:#e3c079"></i>huevos</span>
      </div>`;
   grid.innerHTML = html;
   grid.querySelectorAll('.mes-cell').forEach(b => {
@@ -242,8 +266,10 @@ function renderCalendario() {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'cal-row' + (ds === HOY ? ' hoy' : '') + (futuro ? ' futuro' : '');
+    const imgSem = imagenDe(c.almuerzo, 'Almuerzo');
     b.innerHTML =
       `<div class="cal-day"><b>${fecha.getUTCDate()}</b><span>${DOW_CORTO[fecha.getUTCDay()]}</span></div>
+       ${imgSem ? `<img class="cal-img" src="${imgSem}" alt="" loading="lazy">` : ''}
        <div class="cal-info">
          <div class="cal-main">${esc(c.almuerzo.corto || c.almuerzo.titulo)}</div>
          <div class="cal-sub">Cena: ${esc(c.cena.corto || c.cena.titulo)}</div>
