@@ -10,6 +10,74 @@
 const SECCIONES = ['hoy', 'comidas', 'progreso', 'plan'];
 const TAB_KEY = 'seccion';
 
+/* ---------------------------------------------------------------------------
+   La cabecera contesta a la seccion
+
+   Antes decia lo mismo en las cuatro: la mitad de arriba de la pantalla no se
+   enteraba de que habias cambiado de pestana, y por eso la app se sentia
+   animada solo abajo. En la referencia el titulo grande ES la seccion, y se
+   enciende con el mismo reloj que el indicador.
+
+   La regla del par: el titulo dice DONDE estas, el rotulo de encima dice el
+   DATO que lo situa. Asi el titulo no es una etiqueta repetida de la pestana,
+   es la cabeza de un par que informa.
+   --------------------------------------------------------------------------- */
+const TOTAL_DIAS = (() => {
+  try {
+    const fs = (PLAN.fases || []).filter(f => f.hasta < 9999);
+    return fs.length ? fs[fs.length - 1].hasta : 84;
+  } catch (e) { return 84; }
+})();
+
+const mayus = t => t.charAt(0).toUpperCase() + t.slice(1);
+
+const CABECERAS = {
+  hoy: () => {
+    const d = new Date();
+    return { rot: mayus(d.toLocaleDateString('es-PE', { weekday: 'long' })),
+             h1:  d.toLocaleDateString('es-PE', { day: 'numeric', month: 'long' }) };
+  },
+  comidas: () => {
+    let rot = 'Cuatro semanas de menú';
+    try {
+      const c = comidasDeDia(diaPrograma);
+      const plato = c && c.almuerzo && (c.almuerzo.corto || c.almuerzo.titulo);
+      if (plato) rot = (antesDeEmpezar ? 'Día 1: ' : 'Hoy: ') + plato;
+    } catch (e) {}
+    return { rot, h1: 'Comidas' };
+  },
+  progreso: () => ({
+    rot: antesDeEmpezar ? 'Todavía no arranca' : `Día ${diaPrograma} de ${TOTAL_DIAS}`,
+    h1: 'Progreso' }),
+  plan: () => {
+    let rot = `${TOTAL_DIAS} días`;
+    try { rot = 'Fase ' + suplDeDia(diaPrograma).fase.toLowerCase(); } catch (e) {}
+    return { rot, h1: 'El plan' };
+  },
+};
+
+let seccionActual = localStorage.getItem(TAB_KEY) || 'hoy';
+
+function pintarCabecera(animar) {
+  const top = document.querySelector('.top');
+  const rot = document.getElementById('diaSemana');
+  const h1 = document.getElementById('fecha');
+  if (!top || !rot || !h1) return;
+  let d;
+  try { d = (CABECERAS[seccionActual] || CABECERAS.hoy)(); } catch (e) { d = CABECERAS.hoy(); }
+  const igual = rot.textContent === d.rot && h1.textContent === d.h1;
+  rot.textContent = d.rot;
+  h1.textContent = d.h1;
+  // sin cambio de texto no hay nada que encender: render() pasa por aca en
+  // cada marcado y no puede reanimar la cabecera entera cada vez
+  if (igual || !animar || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  top.classList.remove('cambia');
+  void top.offsetWidth;
+  top.classList.add('cambia');
+  clearTimeout(top._cab);
+  top._cab = setTimeout(() => top.classList.remove('cambia'), 800);
+}
+
 function irASeccion(nombre, opciones) {
   if (!SECCIONES.includes(nombre)) nombre = 'hoy';
 
@@ -29,6 +97,11 @@ function irASeccion(nombre, opciones) {
     tab.setAttribute('tabindex', activo ? '0' : '-1');
   });
   localStorage.setItem(TAB_KEY, nombre);
+  seccionActual = nombre;
+  /* La cabecera y la burbuja arrancan en el MISMO instante y con el mismo
+     reloj: es lo que hace que el cambio se lea como un gesto y no como una
+     cadena de animaciones encadenadas. */
+  pintarCabecera(true);
   if (typeof saltarChip === 'function') saltarChip(SECCIONES.indexOf(nombre));
 
   const mostrar = () => {
@@ -42,7 +115,7 @@ function irASeccion(nombre, opciones) {
     if (nombre === 'comidas' && typeof renderNutricion === 'function') renderNutricion();
     // La cascada va DESPUES de pintar: si corre antes, las celdas del mes
     // todavia no existen y nacen sin retraso, o sea todas a la vez.
-    if (typeof escalonar === 'function') escalonar(destino, 90);
+    if (typeof escalonar === 'function') escalonar(destino, 40);
   };
 
   /* La seccion que se va se retira antes de que entre la nueva; sin esto el
@@ -51,7 +124,7 @@ function irASeccion(nombre, opciones) {
   if (saliendo && destino && saliendo !== destino && !menos) {
     saliendo.classList.add('se-va');
     clearTimeout(irASeccion._t);
-    irASeccion._t = setTimeout(mostrar, 150);
+    irASeccion._t = setTimeout(mostrar, 90);
   } else {
     clearTimeout(irASeccion._t);
     if (saliendo) saliendo.classList.remove('se-va');

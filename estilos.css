@@ -40,6 +40,15 @@
   --hundir:cubic-bezier(.4,0,.6,1);          /* el toque baja recto y rapido */
   --salto:460ms; --rapido:180ms; --medio:280ms;
 
+  /* El reloj del CAMBIO DE SECCION, medido cuadro a cuadro del segundo reel
+     (5,1 s, 30 fps): la cuenta tarda 367 ms de una pestana a otra, con CERO
+     rebote, y el titulo de la pantalla se enciende en los mismos 265 ms para
+     aterrizar con ella. Ahi esta el hallazgo: lo premium no era el rebote,
+     era que TODO se mueva con el mismo reloj y termine junto. La bezier
+     reproduce la trayectoria con 1,4 % de error. */
+  --paso:370ms;
+  --curva:cubic-bezier(.18,0,.24,.94);
+
   /* Las sombras llevan el matiz de la casa, no negro plano: una sombra neutra
      sobre papel se lee gris sucia. Y van en dos capas, una de contacto corta y
      otra de ambiente larga, que es lo que da la sensacion de peso. */
@@ -64,12 +73,41 @@ a{color:inherit}
 :focus-visible{outline:2.5px solid var(--verde);outline-offset:2px;border-radius:4px}
 img{max-width:100%;display:block}
 
-.wrap{max-width:480px;margin:0 auto;padding:24px 20px 0}
+/* el aire de arriba lo pone ahora la cabecera, que es la que se pega */
+.wrap{max-width:480px;margin:0 auto;padding:0 20px}
 
-/* ---------------------------------------------------------------- cabecera */
-.top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:var(--e3)}
-.top .rot{font-size:var(--t4);font-weight:600;color:var(--g3);text-transform:capitalize}
+/* ---------------------------------------------------------------- cabecera
+   Antes era la misma en las cuatro secciones: la mitad de arriba de la
+   pantalla no se enteraba de que habias cambiado de pestana. Ahora contesta,
+   y lo hace con el reloj de la burbuja, en el mismo gesto.
+
+   Ademas se queda pegada y se condensa al bajar, que es lo que hace que la
+   pantalla entera se sienta viva mientras lees, no solo al tocar. */
+.top{position:sticky;top:0;z-index:30;background:var(--papel);overflow:hidden;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  margin:0 -20px var(--e3);
+  /* pegada arriba tiene que respetar la muesca: en la app instalada el
+     contenido llega hasta el borde de la pantalla */
+  padding:calc(22px + env(safe-area-inset-top)) 20px 14px;
+  transition:box-shadow 220ms var(--curva),padding var(--medio) var(--curva)}
+/* El bloque de texto es el que se encoge; el h1 deja su transform libre para
+   la animacion de encendido, que si no se pelearian por la misma propiedad. */
+.top-txt{height:52px;transform-origin:left top;
+  transition:height var(--medio) var(--curva),transform var(--medio) var(--curva)}
+/* sin capitalize: el rotulo ya no es solo un dia de la semana, ahora lleva
+   frases ("Hoy: pollo al horno") que en caja de titulo se leerian raras */
+.top .rot{font-size:var(--t4);font-weight:600;color:var(--g3);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  transition:opacity 200ms var(--curva)}
 .top h1{font-size:var(--t0);font-weight:700;letter-spacing:-1.1px;line-height:1.05;margin-top:2px}
+.top.condensada{padding-top:calc(12px + env(safe-area-inset-top));padding-bottom:10px;
+  box-shadow:0 1px 0 var(--g2)}
+.top.condensada .top-txt{height:26px;transform:translateY(-18px) scale(.72)}
+.top.condensada .rot{opacity:0}
+/* el encendido: el titulo llega apagado y sube a su tinta con la burbuja */
+@keyframes enciende{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.top.cambia h1 {animation:enciende var(--paso) var(--curva) both}
+.top.cambia .rot{animation:enciende var(--paso) var(--curva) both;animation-delay:60ms}
 .engrane{width:44px;height:44px;border-radius:50%;background:var(--g1);flex-shrink:0;
   display:flex;align-items:center;justify-content:center;transition:transform var(--rapido) var(--suave)}
 .engrane svg{width:19px;height:19px;stroke:var(--tinta);stroke-width:1.8;fill:none;stroke-linecap:round}
@@ -96,10 +134,17 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .count,.card-h .count{font-size:var(--t3);font-weight:500;color:var(--g3);letter-spacing:-.1px;flex-shrink:0}
 .panel[hidden]{display:none}
 /* la seccion que se va se retira; sin esto el cambio es un corte seco */
-@keyframes seRetira{to{opacity:0;transform:translateY(-10px) scale(.985)}}
-.panel.se-va{animation:seRetira 150ms var(--fino) forwards;pointer-events:none}
-/* entrada escalonada: la clase la pone el JS, asi que sin JS todo se ve igual */
-.panel.entra > *{animation:asoma 420ms var(--suave) both;animation-delay:var(--retraso,0ms)}
+@keyframes seRetira{to{opacity:.3;transform:translateY(-8px) scale(.99)}}
+.panel.se-va{animation:seRetira 110ms var(--curva) forwards;pointer-events:none}
+/* Lo que entra nace al 18 %, no en negro. En el reel el titulo nuevo aparece
+   apagado y SUBE a su tinta (brillo 76 -> 251 medido); nunca hay un cuadro en
+   blanco entre una pantalla y la otra, y eso es la mitad de la sensacion de
+   continuidad. */
+@keyframes entraPanel{from{opacity:.18;transform:translateY(9px)}to{opacity:1;transform:none}}
+/* entrada escalonada: la clase la pone el JS, asi que sin JS todo se ve igual.
+   Dura --paso, como la burbuja y como el titulo: los tres empiezan y terminan
+   en el mismo gesto en vez de encadenarse uno detras de otro. */
+.panel.entra > *{animation:entraPanel var(--paso) var(--curva) both;animation-delay:var(--retraso,0ms)}
 
 /* Falta la clave: tapa todo, porque sin ella la app no sirve de nada */
 .clave-falta{position:fixed;inset:0;z-index:80;background:rgba(18,23,26,.55);
@@ -518,7 +563,8 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .avi-dot{width:9px;height:9px;border-radius:50%;background:var(--g3);flex-shrink:0;margin-top:5px}
 .avi-state.on .avi-dot{background:var(--verde)}
 .avi-state.warn .avi-dot{background:var(--alerta)}
-.avi-row .check{transition:background var(--rapido) var(--suave),border-color var(--rapido) var(--suave)}
+.avi-row .check{transition:background var(--rapido) var(--suave),border-color var(--rapido) var(--suave),
+  transform 340ms var(--resorte)}
 .avi-row:not(.off) .check{background:var(--verde);border-color:var(--verde)}
 .avi-row:not(.off) .check svg{opacity:1;transform:none}
 .avi-row.off .avi-name,.avi-row.off .avi-sub{color:var(--g3)}
@@ -603,7 +649,16 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .burbuja-ico .sale {animation:seVa  var(--salto) var(--suave) forwards}
 .burbuja-ico .entra{animation:llega var(--salto) var(--suave) forwards}
 
+/* Mientras la burbuja viaja, su verde tine la sombra de la barra y se apaga
+   solo: en la referencia el acento no se queda dentro del indicador, se
+   derrama en la pantalla. En papel blanco eso es una sombra de color, no un
+   resplandor de neon. */
+.saltando .tabs-pill{transition:box-shadow 140ms var(--curva);
+  box-shadow:var(--sombra-1),
+  0 14px 30px -10px rgba(14,122,95,.40), 0 30px 58px -22px rgba(14,122,95,.30),
+  inset 0 1px 0 rgba(255,255,255,.9), inset 0 -1px 0 rgba(10,60,45,.06)}
 .tabs-pill{position:absolute;inset:0;display:flex;border-radius:var(--r5);
+  transition:box-shadow var(--paso) var(--curva);
   /* el filete claro de arriba y el oscuro de abajo dan el canto de un objeto:
      sin ellos la barra es un rectangulo blanco pegado sobre el papel */
   box-shadow:var(--sombra-1),var(--sombra-2),
@@ -683,7 +738,17 @@ footer .ver{margin-left:8px;opacity:.7}
   display:flex;align-items:center;justify-content:center;font-size:16px}
 
 /* El toque, en todo lo pulsable: baja RECTO y rapido (90 ms) y vuelve con el
-   resorte (340 ms). Un solo tiempo para ida y vuelta se siente de goma. */
+   resorte (340 ms). Un solo tiempo para ida y vuelta se siente de goma.
+
+   La regla de abajo es ESTRUCTURAL, sobre el elemento y no sobre una lista de
+   clases: cualquier boton que se agregue manana responde al dedo sin que haya
+   que acordarse de apuntarlo. Va con especificidad baja a proposito (0,1,1)
+   para que las reglas por clase de aqui abajo -- que tienen su propio hundido
+   -- le ganen. La barra queda fuera: es un objeto fijo, no se hunde. */
+button{transition:transform 340ms var(--resorte)}
+button:active{transform:scale(.97);transition:transform 90ms var(--hundir)}
+.tab,.tab:active{transform:none}
+
 .btn,.dish-swap,.tramo-todo,.engrane,.dnav,.st,.dnav-btn,.sheet-x,.sheet-atras,
 .seg button,.mes-cell,.item,.buy-item,.opt,.cal-row{
   transition:transform 340ms var(--resorte),box-shadow 200ms var(--fino),
@@ -720,7 +785,7 @@ footer .ver{margin-left:8px;opacity:.7}
    animaciones sobre el mismo nodo se pisan y gana una sola, al azar. */
 .cae .tramo,.cae .corrida,.cae .cal-row,.cae .wk,.cae .sien,.cae .tl-item,
 .cae .avi-row,.cae .frec,.cae .opt,.cae .buy-item,.cae .rec,.cae .perm,
-.cae .dish-part{animation:asoma 420ms var(--suave) both;animation-delay:var(--retraso,0ms)}
+.cae .dish-part{animation:asoma var(--paso) var(--curva) both;animation-delay:var(--retraso,0ms)}
 
 /* lo que es un punto o una celda nace chico y se asienta con el resorte */
 @keyframes brota{from{opacity:0;scale:.4}60%{opacity:1}to{opacity:1;scale:1}}

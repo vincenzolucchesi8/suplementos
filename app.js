@@ -316,8 +316,14 @@ function cerrarElDia(completo){
 function render(){
   const hoyD = new Date();
   const $ = id => document.getElementById(id);
-  $('diaSemana').textContent = hoyD.toLocaleDateString('es-PE',{weekday:'long'});
-  $('fecha').textContent = hoyD.toLocaleDateString('es-PE',{day:'numeric',month:'long'});
+  /* La cabecera la pinta navegacion.js, que sabe en que seccion estas: aca
+     solo se le pide que refresque su dato. El respaldo es para el primer
+     render, que corre antes de que ese archivo exista. */
+  if(typeof pintarCabecera === 'function') pintarCabecera();
+  else {
+    $('diaSemana').textContent = hoyD.toLocaleDateString('es-PE',{weekday:'long'});
+    $('fecha').textContent = hoyD.toLocaleDateString('es-PE',{day:'numeric',month:'long'});
+  }
 
   // La ficha de arriba es SIEMPRE hoy, mires el dia que mires
   const planHoy = suplDeDia(diaPrograma);
@@ -951,7 +957,7 @@ function reiniciar(){
     else location.reload();
   }
 }
-document.getElementById('ver').textContent = 'Versión 15 · ' + HOY;
+document.getElementById('ver').textContent = 'Versión 16 · ' + HOY;
 render();
 fullSync();
 

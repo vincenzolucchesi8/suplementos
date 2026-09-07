@@ -99,30 +99,37 @@
    animacion no llegara a arrancar nada queda invisible.
    --------------------------------------------------------------------------- */
 const CASCADAS = [
-  ['.dia .tramo', 90],          // el riel del dia, tramo por tramo
-  ['.corrida', 60],
-  ['.mes-cell', 14],            // las 28 celdas del mes, en diagonal
-  ['.cal-row', 45],
-  ['.dias i', 26],              // la tira de la racha, dia por dia
-  ['.wk', 70],
-  ['.sien', 70],
-  ['.tl-item', 90],             // las fases del plan
-  ['.avi-row', 45],
-  ['.frec', 70],
-  ['.ficha', 90],
-  ['.opt', 40],                 // las opciones de plato, en la hoja
-  ['.buy-item', 22],            // la lista de compras
-  ['.rec', 70],
-  ['.dish-part', 80],
-  ['.cell', 6],                 // el mapa de constancia
-  ['.perm', 60],                // los permisos del dia
+  ['.dia .tramo', 60],          // el riel del dia, tramo por tramo
+  ['.corrida', 40],
+  ['.mes-cell', 9],             // las 28 celdas del mes, en diagonal
+  ['.cal-row', 32],
+  ['.dias i', 18],              // la tira de la racha, dia por dia
+  ['.wk', 45],
+  ['.sien', 45],
+  ['.tl-item', 55],             // las fases del plan
+  ['.avi-row', 32],
+  ['.frec', 45],
+  ['.ficha', 60],
+  ['.opt', 30],                 // las opciones de plato, en la hoja
+  ['.buy-item', 14],            // la lista de compras
+  ['.rec', 45],
+  ['.dish-part', 55],
+  ['.cell', 4],                 // el mapa de constancia
+  ['.perm', 40],                // los permisos del dia
 ];
+
+/* Techo del escalonado. Una lista larga (la compra tiene 30 filas) con un paso
+   comodo estira la entrada mas alla de un segundo, y entonces ya no es UN
+   gesto: la pantalla se queda medio vacia mientras la burbuja hace rato que
+   aterrizo. Pasado el techo, lo que falta entra junto. */
+const TECHO_CASCADA = 300;
 
 function escalonar(raiz, base) {
   if (!raiz || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   CASCADAS.forEach(([sel, paso]) => {
     raiz.querySelectorAll(sel).forEach((el, i) => {
-      el.style.setProperty('--retraso', ((base || 0) + i * paso) + 'ms');
+      const d = Math.min((base || 0) + i * paso, (base || 0) + TECHO_CASCADA);
+      el.style.setProperty('--retraso', d + 'ms');
     });
   });
   raiz.classList.remove('cae');
@@ -183,3 +190,33 @@ function golpecito(el) {
   el.classList.add('celebra');
   setTimeout(() => el.classList.remove('celebra'), 800);
 }
+
+/* ---------------------------------------------------------------------------
+   La cabecera se condensa al bajar
+
+   El otro sitio donde la app se sentia quieta era leyendo: se movia al tocar,
+   pero no mientras usabas la pantalla. Pegada arriba y encogiendose, la
+   cabecera acompana el scroll y ademas deja siempre a la vista en que seccion
+   estas, que es el patron que la gente ya conoce de iOS.
+
+   Con histeresis (28 px para encoger, 12 para volver): con un solo umbral, un
+   scroll que se queda justo en el limite hace parpadear la cabecera.
+   --------------------------------------------------------------------------- */
+(function () {
+  const top = document.querySelector('.top');
+  if (!top) return;
+  let puesto = false, pedido = false;
+  const mirar = () => {
+    pedido = false;
+    const baja = scrollY > (puesto ? 12 : 28);
+    if (baja === puesto) return;
+    puesto = baja;
+    top.classList.toggle('condensada', baja);
+  };
+  addEventListener('scroll', () => {
+    if (pedido) return;
+    pedido = true;
+    requestAnimationFrame(mirar);
+  }, { passive: true });
+  mirar();
+})();
