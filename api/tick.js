@@ -151,7 +151,7 @@ module.exports = async (req, res) => {
   const mandados = [];
   let cambio = false;
 
-  let vivas = 0;
+  let vivas = 0, saltadas = 0, motivo = null;
   for (const s of subs) {
     const zona = s.zona || 'America/Lima';
     const { fecha, minutos, dow } = enZona(zona, ahora);
@@ -161,7 +161,7 @@ module.exports = async (req, res) => {
       const v = estado[`${fecha}:MO:${c}`];
       return v && v.v ? (parseInt(v.v, 10) || 0) : 0;
     };
-    if (dia < 1) continue;               // el plan todavia no arranca: no se avisa nada
+    if (dia < 1) { saltadas++; motivo = `el plan arranca el ${inicio}`; vivas++; continue; }
     const comidas = MenuLib.resolverDia(MENU, dia, off);
     const ctx = { fecha, dia, dow, comidas, estado, plan };
 
@@ -219,5 +219,16 @@ module.exports = async (req, res) => {
     await guardarTick(datos);
   }
 
-  return res.status(200).json({ ok: true, suscripciones: vivas, mandados });
+  /* Se informan las tres cosas por separado. Antes se devolvia solo `vivas`
+     bajo el nombre "suscripciones", y como la guarda del dia hace `continue`
+     antes de contarla, un tablero con su suscripcion perfectamente registrada
+     reportaba CERO. Sobre ese numero se diagnostico mal mas de una vez. */
+  return res.status(200).json({
+    ok: true,
+    registradas: subs.length,        // las que existen de verdad
+    procesadas: vivas,               // las que este tick miro
+    saltadas,                        // y por que no se les mando nada
+    motivo,
+    mandados,
+  });
 };
