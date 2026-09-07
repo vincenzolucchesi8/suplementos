@@ -1,34 +1,43 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
   <!--
-    Mi protocolo · la marca
+    Mi protocolo · la marca: una PALTA DE MALLA
 
-    EL NUMERO, no un simbolo. 84 son los dias del protocolo: es el hecho que
-    define esta app y no lo tiene ninguna otra.
+    Como esta hecha, que es lo unico que importa para rehacerla:
+    la malla de color la GENERA FLUX en local (marca/malla.png) porque esas
+    cintas fluidas no salen de un degradado escrito a mano, y la SILUETA va
+    CODEADA, para que el borde siga limpio a 20 px en vez de ensuciarse como se
+    ensucia cualquier imagen generada al achicarla. Las vetas de la malla se
+    leen como la pulpa real de una palta; eso no se busco, salio del material.
 
-    Se probo contra cinco alternativas montadas sobre una pantalla de inicio de
-    verdad y medidas a 58, 40, 29 y 20 px. Se cayeron todas ahi: las cuatro
-    fases y la cuadricula de los 84 dias se vuelven ruido, el dia en tres
-    bandas se lee como un icono de lista, y el 4 en verde sobre tinta se hunde
-    en el fondo. Un numero aguanta: los digitos son lo ultimo que se pierde al
-    achicar. Antes de todo esto hubo una capsula de medicina; Vinz la rechazo y
-    tenia razon, es el icono por defecto de toda app de suplementos.
+    De donde salio la direccion: Vinz rechazo tres intentos dibujados a ojo (una
+    capsula de medicina, el numero 84, y la palta plana vectorial) y en vez de
+    seguir proponiendo a ciegas se le pusieron delante 25 iconos REALES bajados
+    de la App Store. Eligio Darkroom y Yuka. Medidos los dos archivos, lo que
+    comparten es: color saturado sin gris, cero detalle, cero sombra, cero
+    texto, y formas de esquinas enormes. Darkroom es una malla de color que
+    llena el cuadro; Yuka es un objeto limpio. La sintesis la dijo el mismo:
+    "malla de color en forma de palta".
 
-    El verde es el FONDO, no un detalle, porque a 20 px un acento fino
-    desaparece. La geometria (146 px de cuerpo, -12 de tracking, -6.75/-0.75 de
-    desplazamiento) salio de converger midiendo la TINTA del PNG renderizado,
-    no de la metrica de la fuente: el tracking negativo y el bearing de cada
-    digito no son simetricos. Resultado: 92 % del ancho con 6 px de aire
-    identico a cada lado.
+    Dos correcciones que costaron una vuelta cada una:
+      · La palta como ovalo con un circulo al centro SE LEE COMO HUEVO FRITO.
+        La salva el pellizco del cuello, arriba.
+      · La figura nacia tocando el borde de abajo y la mascara squircle la
+        mordia: se encoge al 95,5 % y se sube 6 unidades.
 
-    Los PNG que de verdad se instalan los genera scratchpad/gen-iconos.js
-    rasterizando en el navegador, que es donde la webfont existe. Este archivo
-    es la fuente de registro: si lo abres suelto necesita la fuente de Google.
+    Los PNG que de verdad se instalan los genera herramientas/gen-iconos.js.
+    Este archivo es la fuente de registro y necesita marca/malla.png al lado.
   -->
   <defs>
-    <style>@import url('https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@800&amp;display=block');</style>
+    <clipPath id="silueta" clipPathUnits="userSpaceOnUse">
+      <path d="M90 12c19 0 30 24 36 49 7 29 22 47 22 69 0 32-26 54-58 54s-58-22-58-54c0-22 15-40 22-69 6-25 17-49 36-49z"/>
+    </clipPath>
   </defs>
-  <rect width="180" height="180" fill="#0E7A5F"/>
-  <text x="83.25" y="89.25" text-anchor="middle" dominant-baseline="central"
-        font-family="Schibsted Grotesk, sans-serif" font-weight="800" font-size="146"
-        letter-spacing="-12" fill="#F7F8F7">84</text>
+  <rect width="180" height="180" fill="#0B1210"/>
+  <g transform="translate(90 90) scale(.955) translate(-90 -96)">
+    <g clip-path="url(#silueta)">
+      <image href="marca/malla.png" x="-14" y="-14" width="208" height="208" preserveAspectRatio="xMidYMid slice"/>
+    </g>
+    <circle cx="90" cy="118" r="30" fill="#0B1210"/>
+    <circle cx="90" cy="118" r="23" fill="#F2A33A"/>
+  </g>
 </svg>
