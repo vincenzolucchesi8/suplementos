@@ -9,9 +9,9 @@ function dsDiaG(d){ return new Date(Date.parse(INICIO+'T00:00:00Z')+(d-1)*864000
 let selDia = diaPrograma;
 let selDate = HOY;
 const selSemana = () => Math.ceil(selDia/7);
-function goDay(delta){ selDia = Math.min(diaPrograma, Math.max(1, selDia+delta)); selDate = dsDiaG(selDia); render(); }
-function volverHoy(){ selDia = diaPrograma; selDate = HOY; render(); }
-function jumpDay(d){ selDia = Math.min(diaPrograma, Math.max(1, d)); selDate = dsDiaG(selDia); render(); window.scrollTo({top:0, behavior:'smooth'}); }
+function goDay(delta){ selDia = Math.min(diaPrograma, Math.max(1, selDia+delta)); selDate = dsDiaG(selDia); tramoAbierto = null; render(); }
+function volverHoy(){ selDia = diaPrograma; selDate = HOY; tramoAbierto = null; render(); }
+function jumpDay(d){ selDia = Math.min(diaPrograma, Math.max(1, d)); selDate = dsDiaG(selDia); tramoAbierto = null; render(); window.scrollTo({top:0, behavior:'smooth'}); }
 function renderDayNav(){
   const nav = document.getElementById('dayNav'); if(!nav) return;
   const esHoy = selDate === HOY;
@@ -48,7 +48,7 @@ const COMIDAS = [
 
 // Raciones que se llenan. El agua cuenta para el anillo al llegar a la meta.
 const RACIONES = [
-  {id:'agua', name:'Vasos de agua', meta:6, extra:2, unit:IC_DROP, hint:'ideal 8', anillo:true},
+  {id:'agua', name:'Agua', meta:6, extra:2, unit:IC_DROP, hint:'ideal 8', anillo:true},
   {id:'inf',  name:'Infusión',      meta:1, extra:0, unit:IC_LEAF, hint:'', anillo:false},
   {id:'fs',   name:'Frutos secos o palta', meta:1, extra:1, unit:IC_LEAF, hint:'hasta 2', anillo:false},
 ];
@@ -56,9 +56,9 @@ const RACIONES = [
 // Permisos: se gastan sin pasarse. Nunca suman al anillo.
 const PERMISOS = [
   {id:'postre', name:'Postre o dulce',   tope:1, ciclo:'dia',    sub:'1 al día'},
-  {id:'choco',  name:'Chocolate >70%',   tope:2, ciclo:'dia',    sub:'máximo 2 trocitos al día'},
-  {id:'coca',   name:'Coca zero',        tope:3, ciclo:'semana', sub:'máximo 3 latas por semana'},
-  {id:'fuera',  name:'Comer fuera o delivery', tope:2, ciclo:'semana', sub:'1 a 2 veces por semana'},
+  {id:'choco',  name:'Chocolate >70%',   tope:2, ciclo:'dia',    sub:'máximo 2 al día'},
+  {id:'coca',   name:'Coca zero',        tope:3, ciclo:'semana', sub:'3 por semana'},
+  {id:'fuera',  name:'Comer fuera', tope:2, ciclo:'semana', sub:'1 o 2 por semana'},
 ];
 
 // Frecuencias de la semana. tipo 'min' = meta a alcanzar; 'max' = tope a no cruzar.
@@ -317,31 +317,94 @@ function render(){
   if(typeof renderAvisos === 'function') renderAvisos();
 }
 
-// Card "Lo importante ahora": suplementos + comidas del dia seleccionado + raciones
+/* Card "Lo importante ahora". El dia se dibuja como una linea con un punto
+   por comida y solo el tramo del momento abierto: la card por fin hace lo que
+   dice su nombre. Los demas tramos no se esconden, se resumen. */
+let tramoAbierto = null;   // null = lo decide el reloj
+
+function tramoDelReloj(){
+  const h = new Date().toLocaleString('en-GB', {timeZone:'America/Lima', hour:'2-digit', minute:'2-digit', hour12:false});
+  const min = parseInt(h.slice(0,2),10)*60 + parseInt(h.slice(3,5),10);
+  if(min < 11*60) return 'Desayuno';
+  if(min < 16*60+30) return 'Almuerzo';
+  return 'Cena';
+}
+
+function pendientesDe(comida, plan){
+  const todos = [...plan.items, ...COMIDAS].filter(i=>i.meal===comida);
+  const faltan = todos.filter(it=> !marcado(`${selDate}:${it.meal}:${it.id}`));
+  return {total: todos.length, faltan: faltan.length};
+}
+
+function tramoQueVa(plan){
+  const orden = ['Desayuno','Almuerzo','Cena'];
+  if(tramoAbierto) return tramoAbierto;
+  const pend = orden.filter(c => pendientesDe(c, plan).faltan > 0);
+  if(!pend.length) return null;                       // dia cerrado: nada abierto
+  if(selDate !== HOY) return pend[0];                 // otro dia: el primero que falte
+  const reloj = tramoDelReloj();
+  return pend.includes(reloj) ? reloj : pend[0];
+}
+
+function abrirTramo(comida){
+  tramoAbierto = (tramoAbierto === comida) ? '__ninguno' : comida;
+  renderHoy();
+}
+
 function renderHoy(){
   renderDayNav();
   const plan = suplDeDia(selDia);
   const cont = document.getElementById('hoyItems');
   cont.innerHTML = '';
 
+  const menuHoy = (typeof comidasDeDia === 'function') ? comidasDeDia(selDia) : null;
+  const activo = tramoQueVa(plan);
   const todos = [...plan.items, ...COMIDAS];
+
+  const linea = document.createElement('div');
+  linea.className = 'dia';
+
   ['Desayuno','Almuerzo','Cena'].forEach(c=>{
     const del = todos.filter(i=>i.meal===c);
     if(!del.length) return;
-    const wrap = document.createElement('div'); wrap.className='meal';
-    wrap.innerHTML = `<div class="meal-h"><span class="meal-ic">${mealIcon(c)}</span><span class="meal-name">${c}</span></div>`;
-    // Lo que toca comer segun el menu, antes de los checks de esa comida
-    if(typeof bloquePlato === 'function'){
-      const plato = bloquePlato(c, comidasDeDia(selDia));
-      if(plato) wrap.appendChild(plato);
+    const {total, faltan} = pendientesDe(c, plan);
+    const listo = faltan === 0;
+    const abierto = c === activo;
+
+    const tramo = document.createElement('div');
+    tramo.className = 'tramo' + (abierto?' ahora':'') + (listo?' listo':'');
+
+    // Que se come, para que el tramo cerrado igual lo diga
+    const m = menuHoy ? (c==='Desayuno'?menuHoy.desayuno : c==='Almuerzo'?menuHoy.almuerzo : menuHoy.cena) : null;
+    const resumen = m ? (m.corto || m.titulo) : (listo ? 'Listo' : `${total} cosas`);
+
+    const cab = document.createElement('button');
+    cab.type='button'; cab.className='tramo-h';
+    cab.setAttribute('aria-expanded', abierto?'true':'false');
+    cab.innerHTML =
+      `<span class="tramo-dot"></span>`+
+      `<span class="tramo-ic">${mealIcon(c)}</span>`+
+      `<span class="tramo-txt"><span class="tramo-nom">${c}</span><span class="tramo-res">${resumen}</span></span>`+
+      (listo
+        ? `<span class="tramo-ok"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>`
+        : `<span class="tramo-cnt">${total - faltan} de ${total}</span>`);
+    cab.onclick = ()=> abrirTramo(c);
+    tramo.appendChild(cab);
+
+    const body = document.createElement('div');
+    body.className='tramo-body';
+    body.hidden = !abierto;
+
+    if(typeof bloquePlato === 'function' && menuHoy){
+      const plato = bloquePlato(c, menuHoy);
+      if(plato){ plato.classList.add('fino'); body.appendChild(plato); }
     }
     del.forEach(it=>{
       const key = `${selDate}:${it.meal}:${it.id}`;
       const on = marcado(key);
       const el = document.createElement('div');
-      el.className = 'item'+(on?' on':'');
-      el.setAttribute('role','button');
-      el.setAttribute('tabindex','0');
+      el.className = 'item fino'+(on?' on':'');
+      el.setAttribute('role','button'); el.setAttribute('tabindex','0');
       el.setAttribute('aria-pressed', on?'true':'false');
       const toggle = ()=>{
         setMark(key, on?'0':'1');
@@ -352,41 +415,32 @@ function renderHoy(){
       el.onkeydown = e=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); toggle(); } };
       el.innerHTML =
         `<div class="check"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>`+
-        `<div class="info"><div class="name">${it.name}</div><div class="dose">${it.dose}</div></div>`+
-        `<div class="pill-dose">${it.tag}</div>`;
-      wrap.appendChild(el);
+        `<div class="info"><span class="name">${it.name}</span><span class="dose">${it.tag || it.dose}</span></div>`;
+      body.appendChild(el);
     });
-    cont.appendChild(wrap);
+    tramo.appendChild(body);
+    linea.appendChild(tramo);
   });
+  cont.appendChild(linea);
 
-  // Raciones que se llenan
-  const rw = document.createElement('div'); rw.className='meal';
+  // Lo que corre todo el dia no pertenece a ninguna comida: va fuera del riel
+  const rw = document.createElement('div');
+  rw.className='meal'; rw.style.marginTop='16px';
   rw.innerHTML = `<div class="meal-h"><span class="meal-ic">${IC_DROP}</span><span class="meal-name">A lo largo del día</span></div>`;
   RACIONES.forEach(r=>{
     const cap = r.meta + r.extra;
     const n = racionCount(selDate, r.id, cap);
-    if(cap===1){   // una sola unidad no es una racion: es una marca
-      const k = `${selDate}:R:${r.id}1`, on = marcado(k);
-      const el = document.createElement('div');
-      el.className = 'item'+(on?' on':'');
-      el.setAttribute('role','button'); el.setAttribute('tabindex','0');
-      el.setAttribute('aria-pressed', on?'true':'false');
-      const t = ()=>{ setMark(k, on?'0':'1'); render(); };
-      el.onclick = t; el.onkeydown = e=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); t(); } };
-      el.innerHTML = `<div class="check"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>`+
-        `<div class="info"><div class="name">${r.name}</div><div class="dose">1 al día</div></div>`;
-      rw.appendChild(el); return;
-    }
     const box = document.createElement('div');
-    box.className = 'fill'+(n>=r.meta?' done':'');
+    box.className = 'corrida'+(n>=r.meta?' done':'');
     let units='';
     for(let i=1;i<=cap;i++){
       const on = marcado(`${selDate}:R:${r.id}${i}`);
       units += `<button class="u${on?' on':''}${i>r.meta?' extra':''}" onclick="tapUnit('${r.id}',${i},${cap})" aria-label="${r.name} ${i}">${r.unit}</button>`;
     }
     box.innerHTML =
-      `<div class="fill-h"><span class="fill-name">${r.name}</span><span class="fill-num">${n} de ${r.meta}${r.extra?' · '+r.hint:''}</span></div>`+
-      `<div class="units">${units}</div>`;
+      `<span class="corrida-nom">${r.name}</span>`+
+      `<span class="units">${units}</span>`+
+      `<span class="corrida-num">${n} de ${r.meta}</span>`;
     rw.appendChild(box);
   });
   cont.appendChild(rw);
@@ -433,9 +487,8 @@ function renderPermisos(){
     if(over) toks += `<button class="tok over" onclick="tapPerm('${p.id}',${usados})" aria-label="Quitar el exceso de ${p.name}"></button>`;
 
     const restan = p.tope - usados;
-    const sub = over
-      ? `Te pasaste por ${usados-p.tope} · ${p.sub}`
-      : (restan>0 ? `Te ${restan===1?'queda':'quedan'} ${restan} · ${p.sub}` : `Ya lo gastaste · ${p.sub}`);
+    const sub = over ? `Te pasaste por ${usados-p.tope}`
+      : (restan > 0 ? p.sub : 'Ya lo gastaste');
 
     const el = document.createElement('div');
     el.className = 'perm'+(over?' over':(restan<=0?' spent':''));
@@ -646,7 +699,7 @@ function reiniciar(){
     else location.reload();
   }
 }
-document.getElementById('ver').textContent = 'Versión 9 · ' + HOY;
+document.getElementById('ver').textContent = 'Versión 10 · ' + HOY;
 render();
 fullSync();
 

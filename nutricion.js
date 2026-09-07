@@ -75,11 +75,13 @@ function bloquePlato(comida, c) {
   el.innerHTML =
     (conDisco ? `<div class="dish-plate">${platoSVG(comida === 'Cena' ? 'cena' : 'almuerzo')}</div>` : '') +
     `<div class="dish-body">
-       <div class="dish-name">${esc(m.corto || m.titulo)}</div>
+       <div class="dish-top">
+         <div class="dish-name">${esc(m.corto || m.titulo)}</div>
+         <button class="dish-swap" type="button">Cambiar</button>
+       </div>
        ${sub}${partes}
        ${m.cambiado ? '<span class="dish-tag">Cambiado por ti</span>' : ''}
-     </div>
-     <button class="dish-swap" type="button">Cambiar</button>`;
+     </div>`;
 
   el.querySelector('.dish-swap').onclick = () => cambiarPlato(comida);
   return el;
