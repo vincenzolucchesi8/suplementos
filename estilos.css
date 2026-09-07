@@ -545,7 +545,11 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .burbuja-x{position:absolute;width:35px;height:35px;
   left:calc(var(--anchoTab)/2 - 17.5px);top:64px;       /* 58 de la capa + 6 dentro de la barra */
   transform:translateX(calc(var(--i) * var(--anchoTab)))}
-.burbuja{width:100%;height:100%;border-radius:50%;background:var(--verde)}
+.burbuja{position:absolute;inset:0;border-radius:50%;background:var(--verde)}
+/* OJO: es un <span>. Sin position (o display:block) un elemento EN LINEA ignora
+   width y height, se queda en 0x0 y la burbuja desaparece entera aunque su
+   animacion corra perfecta. Paso: la prueba miraba animationName y translate,
+   nunca el tamano. */
 
 /* el icono viaja pegado a la burbuja pero FUERA del filtro, que lo derretiria */
 .burbuja-ico{position:absolute;width:35px;height:35px;top:6px;

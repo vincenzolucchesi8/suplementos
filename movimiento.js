@@ -77,7 +77,12 @@
     // deja un halo verde sucio alrededor del circulo en reposo (ademas de una
     // capa compuesta de mas en cada scroll).
     clearTimeout(nav._salto);
-    nav._salto = setTimeout(() => nav.classList.remove('saltando'), 520);
+    nav._salto = setTimeout(() => {
+      nav.classList.remove('saltando');
+      // el icono que salio queda invisible pero vivo en el DOM: se limpia, o
+      // se acumula un nodo muerto por cada cambio de seccion
+      ico.innerHTML = `<span class="ico-y"><span>${svgDe(n)}</span></span>`;
+    }, 520);
     actual = n;
   };
 })();
