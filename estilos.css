@@ -507,39 +507,50 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 
 
 /* ---------------------------------------------- la barra, con la burbuja
-   Sale MEDIDA de un reel de navigation tabs: el indicador no es un chip que se
-   desliza, es una BURBUJA del color de acento que vive medio hundida en el
-   canto de la barra, lleva el icono dentro, y al cambiar de seccion sale de la
-   barra con un cuello liquido, cruza por arriba y se vuelve a hundir en el
-   destino. El resorte tiene 6,3 % de sobrepaso con el pico al 49 % de la
-   duracion, medido cuadro a cuadro; --resorte lo reproduce con error < 0,1 %.
+   Sale MEDIDA de un reel de navigation tabs. Lo que hay que entender de esa
+   referencia, y que la primera version se equivoco: **la burbuja NO sobresale
+   en reposo**. En reposo la barra esta limpia y el indicador es un circulo
+   DENTRO, detras del icono activo. Sale de la barra SOLO durante el cambio:
+   se despega con un cuello liquido, cruza por arriba y se vuelve a hundir.
+   Dejarla asomada todo el tiempo se lee como una protuberancia pegada.
+
+   El resorte tiene 6,3 % de sobrepaso con el pico al 49 % de la duracion,
+   medido cuadro a cuadro; --resorte lo reproduce con error < 0,1 %.
    ------------------------------------------------------------------------- */
 .tabs{position:fixed;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));
   height:58px;z-index:40}
 
-/* la capa que se funde: dentro van SOLO formas planas, nunca el icono */
-.goo{position:absolute;left:0;right:0;bottom:0;top:-29px;filter:url(#goo);pointer-events:none}
+/* la capa que se funde: dentro van SOLO formas planas, nunca el icono.
+   Se extiende hacia arriba para dejar sitio al arco, pero en reposo no se ve
+   nada ahi: la burbuja esta abajo, dentro de la barra. */
+/* El filtro SOLO se enciende durante el salto: en reposo no hay nada que
+   fundir y lo unico que hace es dejar un halo verde sucio alrededor del
+   circulo. Apagado tambien ahorra una capa compuesta en cada scroll. */
+.goo{position:absolute;left:0;right:0;bottom:0;top:-58px;pointer-events:none}
+.saltando .goo{filter:url(#goo)}
 .superficie{position:absolute;left:0;right:0;bottom:0;height:58px;border-radius:var(--r5);background:#fff}
-.burbuja{position:absolute;width:44px;height:44px;border-radius:50%;background:var(--verde);
-  left:calc(var(--anchoTab)/2 - 22px);top:0;
+.burbuja{position:absolute;width:35px;height:35px;border-radius:50%;background:var(--verde);
+  left:calc(var(--anchoTab)/2 - 17.5px);top:64px;       /* 58 de la capa + 6 dentro de la barra */
   transform:translateX(calc(var(--i) * var(--anchoTab)))}
 
 /* el icono viaja pegado a la burbuja pero FUERA del filtro, que lo derretiria */
-.burbuja-ico{position:absolute;width:44px;height:44px;top:-29px;
-  left:calc(var(--anchoTab)/2 - 22px);pointer-events:none;
+.burbuja-ico{position:absolute;width:35px;height:35px;top:6px;
+  left:calc(var(--anchoTab)/2 - 17.5px);pointer-events:none;
   transform:translateX(calc(var(--i) * var(--anchoTab)))}
 .burbuja-ico span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
-.burbuja-ico svg{width:21px;height:21px;stroke:#fff;stroke-width:2.1;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.burbuja-ico svg{width:19px;height:19px;stroke:#fff;stroke-width:2.1;fill:none;stroke-linecap:round;stroke-linejoin:round}
 
+/* El arco: sale de la barra, cruza por arriba y vuelve a entrar. Empieza y
+   termina en cero, o sea DENTRO: nunca se queda asomada. */
 @keyframes salta{
   0%  {transform:translateX(calc(var(--de) * var(--anchoTab)))                translateY(0)}
-  26% {transform:translateX(calc(var(--de) * var(--anchoTab)))                translateY(-26px)}
-  50% {transform:translateX(calc((var(--de) + var(--a)) * var(--anchoTab)/2)) translateY(-34px)}
-  76% {transform:translateX(calc(var(--a)  * var(--anchoTab)))                translateY(-24px)}
+  24% {transform:translateX(calc(var(--de) * var(--anchoTab)))                translateY(-40px)}
+  50% {transform:translateX(calc((var(--de) + var(--a)) * var(--anchoTab)/2)) translateY(-50px)}
+  76% {transform:translateX(calc(var(--a)  * var(--anchoTab)))                translateY(-38px)}
   100%{transform:translateX(calc(var(--a)  * var(--anchoTab)))                translateY(0)}
 }
 /* al despegar y al aterrizar se estira, como una gota de verdad */
-@keyframes gota{0%{scale:1 1}18%{scale:.86 1.16}50%{scale:1.06 .96}82%{scale:.9 1.12}100%{scale:1 1}}
+@keyframes gota{0%{scale:1 1}16%{scale:.84 1.2}50%{scale:1.06 .95}84%{scale:.86 1.18}100%{scale:1 1}}
 /* dos capas de icono que se cruzan: reemplazar el DOM a mitad de vuelo
    reiniciaria la animacion y el icono del destino apareceria en el origen */
 @keyframes seVa {0%{opacity:1;scale:1}   28%{opacity:0;scale:.45} 100%{opacity:0;scale:.45}}
@@ -551,15 +562,15 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 
 .tabs-pill{position:absolute;inset:0;display:flex;border-radius:var(--r5);
   box-shadow:var(--sombra-1),var(--sombra-2)}
+/* el icono arriba y el rotulo abajo: el circulo cae detras del icono */
 .tab{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;
-  justify-content:flex-end;gap:3px;padding:0 2px 9px;border-radius:var(--r5);
+  justify-content:flex-start;gap:2px;padding:5px 2px 0;border-radius:var(--r5);
   color:var(--g3);font-size:var(--t5);font-weight:600}
-.tab svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round;
-  transition:opacity 160ms var(--suave),transform 300ms var(--resorte)}
-.tab span{transition:transform 280ms var(--resorte),color 160ms ease}
+.tab svg{width:19px;height:19px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round;
+  margin-top:8px;transition:opacity 160ms var(--suave),transform 300ms var(--resorte)}
+.tab span{margin-top:5px;transition:transform 280ms var(--resorte),color 160ms ease}
 .tab.on{color:var(--verde)}
-.tab.on svg{opacity:0;transform:scale(.6)}   /* su icono se fue en la burbuja */
-.tab.on span{transform:translateY(2px)}
+.tab.on svg{opacity:0}                     /* su icono lo lleva la burbuja */
 
 footer{text-align:center;font-size:var(--t5);color:var(--g3);padding:var(--e4) 0 var(--e2);font-weight:500}
 footer .ver{margin-left:8px;opacity:.7}

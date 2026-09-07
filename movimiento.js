@@ -72,6 +72,11 @@
     nav.classList.remove('saltando');
     void nav.offsetWidth;                        // reinicia la animacion
     nav.classList.add('saltando');
+    // La clase se QUITA al terminar. Si se queda, el filtro sigue encendido y
+    // deja un halo verde sucio alrededor del circulo en reposo (ademas de una
+    // capa compuesta de mas en cada scroll).
+    clearTimeout(nav._salto);
+    nav._salto = setTimeout(() => nav.classList.remove('saltando'), 520);
     actual = n;
   };
 })();
