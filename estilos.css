@@ -101,6 +101,21 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 /* entrada escalonada: la clase la pone el JS, asi que sin JS todo se ve igual */
 .panel.entra > *{animation:asoma 420ms var(--suave) both;animation-delay:var(--retraso,0ms)}
 
+/* Falta la clave: tapa todo, porque sin ella la app no sirve de nada */
+.clave-falta{position:fixed;inset:0;z-index:80;background:rgba(18,23,26,.55);
+  display:flex;align-items:center;justify-content:center;padding:22px;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.clave-caja{background:var(--papel);border-radius:var(--r1);padding:22px;max-width:360px;width:100%;
+  box-shadow:var(--sombra-2)}
+.clave-caja b{display:block;font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bottom:8px}
+.clave-caja p{font-size:var(--t4);color:var(--g3);line-height:1.55;margin-bottom:10px}
+.clave-caja code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em;
+  background:var(--g1);border-radius:4px;padding:1px 4px}
+.clave-caja input{width:100%;background:var(--g1);border-radius:var(--r3);padding:13px 15px;
+  min-height:48px;font-size:var(--t3);margin:6px 0 14px}
+.clave-error{color:var(--alerta)!important;margin-top:10px!important}
+.clave-error[hidden]{display:none}
+
 /* Cuenta regresiva al arranque del plan */
 .arranque{background:var(--verde-suave);border-radius:var(--r1);padding:16px 17px;margin-bottom:var(--e3)}
 .arranque b{display:block;font-size:var(--t2);font-weight:700;letter-spacing:-.3px;color:var(--verde);

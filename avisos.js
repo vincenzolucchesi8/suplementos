@@ -90,10 +90,15 @@ async function apagarAvisos() {
 
 async function guardarSuscripcion(sub) {
   const zona = Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/Lima';
-  await fetch(`${API}/push`, {
+  const r = await fetch(`${API}/push`, {
     method: 'POST', headers: cabeceras(),
     body: JSON.stringify({ accion: 'alta', sub: sub.toJSON(), cfg: cfgLeer(), zona, inicio: INICIO }),
   });
+  /* Si el servidor la rechaza (401 sin clave, por ejemplo) NO se puede decir que
+     los avisos quedaron activos: el navegador tendria permiso y el servidor no
+     sabria a donde mandarlos. Antes esto fallaba en silencio y el tablero decia
+     "Avisos activados" mientras no llegaba ninguno. */
+  if (!r.ok) throw new Error('el servidor no acepto la suscripcion (' + r.status + ')');
 }
 
 async function empujarConfig() {
@@ -117,7 +122,7 @@ function renderAvisos() {
     pidiendo: ['', 'Esperando que aceptes el permiso…', ''],
     activo: ['on', 'Avisos activados. Cada uno trae los botones para marcar sin abrir la app.', 'Apagar avisos'],
     bloqueado: ['warn', 'Bloqueaste las notificaciones. Se reactivan desde los ajustes del navegador para este sitio.', ''],
-    error: ['warn', 'No se pudo activar. Revisa la conexión y vuelve a intentar.', 'Reintentar'],
+    error: ['warn', 'No se pudo activar. Si la app está en la pantalla de inicio, puede que le falte tu clave: ciérrala y ábrela de nuevo para pegarla.', 'Reintentar'],
   };
   const [clase, texto, boton] = estados[estadoPush] || estados.apagado;
 

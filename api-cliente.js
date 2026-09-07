@@ -14,12 +14,14 @@ if(location.hostname.endsWith('github.io')){
   location.replace('https://protocolo.papelito.online/' + location.hash);
 }
 
-// Clave del tablero. Llega una vez por el enlace (#k=...) y queda guardada.
+/* Clave del tablero. Llega una vez por el enlace y queda guardada.
+   Se acepta tanto #k= como ?k=: el hash se pierde en varios caminos de
+   instalacion y el query sobrevive mejor. */
 function tokenApp(){
-  const m = /[#&]k=([^&]+)/.exec(location.hash||'');
+  const m = /[#?&]k=([^&\s]+)/.exec((location.hash||'') + (location.search||''));
   if(m){
     localStorage.setItem('app_token', decodeURIComponent(m[1]));
-    history.replaceState(null,'',location.pathname+location.search);
+    history.replaceState(null,'',location.pathname);
   }
   return localStorage.getItem('app_token') || '';
 }
