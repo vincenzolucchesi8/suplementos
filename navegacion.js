@@ -22,6 +22,7 @@ function irASeccion(nombre, opciones) {
     tab.setAttribute('tabindex', activo ? '0' : '-1');
   });
   localStorage.setItem(TAB_KEY, nombre);
+  entradaEscalonada(document.getElementById('panel-' + nombre));
   if (!opciones || opciones.scroll !== false) window.scrollTo({ top: 0, behavior: 'auto' });
   // La lista de compras se pinta al entrar, no antes: es la vista mas cara
   if (nombre === 'comidas' && typeof renderNutricion === 'function') renderNutricion();
@@ -42,6 +43,19 @@ function montarSecciones() {
     };
   });
   irASeccion(localStorage.getItem(TAB_KEY) || 'hoy', { scroll: false });
+}
+
+/* Entrada escalonada de las cards al abrir una seccion. La clase la pone el JS
+   y sin ella el contenido ya se ve, asi que nada depende de que el JS corra.
+   Con "menos movimiento" el kill de estilos.css pone el retraso en cero. */
+function entradaEscalonada(panel) {
+  if (!panel) return;
+  panel.classList.remove('entra');
+  [...panel.children].forEach((c, i) => c.style.setProperty('--retraso', (i * 55) + 'ms'));
+  void panel.offsetWidth;                 // reinicia la animacion
+  panel.classList.add('entra');
+  clearTimeout(panel._limpia);
+  panel._limpia = setTimeout(() => panel.classList.remove('entra'), 1400);
 }
 
 /* ---------------- Hoja ---------------- */

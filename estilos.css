@@ -10,6 +10,15 @@
     /* el plato del metodo de Alexia: verduras, proteina y carbohidrato */
     --pl-verd:#0fa589; --pl-prot:#52627a; --pl-carb:#e3c079;
     --r-card:22px; --r-item:14px; --r-min:8px;
+    /* Movimiento portado del sistema de minifin, que es el estandar de la casa */
+    --m-rapido:120ms cubic-bezier(.4,0,.2,1);
+    --m-normal:180ms cubic-bezier(.4,0,.2,1);
+    --m-entrada:420ms cubic-bezier(.23,1,.32,1);
+    --m-celebra:520ms cubic-bezier(.34,1.56,.64,1);
+    --ez-salida:cubic-bezier(.4,0,.2,1);
+    --ez-entrada:cubic-bezier(.23,1,.32,1);
+    --ez-celebra:cubic-bezier(.34,1.56,.64,1);
+    --acc-canto:#0a7a64;
     --sh-sm:0 1px 2px rgba(16,26,44,.05);
     --sh:0 2px 6px rgba(16,26,44,.05), 0 16px 34px -20px rgba(16,26,44,.22);
     --sh-lg:0 3px 10px rgba(16,26,44,.06), 0 26px 50px -24px rgba(16,26,44,.28);
@@ -285,7 +294,15 @@
     .card{padding:19px 17px}
   }
   @media (prefers-reduced-motion:reduce){
-    *{animation:none!important;transition:none!important}
+    *,*::before,*::after{
+      transition-duration:.01ms!important;
+      animation-duration:.01ms!important;
+      /* sin esto, una entrada escalonada deja la card INVISIBLE durante todo su
+         retraso: quien pide menos movimiento ve la pantalla a medias */
+      animation-delay:0ms!important;
+      animation-iteration-count:1!important;
+      scroll-behavior:auto!important;
+    }
   }
 
   /* ============================================================
@@ -788,3 +805,45 @@
     .mes-cell img{width:22px;height:22px}
     .dish-img{width:42px;height:42px}
   }
+
+  /* ============================================================
+     MOVIMIENTO. Portado del sistema de minifin, no efectos sueltos.
+     Dos momentos y nada mas: la entrada de una seccion, y cerrar
+     el dia. Todo lo demas son transiciones de 120-180 ms que no
+     se notan, que es como deben ser.
+     ============================================================ */
+  @keyframes subir{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
+  @keyframes latir{0%,100%{transform:scale(1)}38%{transform:scale(1.07)}}
+  @keyframes brotar{0%{transform:scale(.4);opacity:0}62%{transform:scale(1.18)}100%{transform:scale(1);opacity:1}}
+
+  /* Entrada de seccion: la clase la pone el JS, y si el JS no corre no pasa
+     nada porque sin clase el contenido ya esta visible. */
+  .panel.entra > *{animation:subir var(--m-entrada) both;animation-delay:var(--retraso,0ms)}
+
+  /* Canto fisico en el boton principal, como en minifin: el borde de abajo es
+     material, no sombra, y se hunde al apretarlo. */
+  .btn-p{
+    box-shadow:0 4px 0 var(--acc-canto), 0 12px 22px -14px rgba(11,138,114,.7);
+    transition:transform var(--m-rapido), box-shadow var(--m-rapido), filter var(--m-rapido);
+  }
+  .btn-p:hover{filter:brightness(1.04);transform:none}
+  .btn-p:active{transform:translateY(3px);box-shadow:0 1px 0 var(--acc-canto)}
+  .btn-s{transition:transform var(--m-rapido),border-color var(--m-normal),color var(--m-normal)}
+  .btn-s:active{transform:translateY(1px)}
+
+  /* EL MOMENTO: cerrar el dia. El anillo late, el cartel entra con rebote y los
+     puntos del riel se llenan en orden, contando el dia de arriba abajo. */
+  .hero.celebra .ring-wrap{animation:latir var(--m-celebra)}
+  .done-banner.celebra{animation:subir var(--m-celebra) both}
+  .dia.celebra .tramo.listo .tramo-dot{animation:brotar 420ms var(--ez-celebra) both}
+  .dia.celebra .tramo:nth-child(1) .tramo-dot{animation-delay:60ms}
+  .dia.celebra .tramo:nth-child(2) .tramo-dot{animation-delay:180ms}
+  .dia.celebra .tramo:nth-child(3) .tramo-dot{animation-delay:300ms}
+
+  /* La marca de seccion: el mismo filete de acento que llevan los PDF, para que
+     la pantalla y el papel se lean como un solo sistema. */
+  .card-h h2, .acc-h h2{display:flex;align-items:center;gap:9px}
+  .card-h h2::before, .acc-h h2::before{
+    content:"";flex-shrink:0;width:3px;height:11px;border-radius:1.5px;background:var(--acc);
+  }
+  .card.focus .card-h h2::before{background:var(--acc-d)}

@@ -239,6 +239,24 @@ function obligatorio(dia){
   return {total: todo.length, hechos: todo.filter(x=>x.ok).length};
 }
 
+/* EL MOMENTO. Un solo instante orquestado en toda la app: cuando el dia queda
+   cerrado, el anillo late, el cartel entra con rebote y los puntos del riel se
+   llenan en orden, contando el dia de arriba abajo. Solo al CRUZAR a completo,
+   nunca al abrir la app con el dia ya hecho: una celebracion que se repite
+   cada vez que entras deja de ser una celebracion. */
+let diaEstabaCerrado = null;
+function cerrarElDia(completo){
+  const cruzo = diaEstabaCerrado === false && completo;
+  diaEstabaCerrado = completo;
+  if(!cruzo) return;
+  const hero = document.querySelector('.hero');
+  const cartel = document.getElementById('doneMsg');
+  const riel = document.querySelector('.dia');
+  [hero, cartel, riel].forEach(el=>{ if(el){ el.classList.remove('celebra'); void el.offsetWidth; el.classList.add('celebra'); } });
+  setTimeout(()=>[hero,cartel,riel].forEach(el=>el && el.classList.remove('celebra')), 1600);
+  if(navigator.vibrate) navigator.vibrate([12, 40, 18]);
+}
+
 /* ---------------- Render ---------------- */
 function render(){
   document.getElementById('fecha').textContent = new Date().toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long'});
@@ -261,6 +279,8 @@ function render(){
   renderPeso();
   renderFases();
   renderHeat();
+  // Al final: renderHoy acaba de rehacer el riel, y antes la clase se perdia
+  cerrarElDia(oHoy.total>0 && oHoy.hechos===oHoy.total);
   if(typeof renderNutricion === 'function') renderNutricion();
   if(typeof montarBotonInforme === 'function') montarBotonInforme();
   if(typeof montarCardPlan === 'function') montarCardPlan();
@@ -694,7 +714,7 @@ function reiniciar(){
     else location.reload();
   }
 }
-document.getElementById('ver').textContent = 'Versión 13 · ' + HOY;
+document.getElementById('ver').textContent = 'Versión 14 · ' + HOY;
 render();
 fullSync();
 
