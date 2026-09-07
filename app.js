@@ -314,6 +314,7 @@ function render(){
   renderFases();
   renderHeat();
   if(typeof renderNutricion === 'function') renderNutricion();
+  if(typeof montarBotonInforme === 'function') montarBotonInforme();
   if(typeof renderAvisos === 'function') renderAvisos();
 }
 
