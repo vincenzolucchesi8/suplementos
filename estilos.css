@@ -91,6 +91,12 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 /* entrada escalonada: la clase la pone el JS, asi que sin JS todo se ve igual */
 .panel.entra > *{animation:asoma 420ms var(--suave) both;animation-delay:var(--retraso,0ms)}
 
+/* Cuenta regresiva al arranque del plan */
+.arranque{background:var(--verde-suave);border-radius:var(--r1);padding:16px 17px;margin-bottom:var(--e3)}
+.arranque b{display:block;font-size:var(--t2);font-weight:700;letter-spacing:-.3px;color:var(--verde);
+  margin-bottom:4px}
+.arranque span{display:block;font-size:var(--t4);color:var(--g3);line-height:1.5}
+
 /* Cartel de instalar (solo iPhone y solo una vez). Va arriba del todo porque
    sin instalar no hay avisos: no es un adorno, es la unica forma de que la app
    sirva completa. */

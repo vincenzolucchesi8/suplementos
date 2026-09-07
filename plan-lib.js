@@ -24,7 +24,7 @@
     version: 1,
     nombre: 'Plan de Alexia Macher',
     fuente: 'Plan nutricional del 1 de setiembre de 2026',
-    inicio: '2026-09-01',
+    inicio: '2026-09-10',
 
     // Lo que se llena cada dia
     raciones: [

@@ -1,13 +1,20 @@
 // Dia 1 del programa (igual que el recordatorio de Slack)
 const INICIO = PLAN.inicio;   // sale del plan, ya no esta cableado
 const HOY = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Lima' });
-const diaPrograma = Math.floor((Date.parse(HOY + 'T00:00:00Z') - Date.parse(INICIO + 'T00:00:00Z')) / 86400000) + 1;
+const diaCrudo = Math.floor((Date.parse(HOY + 'T00:00:00Z') - Date.parse(INICIO + 'T00:00:00Z')) / 86400000) + 1;
+/* Si el plan todavia no arranca, el dia crudo es negativo y toda la aritmetica
+   de abajo (semana, menu, fases, mapa) se va al carajo en silencio. Se fija en
+   1 y se levanta una bandera: la app muestra el dia 1 como adelanto, con la
+   cuenta regresiva arriba, para que ya se pueda hacer la compra. */
+const antesDeEmpezar = diaCrudo < 1;
+const faltanDias = antesDeEmpezar ? 1 - diaCrudo : 0;
+const diaPrograma = Math.max(1, diaCrudo);
 const semana = Math.ceil(diaPrograma / 7);
 
 // Dia seleccionado en la card "Lo importante ahora" (hoy por defecto; navegable a dias pasados)
 function dsDiaG(d){ return new Date(Date.parse(INICIO+'T00:00:00Z')+(d-1)*86400000).toISOString().split('T')[0]; }
 let selDia = diaPrograma;
-let selDate = HOY;
+let selDate = antesDeEmpezar ? dsDiaG(1) : HOY;
 const selSemana = () => Math.ceil(selDia/7);
 function goDay(delta){ selDia = Math.min(diaPrograma, Math.max(1, selDia+delta)); selDate = dsDiaG(selDia); tramoAbierto = null; render(); }
 function volverHoy(){ selDia = diaPrograma; selDate = HOY; tramoAbierto = null; render(); }
@@ -301,6 +308,11 @@ function render(){
   else $('ringPct').textContent = pctHoy;
   $('ring').style.strokeDashoffset = RING_CIRC*(1-pctHoy/100);
   $('hoyPie').textContent = `${oHoy.hechos} de ${oHoy.total} hechos`;
+  if(antesDeEmpezar){
+    const t = document.querySelector('#panel-hoy .card.focus h2'); if(t) t.textContent = 'El día 1';
+    const r = document.querySelector('#fichaHoy .rot'); if(r) r.textContent = 'Día 1';
+  }
+  pintarCuentaRegresiva();
 
   renderHoy();
   renderPermisos();
@@ -316,6 +328,26 @@ function render(){
   if(typeof montarBotonInforme === 'function') montarBotonInforme();
   if(typeof montarCardPlan === 'function') montarCardPlan();
   if(typeof renderAvisos === 'function') renderAvisos();
+}
+
+/* Cuenta regresiva: entre hoy y el arranque, la app ensena el dia 1 en vez de
+   numeros rotos, y dice cuando empieza. */
+function pintarCuentaRegresiva(){
+  const panel = document.getElementById('panel-hoy');
+  let el = document.getElementById('cuentaRegresiva');
+  if(!antesDeEmpezar){ if(el) el.remove(); return; }
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'cuentaRegresiva'; el.className = 'arranque';
+    panel.insertBefore(el, panel.firstChild);
+  }
+  const f = new Date(Date.parse(INICIO + 'T00:00:00Z'));
+  const cuando = f.toLocaleDateString('es-PE', {weekday:'long', day:'numeric', month:'long', timeZone:'UTC'})
+    .replace(',', '');
+  el.innerHTML =
+    `<b>Empieza el ${cuando}</b>` +
+    `<span>${faltanDias === 1 ? 'Falta un día' : 'Faltan ' + faltanDias + ' días'}. Abajo está el día 1 completo, ` +
+    `para que hagas la compra con tiempo.</span>`;
 }
 
 /* Card "Lo importante ahora". El dia se dibuja como una linea con un punto
@@ -410,7 +442,9 @@ function renderHoy(){
       (listo
         ? `<span class="tramo-ok"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>`
         : (abierto
-            ? `<span class="tramo-todo">Marcar ${faltan === total ? 'las ' + total : 'las ' + faltan + ' que faltan'}</span>`
+            ? `<span class="tramo-todo">${faltan === 1
+                  ? (faltan === total ? 'Marcar' : 'Marcar la que falta')
+                  : 'Marcar las ' + faltan + (faltan === total ? '' : ' que faltan')}</span>`
             : `<span class="tramo-cnt">${total - faltan} de ${total}</span>`));
     cab.onclick = ev => {
       if (ev.target.closest('.tramo-todo')) { marcarTramo(c, del); return; }

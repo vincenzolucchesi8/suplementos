@@ -161,7 +161,8 @@ module.exports = async (req, res) => {
       const v = estado[`${fecha}:MO:${c}`];
       return v && v.v ? (parseInt(v.v, 10) || 0) : 0;
     };
-    const comidas = dia > 0 ? MenuLib.resolverDia(MENU, dia, off) : null;
+    if (dia < 1) continue;               // el plan todavia no arranca: no se avisa nada
+    const comidas = MenuLib.resolverDia(MENU, dia, off);
     const ctx = { fecha, dia, dow, comidas, estado, plan };
 
     const pendientes = [];
