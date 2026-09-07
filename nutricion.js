@@ -339,7 +339,9 @@ function filaOpcion(m, comida, seleccionada, ayer, alElegir, conDisco2) {
   const conDisco = m.tipo === 'plato' && conDisco2 !== false;
   const repite = m.protK && ayer.includes(m.protK) && m.protK !== 'huevos';
   b.innerHTML =
-    (conDisco ? `<span class="opt-plate">${platoSVG(comida === 'Cena' ? 'cena' : 'almuerzo')}</span>` : '') +
+    (() => { const img = imagenDe(m, comida);
+      return img ? `<img class="opt-plate" src="${img}" alt="" loading="lazy">`
+                 : (conDisco ? `<span class="opt-plate">${platoSVG(comida === 'Cena' ? 'cena' : 'almuerzo')}</span>` : ''); })() +
     `<span class="opt-info">
        <span class="opt-name">${esc(m.corto || m.titulo)}</span>
        ${m.tipo === 'plato' ? `<span class="opt-sub">${esc(m.titulo)}</span>` : (m.detalle ? `<span class="opt-sub">${esc(m.detalle)}</span>` : '')}
@@ -352,7 +354,7 @@ function filaOpcion(m, comida, seleccionada, ayer, alElegir, conDisco2) {
 
 function abrirHojaOpciones(dia, comida) {
   const ayer = proteinaDeAyer(dia);
-  abrirHoja(`${comida} · ${etiquetaDia(dia)}`, cont => {
+  abrirHoja(`${comida} · ${etiquetaDiaCorto(dia)}`, cont => {
     const c = comidasDeDia(dia);
     const actual = platoDe(c, comida);
     opcionesDe(dia, comida).forEach(m => {
@@ -366,6 +368,10 @@ function abrirHojaOpciones(dia, comida) {
   });
 }
 
+const etiquetaDiaCorto = dia => {
+  const f = new Date(Date.parse(dsDiaG(dia) + 'T00:00:00Z'));
+  return f.toLocaleDateString('es-PE', { weekday: 'long', day: 'numeric', timeZone: 'UTC' });
+};
 const etiquetaDia = dia => {
   const f = new Date(Date.parse(dsDiaG(dia) + 'T00:00:00Z'));
   const t = f.toLocaleDateString('es-PE', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });

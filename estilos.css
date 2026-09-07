@@ -328,9 +328,23 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .acc-h[aria-expanded="true"] .acc-chev{transform:rotate(180deg)}
 .acc-body[hidden]{display:none}
 .buy-sec{margin-bottom:var(--e3)}
-.buy-h{font-size:var(--t4);font-weight:700;color:var(--g3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+/* la cabecera trae dos hijos (titulo y pendientes): sin flex se leian pegados
+   ("VERDULERIA17 POR COMPRAR") y el <em> salia en cursiva */
+.buy-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  font-size:var(--t4);font-weight:700;color:var(--g3);text-transform:uppercase;letter-spacing:.6px;
+  margin-bottom:6px;padding-bottom:7px;border-bottom:1px solid var(--g2)}
+.buy-h em{font-style:normal;font-weight:600;text-transform:none;letter-spacing:0;flex-shrink:0}
+/* la casilla de la lista de compras: sin ella la fila no parece marcable */
+.buy-box{width:24px;height:24px;border-radius:var(--r4);border:2px solid var(--g2);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;background:#fff;
+  transition:background var(--rapido) var(--suave),border-color var(--rapido) var(--suave)}
+.buy-box svg{width:13px;height:13px;stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;
+  opacity:0;transform:scale(.4);transition:opacity 120ms var(--suave),transform var(--medio) var(--resorte)}
+.buy-item.on .buy-box{background:var(--verde);border-color:var(--verde)}
+.buy-item.on .buy-box svg{opacity:1;transform:none}
 .buy-item{display:flex;align-items:center;gap:12px;padding:11px 0;width:100%;text-align:left;min-height:46px}
 .buy-item + .buy-item{border-top:1px solid var(--g2)}
+.buy-item:active{transform:scale(.99)}
 .buy-name{flex:1;font-size:var(--t3);font-weight:600}
 .buy-qty{font-size:var(--t4);color:var(--g3);font-variant-numeric:tabular-nums}
 .buy-item.on .buy-name{color:var(--g3);text-decoration:line-through}
@@ -503,7 +517,8 @@ footer .ver{margin-left:8px;opacity:.7}
    invisible comiendose cada toque de la pantalla: esta guarda lo impide */
 .sheet[hidden],.sheet-bg[hidden]{display:none}
 .sheet-h{display:flex;align-items:center;gap:10px;padding:20px 20px 14px;flex-shrink:0}
-.sheet-h h2{flex:1;font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin:0}
+.sheet-h h2{flex:1;font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin:0;
+  text-transform:capitalize}
 .sheet-atras,.sheet-x{position:relative;width:38px;height:38px;border-radius:50%;background:var(--g1);flex-shrink:0;
   display:flex;align-items:center;justify-content:center;transition:transform var(--rapido) var(--suave)}
 .sheet-atras svg,.sheet-x svg{width:17px;height:17px;stroke:var(--tinta);stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
@@ -523,7 +538,7 @@ footer .ver{margin-left:8px;opacity:.7}
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .opt-sub{display:block;font-size:var(--t4);color:var(--g3);margin-top:2px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.opt-hint{display:block;font-size:var(--t5);color:var(--verde);font-weight:700;margin-top:3px}
+.opt-hint{display:block;font-size:var(--t5);color:#8A6220;font-weight:700;margin-top:3px}
 .opt-tick{width:26px;height:26px;border-radius:50%;border:2px solid var(--g2);flex-shrink:0;
   display:flex;align-items:center;justify-content:center}
 .opt-tick svg{width:13px;height:13px;stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:0}
