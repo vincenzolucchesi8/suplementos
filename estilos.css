@@ -753,8 +753,9 @@ footer .ver{margin-left:8px;opacity:.7}
    invisible comiendose cada toque de la pantalla: esta guarda lo impide */
 .sheet[hidden],.sheet-bg[hidden]{display:none}
 .sheet-h{display:flex;align-items:center;gap:10px;padding:20px 20px 14px;flex-shrink:0}
-.sheet-h h2{flex:1;font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin:0;
-  text-transform:capitalize}
+/* sin capitalize: estaba para los dias de la semana y ahora hay titulos con
+   frase entera, que salian como "Repaso Del Día" */
+.sheet-h h2{flex:1;font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin:0}
 .sheet-atras,.sheet-x{position:relative;width:38px;height:38px;border-radius:50%;background:var(--g1);flex-shrink:0;
   display:flex;align-items:center;justify-content:center;transition:transform var(--rapido) var(--suave)}
 .sheet-atras svg,.sheet-x svg{width:17px;height:17px;stroke:var(--tinta);stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
@@ -934,3 +935,44 @@ button:active{transform:scale(.97);transition:transform 90ms var(--hundir)}
   color:var(--g3);font-size:var(--t5);font-weight:600;
   transition:background var(--rapido) var(--curva),color var(--rapido) var(--curva)}
 .propio-fam button.on{background:var(--tinta);color:#fff}
+
+/* ------------------------------------------------------- el repaso del día
+   Una pregunta por pantalla. La barra de arriba dice cuanto falta, que es lo
+   unico que hace que uno termine una lista: ver el final. */
+.cie-card{display:flex;flex-direction:column;gap:14px;background:var(--verde-suave);
+  border-radius:var(--r1);padding:18px 18px 16px}
+.cie-card[hidden]{display:none}
+.cie-card .rot{font-size:var(--t5);font-weight:700;color:var(--verde);text-transform:uppercase;letter-spacing:.5px}
+.cie-card b{display:block;font-size:var(--t1);font-weight:700;letter-spacing:-.5px;margin-top:3px}
+.cie-card p{font-size:var(--t4);color:var(--g3);margin-top:4px;line-height:1.5}
+.cie-card .btns{margin:0}
+
+.cie-cab{margin-bottom:var(--e3)}
+.cie-barra{height:5px;border-radius:var(--r5);background:var(--g2);overflow:hidden}
+.cie-barra i{display:block;width:100%;height:100%;border-radius:var(--r5);background:var(--verde);
+  transform-origin:left;transition:transform var(--medio) var(--curva)}
+.cie-paso{font-size:var(--t5);font-weight:600;color:var(--g3);margin-top:8px}
+
+.cie-caja{display:flex;flex-direction:column}
+.cie-img{width:92px;height:92px;object-fit:contain;margin:0 auto 6px}
+.cie-pregunta b{display:block;font-size:var(--t0);font-weight:700;letter-spacing:-1px;line-height:1.1;
+  text-wrap:balance}
+.cie-pregunta span{display:block;font-size:var(--t3);color:var(--g3);margin-top:6px}
+.cie-caja > *:not(.cie-pregunta):not(.cie-img){margin-top:var(--e3)}
+/* los dos botones de una respuesta van uno sobre otro: son una eleccion, no
+   un par de acciones, y en columna se leen sin comparar anchos */
+.cie-btns{flex-direction:column;gap:8px;margin-bottom:0}
+.cie-lista .item{width:100%;background:var(--g1);margin-top:6px}
+.cie-lista .item:first-child{margin-top:0}
+.cie-animo + .cie-animo{margin-top:var(--e2)}
+.cie-animo-n{font-size:var(--t3);font-weight:600;margin-bottom:8px}
+.cie-peso{width:100%;background:var(--g1);border-radius:var(--r3);padding:14px 16px;
+  min-height:52px;font-size:var(--t1);font-weight:700;font-variant-numeric:tabular-nums}
+.cie-salto{display:block;margin:var(--e3) auto 0}
+
+.cie-fin{text-align:center;padding:var(--e3) 0 var(--e2)}
+.cie-pct{font-size:64px;font-weight:700;letter-spacing:-3px;line-height:1;color:var(--verde);
+  font-variant-numeric:tabular-nums;animation:brota var(--paso) var(--resorte) both}
+.cie-pct em{font-style:normal;font-size:24px;letter-spacing:-1px;margin-left:2px}
+.cie-fin b{display:block;font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin:14px 0 6px}
+.cie-fin p{font-size:var(--t4);color:var(--g3);line-height:1.55;max-width:32ch;margin:0 auto}

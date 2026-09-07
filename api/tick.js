@@ -117,9 +117,39 @@ function armar(avisoId, ctx) {
         cuerpo: 'Mañana arranca una semana nueva del menú. Revisa qué te falta.',
         marcar: null };
 
+    /* El repaso del dia. Si ya lo hiciste, no se manda: el aviso que llega
+       cuando ya cumpliste es el que ensena a ignorarlos todos. Y no trae
+       boton de "ya lo hice" a proposito -- lo que hay que hacer es abrir y
+       contestar, no marcarlo desde la almohada. */
+    case 'cierre': {
+      if (marcada(estado, `${fecha}:CD`)) return null;
+      const faltan = pendientesDelDia(ctx);
+      if (!faltan) return null;
+      return { titulo: 'Repasa el día',
+        cuerpo: faltan === 1
+          ? 'Queda una cosa por contestar y el día queda cerrado.'
+          : `Quedan ${faltan} cosas por contestar. Son dos minutos.`,
+        marcar: null, snooze: false };
+    }
+
     default:
       return null;
   }
+}
+
+/* Cuantas de las cosas obligatorias del dia siguen sin contestar. No es el
+   numero de preguntas del tablero (eso lo calcula el cliente, que conoce el
+   plan entero): es una cota honesta para decidir si el aviso vale la pena. */
+function pendientesDelDia(ctx) {
+  const { estado, fecha } = ctx;
+  let n = 0;
+  [['Desayuno', 'm1'], ['Almuerzo', 'm2'], ['Cena', 'm3']].forEach(([c, id]) => {
+    if (!marcada(estado, `${fecha}:X:${c}`) && !marcada(estado, `${fecha}:${c}:${id}`)) n++;
+  });
+  let agua = 0;
+  for (let i = 1; i <= 5; i++) if (marcada(estado, `${fecha}:R:agua${i}`)) agua++;
+  if (agua < 4) n++;
+  return n;
 }
 
 function tocaHoy(avisoId, ctx) {

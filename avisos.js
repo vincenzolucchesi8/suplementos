@@ -19,6 +19,7 @@ const AVISOS = [
   { id: 'cena', nombre: 'Cena, suplementos y postre', sub: 'El dulce del día va acá', hora: '20:00', cuando: 'diario' },
   { id: 'pesaje', nombre: 'Pesaje', sub: 'Miércoles, en ayunas y después del baño', hora: '07:00', cuando: 'miercoles' },
   { id: 'compras', nombre: 'Lista de compras', sub: 'El último día de cada semana del programa', hora: '18:00', cuando: 'finSemana' },
+  { id: 'cierre', nombre: 'Repaso del día', sub: 'Tres o cuatro preguntas y el día queda cerrado', hora: '21:30', cuando: 'diario' },
 ];
 
 const CFG_KEY = 'avisos_cfg';

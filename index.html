@@ -76,6 +76,10 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
     </button>
   </div>
 
+  <!-- El repaso del dia, justo debajo del porcentaje que cierra: en vez de que
+       busques que te falta, la app te lo pregunta. -->
+  <div class="card cie-card" id="cierreCard" hidden></div>
+
   <div class="card focus">
     <div class="card-h">
       <h2>Lo de hoy</h2>
@@ -339,6 +343,7 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
 <script src="clave.js" defer></script>
 <script src="movimiento.js" defer></script>
 <script src="navegacion.js" defer></script>
+<script src="cierre.js" defer></script>
 <script src="plan-editor.js" defer></script>
 <script src="instalar.js" defer></script>
 </body>

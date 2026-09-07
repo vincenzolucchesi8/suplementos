@@ -309,7 +309,12 @@ function obligatorio(dia){
   const vale = it => !saltado(ds, it.meal);
   const supl = suplDeDia(dia).items.filter(vale).map(it=>({ok:marcado(`${ds}:${it.meal}:${it.id}`)}));
   const com  = COMIDAS.filter(vale).map(it=>({ok:marcado(`${ds}:${it.meal}:${it.id}`)}));
-  const agua = [{ok: racionCount(ds,'agua',8) >= 6}];
+  /* El agua se cuenta contra la META DEL PLAN, no contra un 6 de 8 heredado
+     de cuando esto eran vasos. Con el tomatodo (4 marcas de medio litro) el
+     dia NUNCA podia llegar al 100 %: pedia seis marcas de un control que solo
+     tiene cinco. */
+  const ag = RACIONES.find(r => r.id === 'agua');
+  const agua = ag ? [{ok: racionCount(ds,'agua',ag.meta+(ag.extra||0)) >= ag.meta}] : [];
   const todo = [...supl, ...com, ...agua];
   return {total: todo.length, hechos: todo.filter(x=>x.ok).length};
 }
@@ -340,6 +345,7 @@ function render(){
      solo se le pide que refresque su dato. El respaldo es para el primer
      render, que corre antes de que ese archivo exista. */
   if(typeof pintarCabecera === 'function') pintarCabecera();
+  if(typeof renderCierre === 'function') renderCierre();
   else {
     $('diaSemana').textContent = hoyD.toLocaleDateString('es-PE',{weekday:'long'});
     $('fecha').textContent = hoyD.toLocaleDateString('es-PE',{day:'numeric',month:'long'});
@@ -1090,7 +1096,7 @@ function reiniciar(){
   else location.reload();
 }
 document.getElementById('btnReset').onclick = reiniciar;
-document.getElementById('ver').textContent = 'Versión 20 · ' + HOY;
+document.getElementById('ver').textContent = 'Versión 21 · ' + HOY;
 render();
 fullSync();
 

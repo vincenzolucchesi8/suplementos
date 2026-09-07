@@ -48,11 +48,16 @@ function resumenDelPeriodo(hasta) {
     ? Object.entries(saltadas).map(([c, n]) => `${n} ${c.toLowerCase()}${n === 1 ? '' : 's'}`).join(', ')
     : '';
 
-  // Objetivo 2: agua e infusion
-  const seisVasos = cuenta(d => racionCount(dsDiaG(d), 'agua', 8) >= 6);
+  /* Objetivo 2: agua e infusion. Contra la meta del PLAN, no contra un 6 de 8
+     que venia de cuando esto se media en vasos: Vinz lleva un tomatodo de 2 L
+     y se marca en medios litros. */
+  const AG = RACIONES.find(r => r.id === 'agua') || { id: 'agua', meta: 4, extra: 1, porMarca: 0.5, unidad: 'L' };
+  const capAg = AG.meta + (AG.extra || 0);
+  const seisVasos = cuenta(d => racionCount(dsDiaG(d), 'agua', capAg) >= AG.meta);
   const conInfusion = cuenta(d => racionCount(dsDiaG(d), 'inf', 1) >= 1);
-  const totalVasos = dias.reduce((s, d) => s + racionCount(dsDiaG(d), 'agua', 8), 0);
-  const promVasos = dias.length ? Math.round(totalVasos / dias.length * 10) / 10 : 0;
+  const totalVasos = dias.reduce((s, d) => s + racionCount(dsDiaG(d), 'agua', capAg), 0);
+  const promVasos = dias.length
+    ? Math.round(totalVasos / dias.length * (AG.porMarca || 1) * 10) / 10 : 0;
 
   // Objetivo 3: un solo postre al dia (pasarse es incumplir)
   const postreOk = cuenta(d => diaCount(dsDiaG(d), 'P', 'postre', 4) <= 1);
@@ -94,8 +99,9 @@ function resumenDelPeriodo(hasta) {
         nota: totalSaltadas
           ? `desayuno, almuerzo y cena · ${notaSaltadas} marcados como no comidos`
           : 'desayuno, almuerzo y cena' },
-      { que: '6 vasos de agua o más', n: seisVasos, pct: pct(seisVasos),
-        nota: `${promVasos} vasos al día en promedio` },
+      { que: `${(AG.meta * (AG.porMarca || 1)).toLocaleString('es-PE')} ${AG.unidad || 'vasos'} de agua o más`,
+        n: seisVasos, pct: pct(seisVasos),
+        nota: `${promVasos.toLocaleString('es-PE')} ${AG.unidad || 'vasos'} al día en promedio` },
       { que: '1 infusión al día', n: conInfusion, pct: pct(conInfusion), nota: '' },
       { que: 'Un solo postre al día', n: postreOk, pct: pct(postreOk),
         nota: 'sin pasarse del permitido' },

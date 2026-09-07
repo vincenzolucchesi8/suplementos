@@ -14,11 +14,11 @@
    librerias con version en el nombre siguen por cache, que es donde el cache
    sirve de verdad. Y al activarse una version nueva se avisa a las pestanas
    abiertas para que se recarguen cuando el usuario no este tocando nada. */
-const CACHE = 'protocolo-v46';
+const CACHE = 'protocolo-v47';
 const ASSETS = [
   './', './index.html', './estilos.css', './plan-lib.js', './api-cliente.js', './plan.js', './menu/generador.js',
   './menu-lib.js', './app.js', './nutricion.js', './avisos.js', './plan-editor.js',
-  './compras-pdf.js', './menu-pdf.js', './informe-pdf.js', './navegacion.js', './movimiento.js', './instalar.js', './clave.js',
+  './compras-pdf.js', './menu-pdf.js', './informe-pdf.js', './navegacion.js', './movimiento.js', './cierre.js', './instalar.js', './clave.js',
   // jspdf NO va aca: son 420 KB para algo que se usa al tocar un boton. Se
   // baja la primera vez que se pide y se queda cacheado desde entonces.
   './menu/menu.json', './manifest.json', './icon-192.png', './icon-512.png', './icon-180.png',

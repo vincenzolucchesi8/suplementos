@@ -521,7 +521,8 @@ function bloquePropio(dia, comida) {
 
 const etiquetaDiaCorto = dia => {
   const f = new Date(Date.parse(dsDiaG(dia) + 'T00:00:00Z'));
-  return f.toLocaleDateString('es-PE', { weekday: 'long', day: 'numeric', timeZone: 'UTC' });
+  const t = f.toLocaleDateString('es-PE', { weekday: 'long', day: 'numeric', timeZone: 'UTC' });
+  return t.charAt(0).toUpperCase() + t.slice(1);
 };
 const etiquetaDia = dia => {
   const f = new Date(Date.parse(dsDiaG(dia) + 'T00:00:00Z'));
