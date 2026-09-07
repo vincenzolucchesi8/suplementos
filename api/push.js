@@ -1,5 +1,7 @@
-/* Alta y baja de la suscripcion push, y el "en 15 min" de las notificaciones. */
-const { guardarSub, borrarSub, leerTick, guardarTick, autorizado, leerCuerpo } = require('./_almacen');
+/* Alta y baja de la suscripcion push, el "en 15 min" de las notificaciones, y
+   el aviso de prueba. */
+const webpush = require('web-push');
+const { guardarSub, borrarSub, listarSubs, leerTick, guardarTick, autorizado, leerCuerpo } = require('./_almacen');
 
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
@@ -27,6 +29,37 @@ module.exports = async (req, res) => {
         ts: Date.now(),
       });
       return res.status(200).json({ ok: true });
+    }
+
+    /* Un aviso de prueba, ahora mismo. Existe porque no se puede confiar en un
+       sistema de avisos que no se puede disparar a demanda: los de verdad
+       dependen de la hora y del dia del programa, asi que sin esto la unica
+       forma de saber si funciona es esperar y ver si llega. Se salta la guarda
+       del dia porque su trabajo es justamente probar la cadena, no el plan. */
+    if (cuerpo.accion === 'prueba') {
+      if (!process.env.VAPID_PUBLIC || !process.env.VAPID_PRIVATE) {
+        return res.status(500).json({ error: 'faltan las llaves VAPID' });
+      }
+      webpush.setVapidDetails(
+        process.env.VAPID_SUBJECT || 'mailto:vincenzolucchesi8@gmail.com',
+        process.env.VAPID_PUBLIC, process.env.VAPID_PRIVATE
+      );
+      const subs = await listarSubs();
+      let mandados = 0, muertas = 0;
+      for (const s of subs) {
+        try {
+          await webpush.sendNotification(s.sub, JSON.stringify({
+            titulo: 'Prueba del tablero',
+            cuerpo: 'Si ves esto, los avisos funcionan. El primero de verdad llega manana.',
+            tag: 'prueba', avisoId: 'prueba', snooze: false, url: '/',
+            auth: process.env.APP_TOKEN || '',
+          }));
+          mandados++;
+        } catch (e) {
+          if (e.statusCode === 404 || e.statusCode === 410) { await borrarSub(s.sub.endpoint); muertas++; }
+        }
+      }
+      return res.status(200).json({ ok: true, suscripciones: subs.length, mandados, muertas });
     }
 
     if (cuerpo.accion === 'baja' && cuerpo.endpoint) {

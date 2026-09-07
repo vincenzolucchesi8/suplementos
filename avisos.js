@@ -126,12 +126,40 @@ function renderAvisos() {
   };
   const [clase, texto, boton] = estados[estadoPush] || estados.apagado;
 
+  /* Si el plan todavia no arranco, los avisos de verdad NO se mandan: la guarda
+     esta en el servidor. Decirlo aca evita la conclusion logica y equivocada de
+     "active los avisos, puse una hora, no llego nada, esto no funciona". */
+  const noArranco = typeof antesDeEmpezar !== 'undefined' && antesDeEmpezar;
+  const cuando = noArranco
+    ? new Date(Date.parse(INICIO + 'T00:00:00Z')).toLocaleDateString('es-PE',
+        { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).replace(',', '')
+    : '';
+
   cont.innerHTML =
     `<div class="avi-state ${clase}"><span class="avi-dot"></span><p>${texto}</p></div>` +
-    (boton ? `<div class="btns"><button class="btn ${estadoPush === 'activo' ? 'btn-s' : 'btn-p'}" id="aviBtn" style="flex:1">${boton}</button></div>` : '');
+    (estadoPush === 'activo' && noArranco
+      ? `<div class="avi-state"><span class="avi-dot"></span><p>El plan empieza el ${cuando}: ` +
+        `hasta entonces no se manda ninguno. Usa el de prueba para comprobar que llegan.</p></div>` : '') +
+    (boton ? `<div class="btns">` +
+      `<button class="btn ${estadoPush === 'activo' ? 'btn-s' : 'btn-p'}" id="aviBtn" style="flex:1">${boton}</button>` +
+      (estadoPush === 'activo' ? `<button class="btn btn-p" id="aviProbar" type="button">Probar ahora</button>` : '') +
+      `</div>` : '');
 
   const btn = document.getElementById('aviBtn');
   if (btn) btn.onclick = estadoPush === 'activo' ? apagarAvisos : activarAvisos;
+
+  const pru = document.getElementById('aviProbar');
+  if (pru) pru.onclick = async () => {
+    pru.disabled = true; pru.textContent = 'Mandando…';
+    try {
+      const r = await fetch(`${API}/push`, {
+        method: 'POST', headers: cabeceras(), body: JSON.stringify({ accion: 'prueba' }),
+      });
+      const d = await r.json();
+      pru.textContent = r.ok && d.mandados ? 'Mandado' : (d.suscripciones === 0 ? 'Sin registrar' : 'Falló');
+    } catch (e) { pru.textContent = 'Falló'; }
+    setTimeout(() => { pru.disabled = false; pru.textContent = 'Probar ahora'; }, 3500);
+  };
 
   AVISOS.forEach(a => {
     const c = cfg[a.id];
