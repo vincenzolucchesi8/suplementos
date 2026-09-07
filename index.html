@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -285,9 +285,6 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
       <svg viewBox="0 0 24 24"><path d="M8 4h9a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M9.5 9h6M9.5 13h6M9.5 17h3"/></svg><span>Plan</span>
     </button>
   </div>
-  <button class="fab" id="fab" type="button" onclick="completarDia()" title="Marcar el día completo" aria-label="Marcar el día completo">
-    <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
-  </button>
 </nav>
 
 <div class="sheet-bg" id="sheetBg" hidden></div>
@@ -304,6 +301,16 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
   <div class="sheet-body" id="sheetBody"></div>
 </div>
 
+<script>
+/* Safari de iPhone IGNORA user-scalable desde iOS 10, asi que el meta de arriba
+   solo cubre Android. Estos tres eventos son los unicos que apagan el pellizco
+   en iOS. El zoom por doble tap lo apaga el touch-action del CSS, no JS: un
+   preventDefault sobre touchend tambien se come el click de dos toques rapidos
+   en cosas DISTINTAS, o sea marcar dos suplementos seguidos.
+   Esto es una app instalada, no una pagina: el zoom solo la descuadra. */
+['gesturestart','gesturechange','gestureend'].forEach(ev =>
+  document.addEventListener(ev, e => e.preventDefault(), { passive: false }));
+</script>
 <script src="plan-lib.js" defer></script>
 <script src="api-cliente.js" defer></script>
 <script src="plan.js" defer></script>

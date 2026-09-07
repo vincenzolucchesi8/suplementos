@@ -892,12 +892,9 @@ function toggleComer(){
   }
 }
 
-function completarDia(){
-  suplDeDia(selDia).items.forEach(it=> setMark(`${selDate}:${it.meal}:${it.id}`,'1'));
-  COMIDAS.forEach(it=> setMark(`${selDate}:${it.meal}:${it.id}`,'1'));
-  for(let i=1;i<=6;i++) setMark(`${selDate}:R:agua${i}`,'1');
-  render();
-}
+/* Habia un boton flotante con un check que marcaba el dia entero de un toque.
+   Se saco: no decia que hacia, no se podia deshacer, y desde que cada comida
+   tiene su "Marcar las N" con el numero escrito, era ademas redundante. */
 function reiniciar(){
   if(confirm('Esto borra tu progreso en TODOS tus dispositivos. ¿Seguro?')){
     const m = metaLoad(); const now = Date.now();

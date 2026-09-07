@@ -43,9 +43,11 @@
 }
 
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;
+  /* deja hacer scroll pero apaga el pellizco y el zoom por doble tap */
+  touch-action:pan-x pan-y;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{
-  background:var(--papel);color:var(--tinta);
+  background:var(--papel);color:var(--tinta);touch-action:pan-x pan-y;
   font-family:'Schibsted Grotesk',system-ui,-apple-system,sans-serif;
   -webkit-font-smoothing:antialiased;
   font-size:var(--t3);line-height:1.45;
@@ -494,7 +496,7 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 
 
 /* ------------------------------------------- barra flotante con el metaball */
-.tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;gap:8px;
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;
   padding:0 14px calc(14px + env(safe-area-inset-bottom));pointer-events:none}
 .tabs-pill{flex:1;position:relative;display:flex;pointer-events:auto;padding:6px;border-radius:var(--r5);
   background:rgba(255,255,255,.86);backdrop-filter:saturate(1.6) blur(16px);
@@ -527,14 +529,6 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
   transition:transform var(--medio) var(--resorte) 215ms}
 .tab.on{color:#fff;transition:color 130ms ease 215ms}
 .tab.on svg{transform:translateY(-1px) scale(1.06)}
-.fab{width:52px;height:52px;border-radius:50%;background:var(--verde);flex-shrink:0;pointer-events:auto;
-  display:flex;align-items:center;justify-content:center;align-self:center;
-  box-shadow:0 3px 0 var(--verde-hondo),0 14px 26px -12px rgba(14,122,95,.8);
-  transition:transform var(--rapido) var(--suave),box-shadow var(--rapido) var(--suave)}
-.fab svg{width:21px;height:21px;stroke:#fff;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
-.fab:active{transform:translateY(3px);box-shadow:0 0 0 var(--verde-hondo),0 6px 14px -8px rgba(14,122,95,.8)}
-.fab[hidden]{display:none}
-
 footer{text-align:center;font-size:var(--t5);color:var(--g3);padding:var(--e4) 0 var(--e2);font-weight:500}
 footer .ver{margin-left:8px;opacity:.7}
 
