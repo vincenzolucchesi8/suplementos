@@ -52,39 +52,37 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
 
   <div class="daynav" id="dayNav"></div>
 
-  <div class="fichas">
-    <button class="ficha viva" type="button" id="fichaHoy">
-      <span class="lin"><span class="rot">Hoy</span>
-        <svg class="anillo" viewBox="0 0 68 68" aria-hidden="true">
-          <circle class="ring-bg" cx="34" cy="34" r="28" stroke-width="7"/>
-          <circle class="ring-fg" id="ring" cx="34" cy="34" r="28" stroke-width="7"
-                  stroke-dasharray="175.93" stroke-dashoffset="175.93" transform="rotate(-90 34 34)"/>
-        </svg></span>
-      <span>
-        <span class="val"><span id="ringPct">0</span><em>%</em></span>
-        <span class="pie" id="hoyPie"></span>
-      </span>
-    </button>
-    <button class="ficha" type="button" id="fichaPeso">
-      <span class="lin"><span class="rot">Peso</span>
-        <span class="mas"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></span>
-      <svg class="curva" id="pesoMini" viewBox="0 0 120 40" preserveAspectRatio="none" aria-hidden="true"></svg>
-      <span>
-        <span class="val" id="pesoVal">—</span>
-        <span class="pie" id="pesoPie"></span>
-      </span>
-    </button>
-  </div>
+  <!-- UNA fila para el estado del dia y su accion.
 
-  <!-- El repaso del dia, justo debajo del porcentaje que cierra: en vez de que
-       busques que te falta, la app te lo pregunta. -->
-  <div class="card cie-card" id="cierreCard" hidden></div>
+       Antes eran tres cosas encima de la primera comida: dos fichas de 132 px
+       (el anillo y el peso) y una tarjeta verde de 173 px para el repaso. Entre
+       las tres decian el mismo dia con cuatro numeros distintos (0 %, 0 de 10
+       hechos, 0 de 10, 7 preguntas) y empujaban la comida que toca fuera del
+       primer pliegue: 655 px de cosas que solo se miran antes de lo primero
+       que se toca.
+
+       Ahora es una fila: el anillo dice como vas y el boton dice que hacer.
+       El peso se fue a Progreso, que es donde vive con su grafico y su campo,
+       y ademas te lo pregunta el repaso los miercoles. -->
+  <button class="resumen" type="button" id="fichaHoy">
+    <svg class="anillo" viewBox="0 0 68 68" aria-hidden="true">
+      <circle class="ring-bg" cx="34" cy="34" r="28" stroke-width="7"/>
+      <circle class="ring-fg" id="ring" cx="34" cy="34" r="28" stroke-width="7"
+              stroke-dasharray="175.93" stroke-dashoffset="175.93" transform="rotate(-90 34 34)"/>
+    </svg>
+    <span class="res-txt">
+      <b class="res-pct"><span id="ringPct">0</span><em>%</em></b>
+      <span class="res-pie" id="hoyPie"></span>
+    </span>
+    <span class="res-ir" id="resIr">Repasar
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+    </span>
+  </button>
 
   <div class="card focus">
-    <div class="card-h">
-      <h2>Lo de hoy</h2>
-      <span class="count" id="contador">0 de 0</span>
-    </div>
+    <!-- sin contador: lo dice la fila de arriba, y dos numeros del mismo dia a
+         cuarenta pixeles se leen como dos datos distintos -->
+    <div class="card-h"><h2>Lo de hoy</h2></div>
     <div id="hoyItems"></div>
     <div class="done-banner" id="doneMsg">
       <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
@@ -121,12 +119,6 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
     <div class="acc-body" id="sensBody" hidden></div>
   </div>
 
-  <div class="note">
-    <div class="note-ic">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
-    </div>
-    <p id="notaFase"></p>
-  </div>
   </section>
 
   <!-- ============================================================ COMIDAS -->
@@ -179,23 +171,25 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
   <!-- =========================================================== PROGRESO -->
   <section class="panel" id="panel-progreso" role="tabpanel" aria-labelledby="tab-progreso">
 
-  <div class="fichas">
-    <div class="ficha viva">
-      <span class="rot">Peso</span>
-      <svg class="curva" id="pesoMini2" viewBox="0 0 120 40" preserveAspectRatio="none" aria-hidden="true"></svg>
-      <span><span class="val" id="pesoVal2">—</span><span class="pie" id="pesoPie2"></span></span>
+  <!-- Los tres numeros del progreso en UNA fila. Antes eran dos fichas de
+       132 px y un bloque de racha de 104: 242 px y tres cajas para tres
+       cifras que se leen de un vistazo. El peso tiene su bloque completo mas
+       abajo, con su grafico y su campo, asi que aqui basta la cifra. -->
+  <div class="trio">
+    <div class="tr">
+      <span class="tr-val" id="pesoVal2">—</span>
+      <span class="tr-rot">Peso</span>
     </div>
-    <div class="ficha">
-      <span class="rot">Adherencia</span>
-      <svg class="curva" id="adhMini" viewBox="0 0 120 40" preserveAspectRatio="none" aria-hidden="true"></svg>
-      <span><span class="val"><span id="hsAdh">0</span><em>%</em></span><span class="pie" id="adhPie"></span></span>
+    <div class="tr">
+      <span class="tr-val"><span id="hsAdh">0</span><em>%</em></span>
+      <span class="tr-rot">Adherencia</span>
+    </div>
+    <div class="tr">
+      <span class="tr-val" id="hsRacha">0</span>
+      <span class="tr-rot">Racha</span>
     </div>
   </div>
-
-  <div class="racha">
-    <div class="lin"><span class="val" id="hsRacha">0 días</span><span class="rot">racha</span></div>
-    <div class="dias" id="rachaDias"></div>
-  </div>
+  <div class="dias" id="rachaDias"></div>
 
   <div class="card">
     <div class="card-h">
@@ -254,12 +248,17 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
     <div class="tl" id="tlFases"></div>
   </div>
 
+  <!-- Plegado: son diez filas con su hora, 947 px, o sea casi media pantalla
+       de Plan para algo que se configura una vez. El contador de la cabecera
+       dice lo unico que hay que saber sin abrirlo. -->
   <div class="card">
-    <div class="card-h">
+    <button class="acc-h" id="avisosBtn" aria-expanded="false" aria-controls="avisosBody"
+            onclick="plegar('avisos')" type="button">
       <h2>Avisos</h2>
       <span class="count" id="aviCount"></span>
-    </div>
-    <div id="aviBody"></div>
+      <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="acc-body" id="avisosBody" hidden></div>
   </div>
 
   <div class="card">

@@ -137,7 +137,7 @@ img{max-width:100%;display:block}
 .engrane:active{transform:scale(.92)}
 
 /* la tira de siete dias, con los puntos de proteina de cada dia */
-.daynav{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:var(--e3)}
+.daynav{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:var(--e2)}
 .dnav{display:flex;flex-direction:column;align-items:center;gap:5px;padding:7px 0 8px;border-radius:var(--r2);
   transition:background var(--rapido) var(--suave)}
 .dnav em{font-style:normal;font-size:var(--t5);font-weight:600;color:var(--g3);text-transform:uppercase;letter-spacing:.4px}
@@ -210,6 +210,27 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .ins-x svg{width:13px;height:13px;stroke:#fff;stroke-width:2.4;fill:none;stroke-linecap:round}
 
 /* ------------------------------------------------------------- fichas dato */
+/* La fila de resumen del dia: el anillo dice como vas, el boton dice que
+   hacer. Sustituye a dos fichas de 132 px y a una tarjeta de 173: el preambulo
+   de Hoy baja de 655 px a menos de 300, o sea que la comida que toca entra en
+   el primer pliegue en vez de quedarse abajo. */
+.resumen{display:flex;align-items:center;gap:14px;width:100%;text-align:left;
+  background:var(--verde-suave);border-radius:var(--r1);padding:13px 15px;min-height:74px;
+  margin-bottom:var(--e3);
+  transition:transform var(--medio) var(--curva)}
+.resumen:active{transform:scale(.985);transition:transform 90ms var(--hundir)}
+.resumen .anillo{width:46px;height:46px;flex-shrink:0}
+.res-txt{flex:1;min-width:0}
+.res-pct{display:block;font-size:var(--t1);font-weight:700;letter-spacing:-.7px;line-height:1}
+.res-pct em{font-style:normal;font-size:var(--t3);font-weight:600;color:var(--g3);margin-left:1px;letter-spacing:0}
+.res-pie{display:block;font-size:var(--t4);color:var(--g3);margin-top:3px}
+.res-ir{display:flex;align-items:center;gap:3px;flex-shrink:0;
+  font-size:var(--t4);font-weight:700;color:var(--verde);
+  background:#fff;border-radius:var(--r5);padding:9px 11px 9px 14px;min-height:40px}
+.res-ir svg{width:15px;height:15px;stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.res-ir.hecho{color:var(--g3);background:rgba(255,255,255,.6)}
+.res-ir[hidden]{display:none}
+
 .fichas{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:var(--e4)}
 .ficha{background:var(--g1);border-radius:var(--r1);padding:15px 16px 16px;min-height:132px;
   display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;text-align:left;width:100%;
@@ -251,7 +272,8 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .m-carne{background:color-mix(in srgb,var(--c-carne) 14%,#fff)}
 .m-omelette,.m-revueltos,.m-bowl,.m-batido,.m-wrap{background:color-mix(in srgb,var(--c-huevos) 16%,#fff)}
 
-.tramo-h{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;padding:0;min-height:48px}
+.tramo-h{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;padding:0;min-height:48px;
+  scroll-margin-top:110px}
 .tramo-txt{flex:1;min-width:0}
 .tramo-nom{display:block;font-size:var(--t4);color:var(--g3);font-variant-numeric:tabular-nums}
 .tramo-res{display:block;font-size:var(--t2);font-weight:700;letter-spacing:-.3px;line-height:1.25;margin-top:1px}
@@ -492,8 +514,11 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .pdf-box .pdf-nota{margin:0 0 14px}
 
 /* lista de compras */
+/* scroll-margin-top: la cabecera es pegajosa, asi que cualquier scroll
+   programatico hacia una de estas cabeceras la dejaria DEBAJO de ella y no se
+   podria tocar. Con el margen, el scroll para antes. */
 .acc-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;width:100%;text-align:left;
-  margin-bottom:var(--e2);min-height:48px}
+  margin-bottom:var(--e2);min-height:48px;scroll-margin-top:110px}
 /* plegado, la cabecera es la card entera: sin cuerpo debajo no necesita aire */
 .acc-h[aria-expanded="false"]{margin-bottom:0}
 .acc-h h2{flex:1}
@@ -985,3 +1010,22 @@ button:active{transform:scale(.97);transition:transform 90ms var(--hundir)}
 .cie-pct em{font-style:normal;font-size:24px;letter-spacing:-1px;margin-left:2px}
 .cie-fin b{display:block;font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin:14px 0 6px}
 .cie-fin p{font-size:var(--t4);color:var(--g3);line-height:1.55;max-width:32ch;margin:0 auto}
+
+/* --------------------------------------------------- el trío de Progreso
+   Tres cifras en una fila, no tres cajas. Antes eran dos fichas de 132 px y
+   un bloque de racha de 104: 242 px para tres numeros que se leen de un
+   vistazo, y el peso ademas se repetia entero mas abajo con su grafico. */
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+  background:var(--g1);border-radius:var(--r1);padding:16px 12px;margin-bottom:var(--e2)}
+.tr{text-align:center;min-width:0}
+.tr-val{display:block;font-size:var(--t1);font-weight:700;letter-spacing:-.7px;line-height:1;
+  font-variant-numeric:tabular-nums}
+.tr-val em{font-style:normal;font-size:var(--t3);font-weight:600;color:var(--g3);letter-spacing:0}
+.tr-rot{display:block;font-size:var(--t5);font-weight:600;color:var(--g3);margin-top:6px}
+/* la tira de catorce dias va suelta debajo del trio, sin caja propia */
+.trio + .dias{margin-bottom:var(--e4)}
+/* La nota de la fase en curso, en su propia FILA de la rejilla del riel.
+   Sin `grid-column`/`grid-row` explicitos cayo en la columna del punto -- 18 px
+   de ancho -- y salio en vertical, una palabra por linea, encima de la lista. */
+.tl-nota{grid-column:2;grid-row:3;font-size:var(--t4);color:var(--g3);line-height:1.55;
+  margin-top:10px;background:var(--verde-suave);border-radius:var(--r2);padding:12px 14px}

@@ -319,23 +319,23 @@ function pintarFinCierre(cont, total) {
    Aparece solo en el dia de hoy y solo cuando queda algo que preguntar. Dice
    CUANTO falta, no que "hay pendientes": la diferencia entre un aviso y una
    accion es saber si son dos cosas o diez. */
+/* El estado del repaso vive en la MISMA fila que el porcentaje del dia.
+
+   Antes era una tarjeta verde aparte de 173 px, encima de la primera comida,
+   con su propio contador de preguntas: un cuarto numero del mismo dia en la
+   misma pantalla. La fila ya dice como vas; el boton solo tiene que decir que
+   hacer. */
 function renderCierre() {
-  const card = document.getElementById('cierreCard');
-  if (!card) return;
-  /* Una vez repasado el dia, la tarjeta se va aunque queden cosas sin marcar:
-     "repasado" significa que te preguntamos, no que lo hiciste todo. */
-  const esHoy = selDate === HOY && !antesDeEmpezar && !cerrado(selDate);
-  const n = esHoy ? faltanEnElDia() : 0;
-  card.hidden = !esHoy || n === 0;
-  if (card.hidden) return;
-  const h = new Date().getHours();
-  const rot = h >= 19 ? 'Antes de dormir' : 'Cuando quieras';
-  card.innerHTML =
-    `<div class="cie-card-txt"><span class="rot">${rot}</span>` +
-    `<b>Repasa el día</b>` +
-    `<p>${n === 1 ? 'Queda una pregunta' : `Quedan ${n} preguntas`} y el día queda cerrado.</p></div>` +
-    '<div class="btns"><button class="btn btn-p" type="button" style="flex:1">Empezar</button></div>';
-  card.querySelector('button').onclick = abrirCierre;
+  const ir = document.getElementById('resIr');
+  if (!ir) return;
+  if (antesDeEmpezar && selDate !== dsDiaG(1)) { ir.hidden = true; return; }
+  ir.hidden = false;
+  const listo = cerrado(selDate);
+  ir.classList.toggle('hecho', listo);
+  ir.innerHTML = (listo ? 'Repasado' : 'Repasar') +
+    (listo
+      ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>'
+      : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>');
 }
 
 /* La ficha del porcentaje abre el repaso, siempre. Es la puerta permanente:

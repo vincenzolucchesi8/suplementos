@@ -109,12 +109,18 @@ async function empujarConfig() {
 
 /* ---------- Render ---------- */
 function renderAvisos() {
-  const cont = document.getElementById('aviBody');
+  const cont = document.getElementById('avisosBody');
   if (!cont) return;
   const cfg = cfgLeer();
   const activos = AVISOS.filter(a => cfg[a.id].on).length;
+  /* Con la seccion plegada, este rotulo es lo UNICO que se ve de los avisos:
+     si se queda en blanco cuando estan apagados, hay que abrirla para
+     enterarse de que no suenan. Dice siempre el estado. */
   const cnt = document.getElementById('aviCount');
-  if (cnt) cnt.textContent = estadoPush === 'activo' ? `${activos} de ${AVISOS.length}` : '';
+  if (cnt) cnt.textContent = estadoPush === 'activo'
+    ? `${activos} de ${AVISOS.length} activos`
+    : (estadoPush === 'cargando' ? ''
+      : (estadoPush === 'apagado' || estadoPush === 'pidiendo') ? 'apagados' : 'no disponibles');
 
   const estados = {
     cargando: ['', 'Revisando si los avisos están activados…', 'Activar avisos'],

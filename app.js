@@ -354,7 +354,7 @@ function render(){
   // La ficha de arriba es SIEMPRE hoy, mires el dia que mires
   const planHoy = suplDeDia(diaPrograma);
   const fase = $('faseTag'); if(fase) fase.textContent = planHoy.fase.toLowerCase();
-  $('notaFase').textContent = notas[planHoy.fase];
+  // la nota de la fase se muestra en Plan, pegada a la fase que explica
   const oHoy = obligatorio(diaPrograma);
   const pctHoy = oHoy.total ? Math.round(oHoy.hechos/oHoy.total*100) : 0;
   if(typeof contarHasta === 'function') contarHasta($('ringPct'), pctHoy);
@@ -614,7 +614,8 @@ function renderHoy(){
   cont.appendChild(rw);
 
   const o = obligatorio(selDia);
-  document.getElementById('contador').textContent = `${o.hechos} de ${o.total}`;
+  const cnt = document.getElementById('contador');
+  if(cnt) cnt.textContent = `${o.hechos} de ${o.total}`;
   document.getElementById('doneMsg').style.display = (o.hechos===o.total && o.total>0) ? 'flex':'none';
 }
 
@@ -959,7 +960,11 @@ function renderFases(){
     d.className = 'tl-item'+(active?' active':'')+(done?' done':'');
     d.innerHTML = `<div class="tl-dot"></div>`+
       `<div class="tl-head"><span class="tl-name">${f.nombre}</span><span class="tl-when">${f.when}</span></div>`+
-      `<ul class="tl-list">${f.lo.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+      `<ul class="tl-list">${f.lo.map(x=>`<li>${x}</li>`).join('')}</ul>`+
+      /* La nota de la fase vivia al final de Hoy, ochenta y ocho pixeles de
+         texto que se lee una vez y que ademas explicaba algo que esta aqui.
+         Va pegada a la fase que explica, y solo en la que corre. */
+      (active && notas[f.nombre] ? `<p class="tl-nota">${notas[f.nombre]}</p>` : '');
     tl.appendChild(d);
   });
 }
@@ -984,7 +989,8 @@ function renderHeat(){
   pon('hsFull', fullCount); pon('hsAdh2', adh+'%'); pon('hsRacha2', streak);
   $('totalDias').textContent = `${dueSoFar} de ${PROG_DIAS} días`;
   if(typeof contarHasta === 'function') contarHasta($('hsAdh'), adh); else $('hsAdh').textContent = adh;
-  $('hsRacha').textContent = streak === 1 ? '1 día' : streak + ' días';
+  // la fila del trio lleva la cifra sola: "Racha" ya lo dice el rotulo
+  pon('hsRacha', streak);
   if($('adhPie')) $('adhPie').textContent = dueSoFar ? `${fullCount} de ${dueSoFar} días completos` : 'Todavía sin días';
 
   /* La racha en barras: SOLO catorce dias, no ochenta y cuatro. Con seis dias
@@ -1096,7 +1102,7 @@ function reiniciar(){
   else location.reload();
 }
 document.getElementById('btnReset').onclick = reiniciar;
-document.getElementById('ver').textContent = 'Versión 22 · ' + HOY;
+document.getElementById('ver').textContent = 'Versión 23 · ' + HOY;
 render();
 fullSync();
 
