@@ -152,8 +152,13 @@ img{max-width:100%;display:block}
 /* ------------------------------------------------------ titulos de seccion */
 .card{margin-bottom:var(--e4)}
 .card:last-child{margin-bottom:0}
-.card-h,h2{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:var(--e2)}
-h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bottom:0}
+/* El titulo NUNCA se parte: si el dato de al lado no cabe, baja el dato. Un
+   titulo en dos lineas se lee como dos cosas, y ademas descoloca toda la
+   card. Pasaba en un iPhone SE con "Esta semana · Semana 1 · 08/09 al 14/09". */
+.card-h,h2{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  flex-wrap:wrap;margin-bottom:var(--e2)}
+h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bottom:0;
+  white-space:nowrap}
 .count,.card-h .count{font-size:var(--t3);font-weight:500;color:var(--g3);letter-spacing:-.1px;flex-shrink:0}
 .panel[hidden]{display:none}
 /* la seccion que se va se retira; sin esto el cambio es un corte seco */
