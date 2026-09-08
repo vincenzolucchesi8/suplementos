@@ -123,15 +123,33 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
 
   <!-- ============================================================ COMIDAS -->
   <section class="panel" id="panel-comidas" role="tabpanel" aria-labelledby="tab-comidas">
+  <!-- La semana PRIMERO, y el mes plegado debajo.
+
+       Estaban al reves y en la misma card: arriba 460 px de mapa en clave --
+       veintiocho celdas pastel con un numero y una barrita, que para saber
+       que comes el jueves hay que TOCAR -- y debajo la lista que lo dice con
+       todas sus letras y su ilustracion. Los dos hacen lo mismo (abrir el dia)
+       y solo uno se lee. El mes es la vista para planificar la compra, no la
+       de todos los dias: se abre cuando toca. -->
   <div class="card">
     <div class="card-h">
+      <h2>Esta semana</h2>
+      <span class="count" id="calRange"></span>
+    </div>
+    <div id="calBody"></div>
+  </div>
+
+  <div class="card">
+    <button class="acc-h" id="mesBtn" aria-expanded="false" aria-controls="mesBody"
+            onclick="plegar('mes')" type="button">
       <h2>El mes</h2>
       <span class="count" id="mesRange"></span>
+      <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="acc-body" id="mesBody" hidden>
+      <div class="mesnav" id="mesNav"></div>
+      <div id="mesGrid"></div>
     </div>
-    <div class="mesnav" id="mesNav"></div>
-    <div id="mesGrid"></div>
-    <div class="mes-sep"><span id="calRange"></span></div>
-    <div id="calBody"></div>
   </div>
 
   <div class="card">
@@ -145,7 +163,9 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
 
   <div class="card">
     <button class="acc-h" id="accBtn" aria-expanded="false" aria-controls="accBody" onclick="toggleComer()">
-      <h2>Qué comer</h2>
+      <!-- "Qué comer" no decia nada: es el plan de Alexia entero, opcion por
+           opcion, que es material de consulta y no algo que se haga -->
+      <h2>Todas las opciones</h2>
       <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
     </button>
     <div class="acc-body" id="accBody" hidden></div>

@@ -56,7 +56,7 @@ const CABECERAS = {
   },
 };
 
-let seccionActual = localStorage.getItem(TAB_KEY) || 'hoy';
+let seccionActual = (localStorage.getItem(TAB_KEY) || '').split('|')[0] || 'hoy';
 
 function pintarCabecera(animar) {
   const top = document.querySelector('.top');
@@ -96,7 +96,8 @@ function irASeccion(nombre, opciones) {
     tab.setAttribute('aria-selected', activo ? 'true' : 'false');
     tab.setAttribute('tabindex', activo ? '0' : '-1');
   });
-  localStorage.setItem(TAB_KEY, nombre);
+  // se guarda CON la fecha: ver abajo por que
+  localStorage.setItem(TAB_KEY, nombre + '|' + HOY);
   seccionActual = nombre;
   /* La cabecera y la burbuja arrancan en el MISMO instante y con el mismo
      reloj: es lo que hace que el cambio se lea como un gesto y no como una
@@ -152,7 +153,13 @@ function montarSecciones() {
       }
     };
   });
-  irASeccion(localStorage.getItem(TAB_KEY) || 'hoy', { scroll: false });
+  /* La seccion se recuerda solo DENTRO DEL MISMO DIA. Esta es una app que se
+     abre para marcar algo: si anoche te quedaste en Plan mirando los avisos,
+     mañana abrirla en Plan es un toque de mas antes de poder hacer lo unico
+     que ibas a hacer. Dentro del mismo dia si vale recordar, porque ahi si
+     estabas a mitad de algo. */
+  const guardado = (localStorage.getItem(TAB_KEY) || '').split('|');
+  irASeccion(guardado[1] === HOY ? guardado[0] : 'hoy', { scroll: false });
 }
 
 /* Entrada escalonada de las cards al abrir una seccion. La clase la pone el JS

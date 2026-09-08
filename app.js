@@ -1102,7 +1102,7 @@ function reiniciar(){
   else location.reload();
 }
 document.getElementById('btnReset').onclick = reiniciar;
-document.getElementById('ver').textContent = 'Versión 23 · ' + HOY;
+document.getElementById('ver').textContent = 'Versión 24 · ' + HOY;
 render();
 fullSync();
 

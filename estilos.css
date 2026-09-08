@@ -486,9 +486,8 @@ h2,.card-h h2{font-size:var(--t1);font-weight:700;letter-spacing:-.6px;margin-bo
 .mes-clave{font-size:var(--t5);color:var(--g3);margin-top:7px;line-height:1.5}
 
 /* la semana en detalle */
-.mes-sep{margin:var(--e4) 0 var(--e2);display:flex;align-items:baseline;justify-content:space-between}
-.mes-sep::before{content:"Esta semana";font-size:var(--t1);font-weight:700;letter-spacing:-.6px}
-.mes-sep span{font-size:var(--t3);font-weight:500;color:var(--g3)}
+/* .mes-sep se fue: era un titulo metido con content: dentro de OTRA card,
+   o sea dos secciones en una. Ahora son dos cards de verdad. */
 .cal-row{display:flex;align-items:center;gap:12px;padding:11px 0;width:100%;text-align:left;min-height:70px}
 .cal-row + .cal-row{border-top:1px solid var(--g2)}
 .cal-day{width:32px;text-align:center;flex-shrink:0}
