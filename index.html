@@ -176,9 +176,12 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
        "PDF del mes": el periodo se elige UNA vez y despues eliges que papel. -->
   <div class="card" id="cardImprimir">
     <div class="card-h"><h2>Para imprimir</h2></div>
+    <!-- Decian "El mes" y "Esta semana", que son los titulos de las otras dos
+         secciones de esta misma pantalla: cuatro controles, dos nombres, dos
+         funciones distintas. Ahora dicen la magnitud, que ademas es el dato -->
     <div class="seg" id="pdfRango" role="group" aria-label="Qué periodo imprimir">
-      <button type="button" class="on" data-r="mes">El mes</button>
-      <button type="button" data-r="semana">Esta semana</button>
+      <button type="button" class="on" data-r="mes">4 semanas</button>
+      <button type="button" data-r="semana">1 semana</button>
     </div>
     <p class="pdf-nota" id="pdfNota"></p>
     <div class="btns">
@@ -213,7 +216,8 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
 
   <div class="card">
     <div class="card-h">
-      <h2>Esta semana</h2>
+      <!-- se llamaba "Esta semana", igual que la card del menu en Comidas -->
+      <h2>Metas de la semana</h2>
       <span class="count" id="wkRange"></span>
     </div>
     <div id="semanaRows"></div>
@@ -221,7 +225,8 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
 
   <div class="card" id="sienCard" hidden>
     <div class="card-h">
-      <h2>Cómo te sientes</h2>
+      <!-- era "Cómo te sientes", a una letra de "Cómo te sentiste" de Hoy -->
+      <h2>Cómo vienes</h2>
       <span class="count">promedio de la semana</span>
     </div>
     <div id="sienBody"></div>
@@ -282,7 +287,8 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
   </div>
 
   <div class="card">
-    <div class="card-h"><h2>El plan</h2></div>
+    <!-- la seccion entera ya se llama "El plan": esta card son sus ajustes -->
+    <div class="card-h"><h2>Ajustes del plan</h2></div>
     <div class="pdf-box">
       <p class="pdf-nota" id="planNombre"></p>
       <div class="btns">
