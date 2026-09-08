@@ -278,6 +278,25 @@ module.exports = async (req, res) => {
      bajo el nombre "suscripciones", y como la guarda del dia hace `continue`
      antes de contarla, un tablero con su suscripcion perfectamente registrada
      reportaba CERO. Sobre ese numero se diagnostico mal mas de una vez. */
+  /* Y ademas la AGENDA DEL DIA: que se mando ya, a que hora, y que queda por
+     mandar. Sin esto, "no me llego nada" no se puede distinguir de "todavia no
+     tocaba" ni de "se mando y no aparecio en el telefono", que son tres
+     problemas distintos con tres arreglos distintos. Una consulta responde la
+     pregunta en vez de dejarla abierta. */
+  const hoyFecha = enZona('America/Lima', ahora).fecha;
+  const ahoraMin = enZona('America/Lima', ahora).minutos;
+  const agenda = Object.entries(POR_DEFECTO).map(([id, def]) => {
+    const c = (subs[0] && subs[0].cfg && subs[0].cfg[id]) || def;
+    const t = enviados[`${hoyFecha}:${id}`];
+    return {
+      id,
+      hora: c.hora,
+      encendido: c.on !== false,
+      estado: t ? 'mandado' : (aMinutos(c.hora) > ahoraMin ? 'pendiente' : 'no tocaba'),
+      cuando: t ? new Date(t).toISOString().slice(11, 16) + ' UTC' : null,
+    };
+  }).sort((x, y) => (x.hora || '').localeCompare(y.hora || ''));
+
   return res.status(200).json({
     ok: true,
     registradas: subs.length,        // las que existen de verdad
@@ -285,5 +304,7 @@ module.exports = async (req, res) => {
     saltadas,                        // y por que no se les mando nada
     motivo,
     mandados,
+    fecha: hoyFecha,
+    agenda,
   });
 };
