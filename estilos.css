@@ -1108,3 +1108,6 @@ button:active{transform:scale(.97);transition:transform 90ms var(--hundir)}
   font-size:15px;font-weight:600;padding:12px 18px;border-radius:var(--r5);transition:opacity 260ms var(--curva),transform 260ms var(--curva);z-index:95;width:max-content;max-width:calc(100% - 32px);text-align:center}
 .ar-toast.ver{opacity:1;transform:translate(-50%,0)}
 @media (prefers-reduced-motion:reduce){.ar-hoja,.ar-velo,.ar-toast{transition-duration:1ms}.ar-forma.grabando{animation:none}}
+/* dentro de la hoja del dia del calendario: el rotulo .sheet-meal pone todo en
+   mayusculas grises por herencia, y el plato no debe heredarlo */
+.sheet-meal .ar-plato{text-transform:none;letter-spacing:normal;color:var(--tinta);font-weight:400;font-size:var(--t3);margin-top:var(--e1)}

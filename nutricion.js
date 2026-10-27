@@ -151,7 +151,8 @@ const IMG_PLATO = {
 
 const IMG_DESAYUNO = [
   [/omelette/i, 'omelette'], [/revuelt/i, 'revueltos'], [/wrap/i, 'wrap'],
-  [/batido/i, 'batido'], [/bowl|yogurt/i, 'bowl'],
+  [/batido|proteína en polvo/i, 'batido'], [/bowl|yogurt/i, 'bowl'],
+  [/huevo/i, 'revueltos'], [/pollo/i, 'wrap'],   // los desayunos armados se nombran por sus ingredientes
 ];
 function familiaDe(m, comida) {
   if (!m) return null;
@@ -537,18 +538,20 @@ function abrirHojaDia(dia) {
     const c = comidasDeDia(dia);
     if (!c) { cont.innerHTML = '<p class="dish-sub">Todavía no cargó el menú.</p>'; return; }
     ['Desayuno', 'Almuerzo', 'Cena'].forEach(comida => {
-      const m = platoDe(c, comida);
       const bloque = document.createElement('div');
       bloque.className = 'sheet-meal';
       bloque.innerHTML = `<span>${comida}</span>`;
-      bloque.appendChild(filaOpcion(m, comida, true, [], () => abrirHojaOpciones(dia, comida)));
+      // el mismo armado de Hoy: lo que no vas a tener ese dia se cambia aqui
+      // y la lista de compras y los PDF ya salen con eso
+      if (typeof bloqueArmado === 'function') bloque.appendChild(bloqueArmado(comida, dia));
+      else bloque.appendChild(filaOpcion(platoDe(c, comida), comida, true, [], () => abrirHojaOpciones(dia, comida)));
       cont.appendChild(bloque);
     });
     /* Aqui habia un "Ver este día en Hoy" que no tenia sentido: jumpDay recorta
        al dia de hoy, asi que tocarlo en un dia futuro -- que es cuando se
        abre este panel -- te llevaba a hoy y parecia que no hacia nada. */
     cont.insertAdjacentHTML('beforeend',
-      `<div class="sheet-nota"><p>Toca un plato para cambiarlo. Lo que elijas manda en la lista de compras y en el PDF.</p></div>`);
+      `<div class="sheet-nota"><p>Cambia lo que no vayas a tener. Lo que dejes aquí manda en la lista de compras y en los PDF.</p></div>`);
   });
 }
 

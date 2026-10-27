@@ -119,8 +119,13 @@ function platoDe(dia, c){
 }
 function guardar(dia, c, plato){
   setMark(claveAR(dia, c), JSON.stringify(plato));
+  refrescar(dia);
+}
+/* Hoy y, si esta abierto, el dia del calendario: los dos muestran lo mismo */
+function refrescar(dia){
   if (typeof sincronizarFrecuencias === 'function') sincronizarFrecuencias(dia);
   render();
+  if (typeof pintarHoja === 'function' && typeof hojaPila !== 'undefined' && hojaPila.length) pintarHoja();
 }
 
 /* ---------- las reglas del plan, sobre el dia entero ---------- */
@@ -170,21 +175,34 @@ function aplicarArmado(r, dia){
     const ids = Object.values(plato).flat();
     const fam = { pollo:'pollo', res:'carne', atun:'atun', huevo:'huevos', pescado:'pescado', bonito:'pescado', trucha:'pescado',
       jurel:'pescado', perico:'pescado', merluza:'pescado', salmon:'pescado' };
-    const prot = (plato.prot || [])[0], carb = (plato.carb || [])[0];
-    const nombres = [prot, carb, ...(plato.verd || []).slice(0, 1)].filter(Boolean).map(i => ING[i].n.toLowerCase());
-    const titulo = nombres.length ? nombres[0][0].toUpperCase() + nombres[0].slice(1) + (nombres.length > 1 ? ' con ' + nombres.slice(1).join(' y ') : '') : 'Plato armado';
-    r[k] = { ...r[k], tipo: 'armado', armado: true, titulo, corto: titulo, detalle: '',
+    const prot = (plato.prot || [])[0], carb = (plato.carb || [])[0], grasa = (plato.grasa || [])[0];
+    const n = id => ING[id].n.toLowerCase();
+    const junta = a => a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' y ' + a[a.length - 1];
+    const om = c === 'Cena' && prot === 'huevo';
+    // los mismos campos que un plato del menu: asi el calendario, el PDF del
+    // menu y la imagen del riel lo leen sin saber que fue armado
+    const corto = c === 'Desayuno'
+      ? (junta([...(plato.prot || []), ...(plato.acomp || [])].map(n)) || 'Desayuno armado')
+      : om ? 'Omelette' + ((plato.verd || []).length ? ' con ' + junta(plato.verd.map(n)) : '')
+      : prot ? ING[prot].n : 'Plato armado';
+    const cap = t => t ? t[0].toUpperCase() + t.slice(1) : t;
+    const conPorcion = id => { const [p] = porcion(ING[id], c); return `${n(id)} (${p.toLowerCase()})`; };
+    r[k] = { ...r[k], id: 'armado', armado: true,
+      tipo: om ? 'omelette' : (c === 'Desayuno' ? r[k].tipo : 'plato'),
+      titulo: cap(corto), corto: cap(corto), detalle: '',
       protK: fam[prot] || (c === 'Desayuno' ? r[k].protK : undefined),
       carboK: carb ? ({ quinoa:'quinoa', lentejas:'menestras', garbanzos:'menestras', frejol:'menestras' }[carb] || 'otro') : undefined,
-      verdura: undefined, carbo: undefined, grasa: undefined,
+      verdura: (plato.verd || []).length ? cap(junta(plato.verd.map(n))) : 'Sin verduras',
+      carbo: carb ? cap(conPorcion(carb)) : 'Sin carbohidrato',
+      grasa: grasa ? cap(conPorcion(grasa)) : undefined,
       ing: ids.flatMap(i => (ING[i].it || []).map(([key, q]) => [key, c === 'Cena' && grupoEn(ING[i], c) === 'carb' && q === 1 ? 0.75 : q])) };
   });
   return r;
 }
 
 /* ---------- el bloque dentro de cada comida de Hoy ---------- */
-function bloqueArmado(c){
-  const dia = selDia, plato = platoDe(dia, c), tocado = !!guardado(dia, c);
+function bloqueArmado(c, diaPedido){
+  const dia = diaPedido || selDia, plato = platoDe(dia, c), tocado = !!guardado(dia, c);
   const el = document.createElement('div');
   el.className = 'ar-plato';
   let primeraVerd = true;
@@ -198,14 +216,14 @@ function bloqueArmado(c){
     const im = imgDe(x);
     return `<div class="ar-it">${im ? `<img src="${im}" alt="" loading="lazy">` : '<i class="ar-vacio"></i>'}
       <div><div class="ar-nom">${esc(x.n)}</div><div class="ar-cuanto">${cuanto}</div></div>
-      <button type="button" class="ar-cambiar" data-ar-cambiar="${c}|${g}|${id}">Cambiar</button></div>`;
+      <button type="button" class="ar-cambiar" data-ar-cambiar="${c}|${g}|${id}|${dia}">Cambiar</button></div>`;
   })).join('');
   const falta = SLOTS[c].filter(([g,, r]) => r && !(c === 'Cena' && g === 'carb' && omelette(plato)) && !(plato[g] || []).length).map(([, n]) => n.toLowerCase());
   const regla = c === 'Cena' && !omelette(plato) ? '<p class="ar-regla">Sin grasa en la cena y el carbohidrato en porción menor.</p>' : '';
   el.innerHTML = regla + (filas || '<p class="ar-regla">Todavía no hay nada. Agrega lo que vas a comer.</p>') +
     (falta.length ? `<p class="ar-regla ar-falta">Falta: ${falta.join(', ')}</p>` : '') +
-    `<div class="ar-pie"><button type="button" class="ar-agregar" data-ar-abrir="${c}">+ Agregar</button>` +
-    (tocado ? `<button type="button" class="ar-plan" data-ar-plan="${c}">Volver al plan</button>` : '') + `</div>`;
+    `<div class="ar-pie"><button type="button" class="ar-agregar" data-ar-abrir="${c}|${dia}">+ Agregar</button>` +
+    (tocado ? `<button type="button" class="ar-plan" data-ar-plan="${c}|${dia}">Volver al plan</button>` : '') + `</div>`;
   return el;
 }
 
@@ -252,7 +270,7 @@ function parsear(txt){
 }
 
 /* ---------- la hoja: buscar, escribir lista o dictar ---------- */
-const AR = { c: null, forma: 'buscar', q: '', lista: '', cambio: null };
+const AR = { dia: null, c: null, forma: 'buscar', q: '', lista: '', cambio: null };
 const ICO = {
   buscar: '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',
   lista: '<svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg>',
@@ -285,7 +303,7 @@ const $ar = s => document.querySelector(s);
 let arT; function arToast(t){ const e = $ar('#arToast'); e.textContent = t; e.classList.add('ver'); clearTimeout(arT); arT = setTimeout(() => e.classList.remove('ver'), 2200); }
 
 function itemRes(x, c, q, attr, sinMas){
-  const plato = platoDe(selDia, c), b = bloqueo(x, c, selDia, plato), [p, m] = b ? ['', ''] : porcion(x, c), im = imgDe(x);
+  const plato = platoDe(AR.dia, c), b = bloqueo(x, c, AR.dia, plato), [p, m] = b ? ['', ''] : porcion(x, c), im = imgDe(x);
   return `<button type="button" class="ar-res" ${attr}="${x.id}" ${b ? 'disabled' : ''}>
     ${im ? `<img src="${im}" alt="">` : '<i class="ar-vacio"></i>'}<div><div class="ar-nom">${q ? resaltar(x.n, q) : esc(x.n)}</div>
     ${b ? `<div class="ar-aviso">${esc(b)}</div>` : `<div class="ar-cuanto"><b>${esc(p)}</b>${m ? ` <span>· ${esc(m)}</span>` : ''}</div>`}</div>
@@ -294,9 +312,9 @@ function itemRes(x, c, q, attr, sinMas){
 function pintarRes(){
   const c = AR.c, q = norm(AR.q), r = $ar('#arRes'); if (!r) return;
   if (!q){
-    const plato = platoDe(selDia, c);
+    const plato = platoDe(AR.dia, c);
     const falta = SLOTS[c].find(([g,, req]) => req && !(plato[g] || []).length) || SLOTS[c].find(([g]) => !(plato[g] || []).length);
-    const ops = falta ? Object.values(ING).filter(x => grupoEn(x, c) === falta[0] && !bloqueo(x, c, selDia, plato)).slice(0, 8) : [];
+    const ops = falta ? Object.values(ING).filter(x => grupoEn(x, c) === falta[0] && !bloqueo(x, c, AR.dia, plato)).slice(0, 8) : [];
     r.innerHTML = (ops.length ? `<p class="ar-sug">Te falta ${GNOM[falta[0]]}. Toca lo que tengas:</p>
       <div class="ar-chips">${ops.map(x => `<button type="button" class="ar-chip" data-ar-add="${x.id}">${esc(x.n)}</button>`).join('')}</div>` : '') +
       `<p class="ar-sug">O usa un plato de tu plan</p><div class="ar-carrusel">${SUGS[c].map((s, i) => `<div class="ar-receta">
@@ -304,15 +322,15 @@ function pintarRes(){
         <p>${s.ids.map(id => esc(ING[id].n)).join(', ')}</p><button type="button" class="ar-btn" data-ar-sug="${i}">Usar este plato</button></div></div>`).join('')}</div>`;
     return;
   }
-  const plato = platoDe(selDia, c);
+  const plato = platoDe(AR.dia, c);
   const res = Object.values(ING).filter(x => puntaje(x, q) > 0)
-    .map(x => [x, puntaje(x, q) - (bloqueo(x, c, selDia, plato) ? 30 : 0)]).sort((a, b) => b[1] - a[1]).slice(0, 7);
+    .map(x => [x, puntaje(x, q) - (bloqueo(x, c, AR.dia, plato) ? 30 : 0)]).sort((a, b) => b[1] - a[1]).slice(0, 7);
   r.innerHTML = res.length ? `<div class="ar-lista">${res.map(([x]) => itemRes(x, c, q, 'data-ar-add')).join('')}</div>`
     : '<p class="ar-sug">No lo encuentro. Prueba con otro nombre.</p>';
 }
 function pintarParse(){
   const c = AR.c, p = $ar('#arParse'), b = $ar('#arAddLista'); if (!p) return;
-  const plato = platoDe(selDia, c), r = parsear(AR.lista), ok = r.filter(i => i.x && !bloqueo(i.x, c, selDia, plato));
+  const plato = platoDe(AR.dia, c), r = parsear(AR.lista), ok = r.filter(i => i.x && !bloqueo(i.x, c, AR.dia, plato));
   p.innerHTML = r.map(i => i.x ? itemRes(i.x, c, '', 'data-x', true) : `<p class="ar-nada">No reconozco «${esc(i.t)}»</p>`).join('');
   p.hidden = !r.length;
   b.disabled = !ok.length;
@@ -347,9 +365,9 @@ function abrirAgregar(c){
 }
 function abrirCambio(c, g, id){
   AR.c = c; AR.cambio = id;
-  const plato = platoDe(selDia, c);
+  const plato = platoDe(AR.dia, c);
   const alts = Object.values(ING).filter(x => grupoEn(x, c) === g && x.id !== id && !(plato[g] || []).includes(x.id))
-    .sort((a, b) => (bloqueo(a, c, selDia, plato) ? 1 : 0) - (bloqueo(b, c, selDia, plato) ? 1 : 0));
+    .sort((a, b) => (bloqueo(a, c, AR.dia, plato) ? 1 : 0) - (bloqueo(b, c, AR.dia, plato) ? 1 : 0));
   abrirHoja(`<div class="ar-asa"></div>
     <div class="ar-top"><h2>¿No hay ${esc(ING[id].n.toLowerCase())}?</h2><button type="button" class="ar-listo" data-ar-cerrar>Cerrar</button></div>
     <p class="ar-sub">Cámbialo por otra ${GNOM[g]} que tengas. La cantidad ya viene puesta.</p>
@@ -389,9 +407,9 @@ document.addEventListener('keydown', e => {
 document.addEventListener('click', e => {
   const on = s => e.target.closest(s);
   let t;
-  if ((t = on('[data-ar-abrir]'))) return abrirAgregar(t.dataset.arAbrir);
-  if ((t = on('[data-ar-cambiar]'))){ const [c, g, id] = t.dataset.arCambiar.split('|'); return abrirCambio(c, g, id); }
-  if ((t = on('[data-ar-plan]'))){ setMark(claveAR(selDia, t.dataset.arPlan), '0'); if (typeof sincronizarFrecuencias === 'function') sincronizarFrecuencias(selDia); render(); return arToast('Volviste al plato del plan'); }
+  if ((t = on('[data-ar-abrir]'))){ const [c, d] = t.dataset.arAbrir.split('|'); AR.dia = +d; return abrirAgregar(c); }
+  if ((t = on('[data-ar-cambiar]'))){ const [c, g, id, d] = t.dataset.arCambiar.split('|'); AR.dia = +d; return abrirCambio(c, g, id); }
+  if ((t = on('[data-ar-plan]'))){ const [c, d] = t.dataset.arPlan.split('|'); AR.dia = +d; setMark(claveAR(AR.dia, c), '0'); refrescar(AR.dia); return arToast('Volviste al plato del plan'); }
   if (on('[data-ar-cerrar]') || on('#arVelo')) return cerrarHoja();
   if ((t = on('[data-ar-forma]'))){
     if (t.dataset.arForma === 'voz') return hablar();
@@ -399,33 +417,33 @@ document.addEventListener('click', e => {
   }
   if ((t = on('[data-ar-add]'))){
     if (t.disabled) return;
-    const c = AR.c, id = t.dataset.arAdd, g = grupoEn(ING[id], c), antes = MULTI(g) ? null : (platoDe(selDia, c)[g] || [])[0];
-    guardar(selDia, c, poner(selDia, c, id));
+    const c = AR.c, id = t.dataset.arAdd, g = grupoEn(ING[id], c), antes = MULTI(g) ? null : (platoDe(AR.dia, c)[g] || [])[0];
+    guardar(AR.dia, c, poner(AR.dia, c, id));
     arToast(antes && antes !== id ? `Cambié ${ING[antes].n} por ${ING[id].n}` : `Agregado: ${ING[id].n}`);
     AR.q = ''; return rehacer('#arQ');
   }
   if ((t = on('#arAddLista'))){
-    const c = AR.c; let plato = platoDe(selDia, c), n = 0;
-    parsear(AR.lista).forEach(i => { if (i.x && !bloqueo(i.x, c, selDia, plato) && !Object.values(plato).flat().includes(i.x.id)){ setMark(claveAR(selDia, c), JSON.stringify(plato)); plato = poner(selDia, c, i.x.id); setMark(claveAR(selDia, c), JSON.stringify(plato)); n++; } });
-    guardar(selDia, c, plato); arToast(n ? `Agregué ${n} ${n === 1 ? 'alimento' : 'alimentos'}` : 'Eso ya estaba en tu plato'); AR.lista = ''; return cerrarHoja();
+    const c = AR.c; let plato = platoDe(AR.dia, c), n = 0;
+    parsear(AR.lista).forEach(i => { if (i.x && !bloqueo(i.x, c, AR.dia, plato) && !Object.values(plato).flat().includes(i.x.id)){ setMark(claveAR(AR.dia, c), JSON.stringify(plato)); plato = poner(AR.dia, c, i.x.id); setMark(claveAR(AR.dia, c), JSON.stringify(plato)); n++; } });
+    guardar(AR.dia, c, plato); arToast(n ? `Agregué ${n} ${n === 1 ? 'alimento' : 'alimentos'}` : 'Eso ya estaba en tu plato'); AR.lista = ''; return cerrarHoja();
   }
   if ((t = on('[data-ar-sug]'))){
     const c = AR.c; let plato = {};
-    setMark(claveAR(selDia, c), JSON.stringify(plato));
-    SUGS[c][+t.dataset.arSug].ids.forEach(id => { if (!bloqueo(ING[id], c, selDia, plato)){ plato = poner(selDia, c, id); setMark(claveAR(selDia, c), JSON.stringify(plato)); } });
-    guardar(selDia, c, plato); arToast('Listo, ese es tu plato'); return cerrarHoja();
+    setMark(claveAR(AR.dia, c), JSON.stringify(plato));
+    SUGS[c][+t.dataset.arSug].ids.forEach(id => { if (!bloqueo(ING[id], c, AR.dia, plato)){ plato = poner(AR.dia, c, id); setMark(claveAR(AR.dia, c), JSON.stringify(plato)); } });
+    guardar(AR.dia, c, plato); arToast('Listo, ese es tu plato'); return cerrarHoja();
   }
   if ((t = on('[data-ar-swap]'))){
     if (t.disabled) return;
     const c = AR.c, viejo = AR.cambio, nuevo = t.dataset.arSwap;
-    guardar(selDia, c, poner(selDia, c, nuevo, viejo));
+    guardar(AR.dia, c, poner(AR.dia, c, nuevo, viejo));
     arToast(`Cambié ${ING[viejo].n} por ${ING[nuevo].n}`); return cerrarHoja();
   }
   if ((t = on('[data-ar-quitar]'))){
     const c = AR.c, [g, id] = t.dataset.arQuitar.split('|');
-    const plato = JSON.parse(JSON.stringify(platoDe(selDia, c)));
+    const plato = JSON.parse(JSON.stringify(platoDe(AR.dia, c)));
     plato[g] = (plato[g] || []).filter(x => x !== id);
-    guardar(selDia, c, depurar(plato, c, selDia)); arToast(`Quitado: ${ING[id].n}`); return cerrarHoja();
+    guardar(AR.dia, c, depurar(plato, c, AR.dia)); arToast(`Quitado: ${ING[id].n}`); return cerrarHoja();
   }
 });
 

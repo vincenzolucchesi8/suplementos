@@ -79,7 +79,7 @@ function generarMenuPDF(desde, hasta, devolver) {
       const x = M + 20, w = ANCHO - M - x - 2;
       let yy = y - 1;
       yy += comida('D', d.c.desayuno.titulo, x, yy, w, 10, 2) + 1.8;
-      yy += comida('A', `${d.c.almuerzo.corto || d.c.almuerzo.titulo} · ${d.c.almuerzo.verdura.toLowerCase()} · ${d.c.almuerzo.carbo.toLowerCase()}`, x, yy, w, 10, 2) + 1.8;
+      yy += comida('A', [d.c.almuerzo.corto || d.c.almuerzo.titulo, d.c.almuerzo.verdura, d.c.almuerzo.carbo].filter(Boolean).map((t, i) => i ? t.toLowerCase() : t).join(' · '), x, yy, w, 10, 2) + 1.8;
       yy += comida('C', d.c.cena.corto || d.c.cena.titulo, x, yy, w, 10, 2);
 
       const abajo = Math.max(yy + 3.4, y + 18.5);

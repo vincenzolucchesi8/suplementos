@@ -14,7 +14,7 @@
    librerias con version en el nombre siguen por cache, que es donde el cache
    sirve de verdad. Y al activarse una version nueva se avisa a las pestanas
    abiertas para que se recarguen cuando el usuario no este tocando nada. */
-const CACHE = 'protocolo-v56';
+const CACHE = 'protocolo-v57';
 const ASSETS = [
   './', './index.html', './estilos.css', './plan-lib.js', './api-cliente.js', './plan.js', './menu/generador.js',
   './menu-lib.js', './app.js', './nutricion.js', './armar.js', './avisos.js', './plan-editor.js',
