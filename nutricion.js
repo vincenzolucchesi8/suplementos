@@ -100,7 +100,8 @@ function comidasDeDia(dia) {
     r[clave] = { ...r[clave], ...mio, verdura: undefined, carbo: undefined,
                  carboK: undefined, grasa: undefined, tipo: 'propio' };
   });
-  return r;
+  // lo armado con lo que hay en casa (armar.js) pisa a las dos cosas anteriores
+  return typeof aplicarArmado === 'function' ? aplicarArmado(r, dia) : r;
 }
 
 /* ---------- El disco del metodo del plato ----------
@@ -193,6 +194,7 @@ const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&am
 /* Bloque de propuesta que se inserta arriba de los checks de cada comida */
 function bloquePlato(comida, c) {
   if (!c) return null;
+  if (typeof bloqueArmado === 'function') return bloqueArmado(comida);
   const m = comida === 'Desayuno' ? c.desayuno : comida === 'Almuerzo' ? c.almuerzo : c.cena;
   const conDisco = m.tipo === 'plato';
   const el = document.createElement('div');
