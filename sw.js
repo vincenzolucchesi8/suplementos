@@ -14,7 +14,7 @@
    librerias con version en el nombre siguen por cache, que es donde el cache
    sirve de verdad. Y al activarse una version nueva se avisa a las pestanas
    abiertas para que se recarguen cuando el usuario no este tocando nada. */
-const CACHE = 'protocolo-v58';
+const CACHE = 'protocolo-v59';
 const ASSETS = [
   './', './index.html', './estilos.css', './plan-lib.js', './api-cliente.js', './plan.js', './menu/generador.js',
   './menu-lib.js', './app.js', './nutricion.js', './armar-lib.js', './armar.js', './avisos.js', './plan-editor.js',
@@ -108,6 +108,21 @@ self.addEventListener('push', e => {
     actions: acciones,
     requireInteraction: false,
   }));
+});
+
+/* El navegador puede cambiar la suscripcion sin avisar (vence, rota la llave).
+   Si nadie la manda al servidor, los avisos mueren en silencio hasta que se
+   abra la app. El worker la rehace y la registra el mismo. */
+const VAPID_PUBLICA = 'BDQ7DfXIB985ikVK2wqbDQ17iH88QPsgzWeTGk3XbNxnXEcEKeGNRbZ_hTmOviVarevivJd-_KzV6WOUFO9cr08';
+const llave = b64 => { const s = (b64 + '='.repeat((4 - b64.length % 4) % 4)).replace(/-/g, '+').replace(/_/g, '/');
+  return Uint8Array.from([...atob(s)].map(c => c.charCodeAt(0))); };
+self.addEventListener('pushsubscriptionchange', e => {
+  e.waitUntil((async () => {
+    const viejo = e.oldSubscription && e.oldSubscription.endpoint;
+    const nueva = e.newSubscription || await self.registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: llave(VAPID_PUBLICA) });
+    if (viejo) await fetch('/api/push', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ accion: 'renovar', viejo, sub: nueva.toJSON() }) });
+  })().catch(() => {}));
 });
 
 self.addEventListener('notificationclick', e => {

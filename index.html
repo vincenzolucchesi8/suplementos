@@ -51,6 +51,8 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
   <section class="panel" id="panel-hoy" role="tabpanel" aria-labelledby="tab-hoy">
 
   <div class="daynav" id="dayNav"></div>
+  <!-- Solo aparece si los avisos NO suenan: lo pinta avisos.js -->
+  <div class="aviso-hoy" id="avisoHoy" role="status" hidden></div>
 
   <!-- UNA fila para el estado del dia y su accion.
 

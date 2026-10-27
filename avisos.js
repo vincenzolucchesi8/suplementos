@@ -108,6 +108,28 @@ async function empujarConfig() {
 }
 
 /* ---------- Render ---------- */
+/* Si los avisos no suenan, se dice ARRIBA de Hoy con el boton que lo arregla.
+   Escondido en Plan > Avisos (plegado) nadie lo ve, y un recordatorio que no
+   llega no se nota: simplemente no pasa nada. */
+const esIphone = () => /iPhone|iPad|iPod/.test(navigator.userAgent);
+const instalada = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+function pintarAvisoHoy() {
+  const el = document.getElementById('avisoHoy');
+  if (!el) return;
+  const msg = {
+    apagado: ['Tus avisos están apagados', 'Sin ellos no te llega el recordatorio de cada comida ni de los suplementos.', 'Activar avisos'],
+    error: ['Tus avisos no se pudieron registrar', 'El teléfono tiene permiso pero el servidor no lo recibió.', 'Reintentar'],
+    bloqueado: ['Bloqueaste los avisos', 'Actívalos en Ajustes del teléfono > Notificaciones > Protocolo.', ''],
+    'sin-soporte': esIphone() && !instalada()
+      ? ['Abre la app desde su icono', 'En el iPhone los avisos solo llegan si la abres desde la pantalla de inicio, no desde Safari.', ''] : null,
+  }[estadoPush];
+  el.hidden = !msg;
+  if (!msg) return;
+  el.innerHTML = `<div><b>${msg[0]}</b><p>${msg[1]}</p></div>` + (msg[2] ? `<button type="button" class="btn btn-p">${msg[2]}</button>` : '');
+  const b = el.querySelector('button');
+  if (b) b.onclick = activarAvisos;
+}
+
 function renderAvisos() {
   const cont = document.getElementById('avisosBody');
   if (!cont) return;
@@ -146,6 +168,7 @@ function renderAvisos() {
      la lista entera se pinta apagada: si no, el cartel dice "estan apagados" y
      debajo hay nueve checks verdes diciendo lo contrario. */
   cont.classList.toggle('sin-push', estadoPush !== 'activo');
+  pintarAvisoHoy();
 
   cont.innerHTML =
     `<div class="avi-state ${clase}"><span class="avi-dot"></span><p>${texto}</p></div>` +
@@ -201,16 +224,39 @@ function renderAvisos() {
 }
 
 /* ---------- Arranque ---------- */
-(async function initAvisos() {
-  if (!puedeAvisar()) { estadoPush = 'sin-soporte'; renderAvisos(); return; }
-  if (Notification.permission === 'denied') { estadoPush = 'bloqueado'; renderAvisos(); return; }
+/* Cada vez que se abre la app se vuelve a registrar el telefono en el
+   servidor. Asi murieron los avisos en octubre: el iPhone dio de baja la
+   suscripcion (lo hace solo, sin avisar), el servidor la borro al recibir el
+   410, y la app al abrirse solo MIRABA si habia una -- no la habia, se quedaba
+   en "apagado" dentro de Plan y nadie se entero en semanas. Ahora, si el
+   permiso ya esta dado, la suscripcion se rehace sola, y si el servidor no la
+   acepta se dice en Hoy, no en una seccion plegada. */
+async function asegurarSuscripcion() {
+  if (!puedeAvisar()) { estadoPush = 'sin-soporte'; return; }
+  if (Notification.permission === 'denied') { estadoPush = 'bloqueado'; return; }
   try {
-    const sub = await suscripcionActual();
-    estadoPush = sub ? 'activo' : 'apagado';
-    if (sub) empujarConfig();
-  } catch (e) { estadoPush = 'apagado'; }
+    let sub = await suscripcionActual();
+    if (!sub && Notification.permission === 'granted') {
+      const reg = await navigator.serviceWorker.ready;
+      sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64aBytes(VAPID_PUBLICA) });
+    }
+    if (!sub) { estadoPush = 'apagado'; return; }
+    // re-registrar cada 3 h como maximo: si el servidor la perdio, vuelve sola
+    const ult = parseInt(localStorage.getItem('push_registrada') || '0', 10);
+    if (estadoPush === 'activo' && Date.now() - ult < 3 * 3600e3) return;
+    await guardarSuscripcion(sub);
+    localStorage.setItem('push_registrada', String(Date.now()));
+    estadoPush = 'activo';
+  } catch (e) { estadoPush = 'error'; }
+}
+(async function initAvisos() {
+  await asegurarSuscripcion();
   renderAvisos();
 })();
+// una PWA no se cierra, se suspende: volver a ella cuenta como abrirla
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') asegurarSuscripcion().then(renderAvisos);
+});
 
 // El service worker avisa cuando se marco algo desde una notificacion
 if ('serviceWorker' in navigator) {

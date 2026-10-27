@@ -1153,3 +1153,10 @@ button:active{transform:scale(.97);transition:transform 90ms var(--hundir)}
 .ar-ic-inf{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230E7A5F' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M5 9h12v5a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5z'/%3E%3Cpath d='M17 10h1.5a2.5 2.5 0 0 1 0 5H17'/%3E%3C/svg%3E")}
 .ar-res.ar-sin-img{grid-template-columns:1fr auto;min-height:60px}
 .ar-ic-olla{background:var(--verde-suave) center/22px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230E7A5F' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M4 10h16v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z'/%3E%3Cpath d='M2 10h20M9 6.5c0-1 1-1.5 1-2.5M14 6.5c0-1 1-1.5 1-2.5'/%3E%3C/svg%3E")}
+
+/* Avisos apagados: arriba de Hoy, con el boton que lo arregla */
+.aviso-hoy{display:flex;align-items:center;gap:14px;background:#F6E9EE;border-radius:var(--r1);padding:14px 14px 14px 17px;margin-bottom:var(--e3)}
+.aviso-hoy[hidden]{display:none}
+.aviso-hoy b{display:block;font-size:var(--t3);font-weight:700;color:var(--alerta)}
+.aviso-hoy p{font-size:var(--t4);color:var(--tinta);line-height:1.45;margin-top:2px}
+.aviso-hoy .btn{flex:0 0 auto;padding:12px 16px}

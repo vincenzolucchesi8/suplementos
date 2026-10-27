@@ -15,7 +15,9 @@ module.exports = async (req, res) => {
 
   // El snooze llega desde el service worker, que no lleva la clave del tablero
   const cuerpo = await leerCuerpo(req);
-  if (cuerpo.accion !== 'snooze' && !autorizado(req)) {
+  // El snooze y la renovacion llegan desde el service worker, que no tiene la
+  // clave: la renovacion se prueba con el endpoint viejo, que solo conoce ese telefono
+  if (cuerpo.accion !== 'snooze' && cuerpo.accion !== 'renovar' && !autorizado(req)) {
     return res.status(401).json({ error: 'sin permiso' });
   }
 
@@ -60,6 +62,18 @@ module.exports = async (req, res) => {
         }
       }
       return res.status(200).json({ ok: true, suscripciones: subs.length, mandados, muertas });
+    }
+
+    /* El navegador cambio la suscripcion por su cuenta (pushsubscriptionchange).
+       Se acepta solo si el endpoint viejo estaba registrado: hereda su config y
+       horas, y el viejo se borra. Sin esto el telefono queda mudo hasta que
+       alguien abra la app. */
+    if (cuerpo.accion === 'renovar' && cuerpo.viejo && cuerpo.sub && cuerpo.sub.endpoint) {
+      const previa = (await listarSubs()).find(s => s.sub.endpoint === cuerpo.viejo);
+      if (!previa) return res.status(404).json({ error: 'no conozco esa suscripcion' });
+      await guardarSub({ ...previa, sub: cuerpo.sub, ts: Date.now() });
+      if (cuerpo.viejo !== cuerpo.sub.endpoint) await borrarSub(cuerpo.viejo);
+      return res.status(200).json({ ok: true });
     }
 
     if (cuerpo.accion === 'baja' && cuerpo.endpoint) {
