@@ -81,6 +81,26 @@ function resumenDelPeriodo(hasta) {
     semanas.push(fila);
   }
 
+  /* Lo que de verdad comiste. Antes el informe solo sabia si marcaste la
+     comida, no que habia en el plato: con el armado eso ya existe, y es lo
+     que Alexia necesita para ajustar el plan. Solo cuentan las comidas
+     marcadas como comidas, con el mismo criterio que todo el documento. */
+  const come = { prot: {}, carb: {}, verd: {}, armadas: 0, comidas: 0, snacks: 0 };
+  if (typeof platoDelDia === 'function') dias.forEach(d => {
+    const ds = dsDiaG(d);
+    [['Desayuno', 'm1'], ['Almuerzo', 'm2'], ['Cena', 'm3']].forEach(([c, id]) => {
+      if (!marcado(`${ds}:${c}:${id}`)) return;
+      const { plato, armado } = platoDelDia(d, c);
+      come.comidas++; if (armado) come.armadas++;
+      const suma = (g, o) => (plato[g] || []).forEach(x => { o[x] = (o[x] || 0) + 1; });
+      if (c !== 'Desayuno') { suma('prot', come.prot); suma('carb', come.carb); }
+      suma('verd', come.verd);
+    });
+    if (typeof snackDelDia === 'function') ['M', 'E'].forEach(k => { if (snackDelDia(d, k)) come.snacks++; });
+  });
+  come.antojos = dias.reduce((n, d) => n + diaCount(dsDiaG(d), 'AN', 'ant', 20), 0);
+  come.calmas = dias.reduce((n, d) => n + diaCount(dsDiaG(d), 'AN', 'calma', 20), 0);
+
   // Como se sintio: lo que Alexia pide mirar y hasta ahora no se registraba
   const sens = ((PLAN.sensaciones || {}).aspectos || []).map(a => {
     const cuentas = a.opciones.map(() => 0);
@@ -106,7 +126,7 @@ function resumenDelPeriodo(hasta) {
       { que: 'Un solo postre al día', n: postreOk, pct: pct(postreOk),
         nota: 'sin pasarse del permitido' },
     ],
-    supl, semanas,
+    supl, semanas, come,
     pesos: pesajes(),
   };
 }
@@ -135,6 +155,7 @@ function generarInforme(devolver) {
   y = 53;
 
   function titulo(t, sub) {
+    if (y > PIE - 34) { doc.addPage(); y = 22; }   // una seccion nunca empieza al pie de la hoja
     doc.setFillColor(...ACENTO);
     doc.rect(M, y - 3.1, 2.4, 3.4, 'F');
     doc.setFont('helvetica', 'bold').setFontSize(8.5).setTextColor(...TINTA);
@@ -197,6 +218,31 @@ function generarInforme(devolver) {
     y += 6.6;
   });
   y += 4;
+
+  // ---- Que comiste
+  const C = R.come;
+  if (C && C.comidas) {
+    titulo('Qué comiste', `${C.armadas} de ${C.comidas} comidas armadas con lo que había en casa`);
+    const nombre = id => (typeof ArmarLib !== 'undefined' && ArmarLib.ING[id]) ? ArmarLib.ING[id].n : id;
+    const lista = o => Object.entries(o).sort((a, b) => b[1] - a[1]).map(([id, n]) => `${nombre(id)} ${n}`).join(' · ');
+    const filas = [
+      ['Proteínas', lista(C.prot), 'almuerzo y cena'],
+      ['Carbohidratos', lista(C.carb), 'almuerzo y cena'],
+      ['Verduras', `${Object.keys(C.verd).length} distintas: ` + lista(C.verd), ''],
+      ['Entre comidas', C.snacks ? `${C.snacks} snack${C.snacks === 1 ? '' : 's'} del plan, de media mañana o merienda` : 'ninguno anotado', ''],
+    ];
+    if (C.antojos) filas.push(['Antojos', `${C.antojos} vez${C.antojos === 1 ? '' : 'es'} · ${C.calmas} ${C.calmas === 1 ? 'se calmó' : 'se calmaron'} con agua o infusión`, '']);
+    filas.forEach(([rot, txt]) => {
+      if (!txt) return;
+      doc.setFont('helvetica', 'normal').setFontSize(9.5).setTextColor(...TINTA);
+      doc.text(rot, M + 1, y);
+      doc.setFont('helvetica', 'normal').setFontSize(8.5).setTextColor(...GRIS);
+      const lineas = doc.splitTextToSize(txt || '—', ANCHO - M - (M + 34));
+      doc.text(lineas, M + 34, y);
+      y += 4.2 * lineas.length + 2.4;
+    });
+    y += 4;
+  }
 
   // ---- Peso
   titulo('Peso', 'pesaje de los miércoles, en ayunas');

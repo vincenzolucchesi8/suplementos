@@ -9,6 +9,30 @@ const webpush = require('web-push');
 const MenuLib = require('../menu-lib.js');
 const PlanLib = require('../plan-lib.js');
 const MENU = require('../menu/menu.json');
+const ArmarLib = require('../armar-lib.js');
+
+/* Lo que armaste en el tablero pisa al plato del plan, igual que alla. Si
+   cambiaste la trucha por pollo, el aviso tiene que decir pollo: un aviso que
+   nombra lo que no vas a comer ensena a no leerlos. */
+function leerJSON(estado, k) {
+  const v = estado[k];
+  if (!v || !v.v || v.v === '0') return null;
+  try { const o = JSON.parse(v.v); return o && typeof o === 'object' ? o : null; } catch (e) { return null; }
+}
+function conArmado(comidas, estado, fecha) {
+  if (!comidas) return comidas;
+  [['D', 'desayuno', 'Desayuno'], ['A', 'almuerzo', 'Almuerzo'], ['C', 'cena', 'Cena']].forEach(([l, k, c]) => {
+    const plato = leerJSON(estado, `${fecha}:AR:${l}`);
+    const t = plato && ArmarLib.textoPlato(plato, c);
+    if (t) comidas[k] = Object.assign({}, comidas[k], { titulo: t, armado: true });
+  });
+  return comidas;
+}
+// el snack de esa hora ya anotado como comido: el aviso sobra
+const snackComido = (estado, fecha, l) => {
+  const v = estado[`${fecha}:AR:${l}`];
+  return !!(v && v.v && v.v !== '0');
+};
 const { listarSubs, borrarSub, leerTick, guardarTick, leerEstado, leerPlan } = require('./_almacen');
 
 const TOLERANCIA_MIN = 90;   // si el cron estuvo caido mas de esto, no se dispara tarde
@@ -65,6 +89,7 @@ function armar(avisoId, ctx) {
     }
 
     case 'media':
+      if (snackComido(estado, fecha, 'M')) return null;
       return { titulo: 'Media mañana',
         cuerpo: (comidas && comidas.mediaManana ? comidas.mediaManana.titulo : 'Fruta y frutos secos.') + ' Opcional: solo si tienes hambre.',
         marcar: null, snooze: false };
@@ -72,7 +97,9 @@ function armar(avisoId, ctx) {
     case 'almuerzo': {
       if (marcada(estado, `${fecha}:Almuerzo:m2`)) return null;
       const a = comidas && comidas.almuerzo;
-      const cuerpo = a
+      const cuerpo = a && a.armado
+        ? `${a.titulo}.` + (listaSupl('Almuerzo') ? ` Toma: ${listaSupl('Almuerzo')}.` : '')
+        : a
         ? `${a.titulo}. Con ${a.verdura.toLowerCase()} y ${a.carbo.toLowerCase()}.` + (listaSupl('Almuerzo') ? ` Toma: ${listaSupl('Almuerzo')}.` : '')
         : `Método del plato.` + (listaSupl('Almuerzo') ? ` Toma: ${listaSupl('Almuerzo')}.` : '');
       return { titulo: 'Almuerzo y suplementos', cuerpo,
@@ -89,6 +116,7 @@ function armar(avisoId, ctx) {
     }
 
     case 'merienda':
+      if (snackComido(estado, fecha, 'E')) return null;
       return { titulo: 'Merienda',
         cuerpo: (comidas && comidas.merienda ? comidas.merienda.titulo : 'Yogurt proteico o fruta con barrita.') + ' Opcional.',
         marcar: null, snooze: false };
@@ -98,7 +126,7 @@ function armar(avisoId, ctx) {
       const c = comidas && comidas.cena;
       const post = comidas && comidas.postre ? ` De postre: ${comidas.postre.titulo.toLowerCase()}.` : '';
       const cuerpo = c
-        ? `${c.titulo}.` + (c.tipo === 'plato' ? ` Con ${c.verdura.toLowerCase()} y ${c.carbo.toLowerCase()}.` : '') +
+        ? `${c.titulo}.` + (c.tipo === 'plato' && !c.armado ? ` Con ${c.verdura.toLowerCase()} y ${c.carbo.toLowerCase()}.` : '') +
           (listaSupl('Cena') ? ` Toma: ${listaSupl('Cena')}.` : '') + post
         : 'Método del plato o tortilla.' + post;
       const claves = [`${fecha}:Cena:m3`, ...clavesSupl('Cena')];
@@ -211,7 +239,7 @@ module.exports = async (req, res) => {
       return v && v.v ? (parseInt(v.v, 10) || 0) : 0;
     };
     if (dia < 1) { saltadas++; motivo = `el plan arranca el ${inicio}`; vivas++; continue; }
-    const comidas = MenuLib.resolverDia(MENU, dia, off);
+    const comidas = conArmado(MenuLib.resolverDia(MENU, dia, off), estado, fecha);
     const ctx = { fecha, dia, dow, comidas, estado, plan };
 
     const pendientes = [];

@@ -163,9 +163,10 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
 
   <div class="card">
     <button class="acc-h" id="accBtn" aria-expanded="false" aria-controls="accBody" onclick="toggleComer()">
-      <!-- "Qué comer" no decia nada: es el plan de Alexia entero, opcion por
-           opcion, que es material de consulta y no algo que se haga -->
-      <h2>Todas las opciones</h2>
+      <!-- Eran "Todas las opciones": el plan entero opcion por opcion. Desde
+           que cada comida se arma en Hoy con las opciones del plan, aca solo
+           quedan las reglas de la semana, que no viven en ningun otro lado -->
+      <h2>Reglas del plan</h2>
       <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
     </button>
     <div class="acc-body" id="accBody" hidden></div>
@@ -364,6 +365,7 @@ if(location.hostname.endsWith('github.io')) location.replace('https://protocolo.
 <script src="menu-lib.js" defer></script>
 <script src="app.js" defer></script>
 <script src="nutricion.js" defer></script>
+<script src="armar-lib.js" defer></script>
 <script src="armar.js" defer></script>
 <script src="avisos.js" defer></script>
 <script src="compras-pdf.js" defer></script>

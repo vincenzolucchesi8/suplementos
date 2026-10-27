@@ -532,7 +532,7 @@ function renderHoy(){
     if(salt){
       const av = document.createElement('div');
       av.className = 'salt-aviso';
-      av.innerHTML = `<p>Este ${c.toLowerCase()} no cuenta hoy.</p>`;
+      av.innerHTML = `<p>${c==='Cena'?'Esta':'Este'} ${c.toLowerCase()} no cuenta hoy.</p>`;
       const volver = document.createElement('button');
       volver.type = 'button'; volver.className = 'dish-swap';
       volver.textContent = 'Sí lo comí';
@@ -566,7 +566,7 @@ function renderHoy(){
        a hacer casi siempre, y al final la salida. */
     const no = document.createElement('button');
     no.type = 'button'; no.className = 'dish-swap salt-btn';
-    no.textContent = `No comí este ${c.toLowerCase()}`;
+    no.textContent = `No comí ${c==='Cena'?'esta':'este'} ${c.toLowerCase()}`;
     no.onclick = () => saltarComida(c, true);
     body.appendChild(no);
     tramo.appendChild(body);
@@ -583,6 +583,9 @@ function renderHoy(){
     nuevo.classList.add('abriendo');
     setTimeout(()=>nuevo.classList.remove('abriendo'), 260);
   }
+
+  // La media manana y la merienda: opcionales, pero el plan existe para cortar el picoteo
+  if(typeof bloqueSnacks === 'function' && menuHoy) cont.appendChild(bloqueSnacks(selDia));
 
   // Lo que corre todo el dia no pertenece a ninguna comida: va fuera del riel
   const rw = document.createElement('div');
@@ -1046,9 +1049,9 @@ function toggleComer(){
   b.setAttribute('aria-expanded', open?'false':'true');
   body.hidden = open;
   if(!open && !body.innerHTML){
-    body.innerHTML = QUE_COMER.map(s=>
-      `<div class="rec"><div class="rec-h"><span>${s.titulo}</span>${s.tag?`<em>${s.tag}</em>`:''}</div>`+
-      `<ul>${s.lo.map(x=>`<li>${x}</li>`).join('')}</ul></div>`
+    // el titulo de la card ya dice que son las reglas: sin rotulo repetido
+    body.innerHTML = QUE_COMER.filter(s=>s.titulo==='Reglas de la semana').map(s=>
+      `<div class="rec"><ul>${s.lo.map(x=>`<li>${x}</li>`).join('')}</ul></div>`
     ).join('');
   }
   if(!open){

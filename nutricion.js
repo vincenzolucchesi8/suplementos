@@ -77,14 +77,6 @@ function platoPropio(dia, comida) {
   } catch (e) { return null; }
 }
 
-function guardarPropio(dia, comida, titulo, protK) {
-  const k = `${dsDiaG(dia)}:MP:${CLAVE_DE[comida]}`;
-  if (titulo) setMark(k, JSON.stringify({ titulo, protK: protK || 'otro' }));
-  else setMark(k, '0');
-  sincronizarFrecuencias(dia);
-  render();
-}
-
 function comidasDeDia(dia) {
   if (!MENU) return null;
   const ds = dsDiaG(dia);
@@ -102,26 +94,6 @@ function comidasDeDia(dia) {
   });
   // lo armado con lo que hay en casa (armar.js) pisa a las dos cosas anteriores
   return typeof aplicarArmado === 'function' ? aplicarArmado(r, dia) : r;
-}
-
-/* ---------- El disco del metodo del plato ----------
-   Verduras un tercio siempre. En la cena el carbohidrato baja de porcion
-   (tres cuartos de taza contra una taza), y el disco lo muestra. */
-function platoSVG(tipo) {
-  const partes = tipo === 'cena'
-    ? [['var(--pl-verd)', 120], ['var(--pl-prot)', 140], ['var(--pl-carb)', 100]]
-    : [['var(--pl-verd)', 120], ['var(--pl-prot)', 120], ['var(--pl-carb)', 120]];
-  const cx = 21, cy = 21, r = 18;
-  let ang = -90, d = '';
-  partes.forEach(([color, deg]) => {
-    const a1 = ang * Math.PI / 180, a2 = (ang + deg) * Math.PI / 180;
-    const x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1);
-    const x2 = cx + r * Math.cos(a2), y2 = cy + r * Math.sin(a2);
-    const large = deg > 180 ? 1 : 0;
-    d += `<path d="M${cx} ${cy} L${x1.toFixed(2)} ${y1.toFixed(2)} A${r} ${r} 0 ${large} 1 ${x2.toFixed(2)} ${y2.toFixed(2)} Z" fill="${color}" stroke="#fff" stroke-width="1.6"/>`;
-    ang += deg;
-  });
-  return `<svg viewBox="0 0 42 42" aria-hidden="true">${d}<circle cx="21" cy="21" r="19.2" fill="none" stroke="#fff" stroke-width="1.6"/></svg>`;
 }
 
 /* Que ilustracion le toca a cada plato.
@@ -177,56 +149,13 @@ const respaldoImg = (m, comida) => {
   return f ? ` onerror="this.onerror=null;this.src='img/${f}.webp'"` : '';
 };
 
-/* De la palabra del ingrediente a su ilustracion. Se busca por raiz porque el
-   menu escribe "Frejol canario" o "Rúcula, tomate cherry y pepino": el primero
-   que matchea manda, asi que el orden importa (menestra antes que frejol no,
-   porque frejol es mas especifico). */
-const IMG_PARTE = [
-  [/aceituna/i, 'aceitunas'], [/palta|aguacate/i, 'palta'], [/brocoli|brócoli/i, 'brocoli'],
-  [/esparrago|espárrago/i, 'esparragos'], [/espinaca/i, 'espinaca'], [/tomate/i, 'tomate'],
-  [/frejol|frijol|lenteja|garbanzo|pallar/i, 'frejol'], [/menestra/i, 'menestras'],
-  [/quinoa|quinua/i, 'quinoa'], [/camote/i, 'camote'], [/papa|ñoqui|noqui/i, 'papa'],
-  [/ensalada|rucula|rúcula|lechuga|verdura|pepino|zapallito|verde/i, 'ensalada'],
-];
-const imagenParte = t => { const p = IMG_PARTE.find(([re]) => re.test(t || '')); return p ? `img/${p[1]}.webp` : null; };
-
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-/* Bloque de propuesta que se inserta arriba de los checks de cada comida */
+/* Lo que se come en cada comida de Hoy: el plato armado por partes (armar.js).
+   La hoja vieja de "Cambiar el plato" se fue: cambiar ingrediente por
+   ingrediente hace lo mismo y ademas deja usar lo que hay en casa. */
 function bloquePlato(comida, c) {
-  if (!c) return null;
-  if (typeof bloqueArmado === 'function') return bloqueArmado(comida);
-  const m = comida === 'Desayuno' ? c.desayuno : comida === 'Almuerzo' ? c.almuerzo : c.cena;
-  const conDisco = m.tipo === 'plato';
-  const el = document.createElement('div');
-  el.className = 'dish' + (m.cambiado ? ' swapped' : '');
-
-  const parte = (txt, cls) => {
-    const img = imagenParte(txt);
-    return `<span class="dish-part ${cls}" title="${esc(txt)}">` +
-      `<i${img ? ` style="background-image:url(${img})"` : ''}></i>` +
-      `<span>${esc(txt)}</span></span>`;
-  };
-  const partes = conDisco
-    ? `<div class="dish-parts">${parte(m.verdura, 'verd')}${parte(m.carbo, 'carb')}</div>`
-    : '';
-  const sub = conDisco
-    ? (comida === 'Cena' ? '<div class="dish-sub">Sin grasa extra: basta el aceite de oliva de las verduras</div>' : (m.grasa ? `<div class="dish-sub">Con ${esc(m.grasa.toLowerCase())}</div>` : ''))
-    : (m.detalle ? `<div class="dish-sub">${esc(m.detalle)}</div>` : '');
-
-  const img = imagenDe(m, comida);
-  el.innerHTML =
-    (img ? `<img class="dish-img" src="${img}" alt="" loading="lazy"${respaldoImg(m, comida)}>` : '') +
-    `<div class="dish-body">
-       <div class="dish-top">
-         <button class="dish-swap" type="button"><svg viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>Cambiar el plato</button>
-       </div>
-       ${sub}${partes}
-       ${m.cambiado ? '<span class="dish-tag">Cambiado por ti</span>' : ''}
-     </div>`;
-
-  el.querySelector('.dish-swap').onclick = () => abrirHojaOpciones(selDia, comida);
-  return el;
+  return c && typeof bloqueArmado === 'function' ? bloqueArmado(comida) : null;
 }
 
 /* ---------- Las frecuencias de la semana se llenan solas ----------
@@ -396,137 +325,8 @@ function renderCalendario() {
 }
 
 
-/* ============================================================================
-   Elegir los platos de la semana.
-   Las opciones no se listan aparte: se derivan probando los cambios posibles,
-   asi lo que se ofrece es exactamente lo que el tablero puede resolver y nunca
-   aparece una opcion que romperia la regla de una sola toma de huevo al dia.
-   ============================================================================ */
+/* Las comidas por letra: asi se guarda todo lo que es de una comida del dia */
 const CLAVE_DE = { Desayuno: 'D', Almuerzo: 'A', Cena: 'C' };
-const platoDe = (c, comida) => comida === 'Desayuno' ? c.desayuno : comida === 'Almuerzo' ? c.almuerzo : c.cena;
-
-function opcionesDe(dia, comida) {
-  if (!MENU) return [];
-  const ds = dsDiaG(dia);
-  const letra = CLAVE_DE[comida];
-  const actual = k => parseInt(valorDe(`${ds}:MO:${k}`) || '0', 10) || 0;
-  const vistas = new Map();
-  for (let n = 0; n < 24; n++) {
-    const r = MenuLib.resolverDia(MENU, dia, k => (k === letra ? n : actual(k)));
-    if (!r) break;
-    const m = platoDe(r, comida);
-    if (!vistas.has(m.id)) vistas.set(m.id, { ...m, off: n });
-  }
-  return [...vistas.values()];
-}
-
-function elegirPlato(dia, comida, off) {
-  setMark(`${dsDiaG(dia)}:MO:${CLAVE_DE[comida]}`, String(off));
-  sincronizarFrecuencias(dia);
-  render();
-}
-
-// Que proteina se comio el dia anterior: sirve para avisar de una repeticion
-function proteinaDeAyer(dia) {
-  const a = dia > 1 ? comidasDeDia(dia - 1) : null;
-  if (!a) return [];
-  return [a.almuerzo.protK, a.cena.protK].filter(Boolean);
-}
-
-function filaOpcion(m, comida, seleccionada, ayer, alElegir, conDisco2) {
-  const b = document.createElement('button');
-  b.type = 'button';
-  b.className = 'opt' + (seleccionada ? ' sel' : '');
-  b.setAttribute('aria-pressed', seleccionada ? 'true' : 'false');
-  const conDisco = m.tipo === 'plato' && conDisco2 !== false;
-  const repite = m.protK && ayer.includes(m.protK) && m.protK !== 'huevos';
-  b.innerHTML =
-    (() => { const img = imagenDe(m, comida);
-      return img ? `<img class="opt-plate" src="${img}" alt="" loading="lazy"${respaldoImg(m, comida)}>`
-                 : (conDisco ? `<span class="opt-plate">${platoSVG(comida === 'Cena' ? 'cena' : 'almuerzo')}</span>` : ''); })() +
-    `<span class="opt-info">
-       <span class="opt-name">${esc(m.corto || m.titulo)}</span>
-       ${m.tipo === 'plato' ? `<span class="opt-sub">${esc(m.titulo)}</span>` : (m.detalle ? `<span class="opt-sub">${esc(m.detalle)}</span>` : '')}
-       ${repite ? '<span class="opt-hint">Ayer comiste lo mismo</span>' : ''}
-     </span>
-     <span class="opt-tick"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>`;
-  b.onclick = alElegir;
-  return b;
-}
-
-function abrirHojaOpciones(dia, comida) {
-  const ayer = proteinaDeAyer(dia);
-  abrirHoja(`${comida} · ${etiquetaDiaCorto(dia)}`, cont => {
-    const c = comidasDeDia(dia);
-    const actual = platoDe(c, comida);
-    opcionesDe(dia, comida).forEach(m => {
-      cont.appendChild(filaOpcion(m, comida, m.id === actual.id, ayer, () => {
-        const antes = parseInt(valorDe(`${dsDiaG(dia)}:MO:${CLAVE_DE[comida]}`) || '0', 10) || 0;
-        const comoSeLlamaba = actual.corto || actual.titulo;
-        elegirPlato(dia, comida, m.off);
-        volverHoja();
-        /* Antes esto pasaba en silencio: la hoja se cerraba y el riel mostraba
-           otra cosa. Ahora se dice que quedo y se puede deshacer sin tener que
-           acordarse de cual era el de antes. */
-        if (typeof avisar === 'function' && m.id !== actual.id) {
-          avisar(`${comida}: ${m.corto || m.titulo}`,
-            { texto: 'Deshacer', hacer: () => {
-                elegirPlato(dia, comida, antes);
-                avisar(`${comida}: ${comoSeLlamaba}`);
-              } });
-        }
-      }, false));
-    });
-    cont.appendChild(bloquePropio(dia, comida));
-    cont.insertAdjacentHTML('beforeend',
-      `<div class="sheet-nota"><p>Son las opciones del plan de Alexia. No aparecen las que te dejarían dos tomas de huevo el mismo día.</p></div>`);
-  });
-}
-
-/* Escribir lo que comiste de verdad. Va al final de la hoja: primero el plan,
-   y la salida despues. */
-function bloquePropio(dia, comida) {
-  const mio = platoPropio(dia, comida);
-  const el = document.createElement('div');
-  el.className = 'propio';
-  el.innerHTML =
-    `<div class="propio-h">Comí otra cosa</div>` +
-    `<input type="text" id="propioTxt" maxlength="60" autocapitalize="sentences" ` +
-      `placeholder="Qué comiste" value="${mio ? esc(mio.titulo) : ''}">` +
-    `<div class="propio-fam" id="propioFam">` +
-      Object.entries(PROPIOS).map(([k, n]) =>
-        `<button type="button" data-k="${k}"${(mio && (mio.protK || 'otro') === k) || (!mio && k === 'otro') ? ' class="on"' : ''}>${n}</button>`).join('') +
-    `</div>` +
-    `<div class="btns">` +
-      `<button class="btn btn-p" id="propioOk" type="button">Guardar</button>` +
-      (mio ? `<button class="btn btn-s" id="propioNo" type="button">Quitar</button>` : '') +
-    `</div>`;
-  const fam = el.querySelector('#propioFam');
-  fam.querySelectorAll('button').forEach(b => {
-    b.onclick = () => fam.querySelectorAll('button').forEach(o => o.classList.toggle('on', o === b));
-  });
-  el.querySelector('#propioOk').onclick = () => {
-    const txt = el.querySelector('#propioTxt').value.trim();
-    if (!txt) { el.querySelector('#propioTxt').focus(); return; }
-    const k = (fam.querySelector('.on') || {}).dataset;
-    guardarPropio(dia, comida, txt, k ? k.k : 'otro');
-    cerrarHoja();
-    if (typeof avisar === 'function') avisar(`${comida}: ${txt}`);
-  };
-  const quitar = el.querySelector('#propioNo');
-  if (quitar) quitar.onclick = () => {
-    guardarPropio(dia, comida, null);
-    cerrarHoja();
-    if (typeof avisar === 'function') avisar(`${comida}: vuelve el plan`);
-  };
-  return el;
-}
-
-const etiquetaDiaCorto = dia => {
-  const f = new Date(Date.parse(dsDiaG(dia) + 'T00:00:00Z'));
-  const t = f.toLocaleDateString('es-PE', { weekday: 'long', day: 'numeric', timeZone: 'UTC' });
-  return t.charAt(0).toUpperCase() + t.slice(1);
-};
 const etiquetaDia = dia => {
   const f = new Date(Date.parse(dsDiaG(dia) + 'T00:00:00Z'));
   const t = f.toLocaleDateString('es-PE', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
@@ -544,7 +344,6 @@ function abrirHojaDia(dia) {
       // el mismo armado de Hoy: lo que no vas a tener ese dia se cambia aqui
       // y la lista de compras y los PDF ya salen con eso
       if (typeof bloqueArmado === 'function') bloque.appendChild(bloqueArmado(comida, dia));
-      else bloque.appendChild(filaOpcion(platoDe(c, comida), comida, true, [], () => abrirHojaOpciones(dia, comida)));
       cont.appendChild(bloque);
     });
     /* Aqui habia un "Ver este día en Hoy" que no tenia sentido: jumpDay recorta
@@ -599,6 +398,11 @@ function renderCompras() {
   const semKey = dsDiaG((w - 1) * 7 + 1);
   const porCat = comprasDeSemana(w);
   cont.innerHTML = '';
+  /* Lo que se marca aca no es solo una lista: es lo que hay en casa. Con eso
+     cada comida avisa lo que falta y se puede rearmar con lo que si hay. */
+  cont.insertAdjacentHTML('beforeend',
+    `<div class="buy-casa"><p>Marca lo que compraste: tus platos de la semana se arman con eso.</p>` +
+    `<button type="button" class="ar-link" data-ar-casa="${(w - 1) * 7 + 1 > diaPrograma ? (w - 1) * 7 + 1 : Math.min(diaPrograma, w * 7)}">Qué hay en casa</button></div>`);
 
   let hechos = 0, todos = 0;
   ORDEN_MERCADO.forEach(cat => {
