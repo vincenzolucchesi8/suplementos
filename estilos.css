@@ -1160,3 +1160,6 @@ button:active{transform:scale(.97);transition:transform 90ms var(--hundir)}
 .aviso-hoy b{display:block;font-size:var(--t3);font-weight:700;color:var(--alerta)}
 .aviso-hoy p{font-size:var(--t4);color:var(--tinta);line-height:1.45;margin-top:2px}
 .aviso-hoy .btn{flex:0 0 auto;padding:12px 16px}
+.ar-casa-chip{display:inline-flex;align-items:center;gap:6px;padding-left:8px}
+.ar-casa-chip img{width:28px;height:28px;object-fit:contain}
+.ar-casa-chip[aria-pressed="false"] img{opacity:.55;filter:grayscale(.4)}

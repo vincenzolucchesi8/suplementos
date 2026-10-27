@@ -84,7 +84,9 @@ const GNOM = { prot:'proteína', carb:'carbohidrato', verd:'verdura', grasa:'gra
 const MULTI = g => g === 'verd' || g === 'acomp';
 const grupoEn = (x, c) => x.g && x.g[LETRA[c]];
 const porcion = (x, c) => (x.p && (x.p[LETRA[c]] || x.p.x)) || ['', ''];
-const imgDe = x => x && x.img ? `img/${x.img}.webp` : null;
+// un icono propio por ingrediente (img/ing/<id>.webp): antes se usaba el dibujo de un PLATO
+// ("Huevos" mostraba revueltos con jamon) y 26 de 54 no tenian ninguno
+const imgDe = x => x && x.g ? `img/ing/${x.id}.webp` : null;
 
 /* De un insumo de la lista de compras al ingrediente que se arma con el:
    marcar "Bonito" como comprado dice que hay pescado en casa. */

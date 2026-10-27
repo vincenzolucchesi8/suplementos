@@ -293,7 +293,7 @@ function abrirDespensa(dia){
       const xs = EN_CASA.filter(x => f(x) && !vistos.has(x.id));
       xs.forEach(x => vistos.add(x.id));
       return `<p class="ar-sug">${t}</p><div class="ar-chips">${xs.map(x =>
-        `<button type="button" class="ar-chip ar-casa-chip" data-ar-casa-t="${x.id}" aria-pressed="${casa.tiene(x.id)}">${esc(x.n)}</button>`).join('')}</div>`;
+        `<button type="button" class="ar-chip ar-casa-chip" data-ar-casa-t="${x.id}" aria-pressed="${casa.tiene(x.id)}"><img src="${imgDe(x)}" alt="" loading="lazy">${esc(x.n)}</button>`).join('')}</div>`;
     }).join(''));
 }
 

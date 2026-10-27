@@ -14,7 +14,7 @@
    librerias con version en el nombre siguen por cache, que es donde el cache
    sirve de verdad. Y al activarse una version nueva se avisa a las pestanas
    abiertas para que se recarguen cuando el usuario no este tocando nada. */
-const CACHE = 'protocolo-v59';
+const CACHE = 'protocolo-v60';
 const ASSETS = [
   './', './index.html', './estilos.css', './plan-lib.js', './api-cliente.js', './plan.js', './menu/generador.js',
   './menu-lib.js', './app.js', './nutricion.js', './armar-lib.js', './armar.js', './avisos.js', './plan-editor.js',
@@ -24,6 +24,7 @@ const ASSETS = [
   './menu/menu.json', './manifest.json', './icon-192.png', './icon-512.png', './icon-180.png',
   // los 24 platos del menu: son lo primero que se ve al abrir
   './img/platos/d_batido_lucuma.webp', './img/platos/d_batido_platano.webp', './img/platos/d_bowl_mango.webp', './img/platos/d_bowl_manzana.webp', './img/platos/d_bowl_papaya.webp', './img/platos/d_omelette_champ.webp', './img/platos/d_omelette_esp.webp', './img/platos/d_revueltos_jamon.webp', './img/platos/d_revueltos_pavo.webp', './img/platos/d_wrap_pollo.webp', './img/platos/o_champ.webp', './img/platos/o_espinaca.webp', './img/platos/o_verduras.webp', './img/platos/p_atun.webp', './img/platos/p_bonito.webp', './img/platos/p_jurel.webp', './img/platos/p_lomo.webp', './img/platos/p_merluza.webp', './img/platos/p_perico.webp', './img/platos/p_pollo_horno.webp', './img/platos/p_pollo_plancha.webp', './img/platos/p_pollo_sudado.webp', './img/platos/p_res.webp', './img/platos/p_trucha.webp',
+  './img/ing/aceitunas.webp', './img/ing/atun.webp', './img/ing/betarraga.webp', './img/ing/bonito.webp', './img/ing/brocoli.webp', './img/ing/caigua.webp', './img/ing/camote.webp', './img/ing/cebolla.webp', './img/ing/champinones.webp', './img/ing/chia.webp', './img/ing/coliflor.webp', './img/ing/esparragos.webp', './img/ing/espinaca.webp', './img/ing/frejol.webp', './img/ing/fresas.webp', './img/ing/garbanzos.webp', './img/ing/granola.webp', './img/ing/huevo.webp', './img/ing/jurel.webp', './img/ing/leche.webp', './img/ing/lechuga.webp', './img/ing/lentejas.webp', './img/ing/lucuma.webp', './img/ing/mandarina.webp', './img/ing/mango.webp', './img/ing/mani.webp', './img/ing/manzana.webp', './img/ing/merluza.webp', './img/ing/noquis.webp', './img/ing/palta.webp', './img/ing/papa.webp', './img/ing/papaya.webp', './img/ing/pavo.webp', './img/ing/pepino.webp', './img/ing/perico.webp', './img/ing/pescado.webp', './img/ing/pimiento.webp', './img/ing/platano.webp', './img/ing/pollo.webp', './img/ing/queso.webp', './img/ing/quinoa.webp', './img/ing/res.webp', './img/ing/rucula.webp', './img/ing/salmas.webp', './img/ing/salmon.webp', './img/ing/tomate.webp', './img/ing/trucha.webp', './img/ing/uvas.webp', './img/ing/vainitas.webp', './img/ing/whey.webp', './img/ing/wrap.webp', './img/ing/yogurt.webp', './img/ing/zanahoria.webp', './img/ing/zapallito.webp',
   './img/pescado.webp', './img/pollo.webp', './img/carne.webp', './img/atun.webp', './img/omelette.webp', './img/revueltos.webp', './img/bowl.webp', './img/batido.webp', './img/wrap.webp', './img/palta.webp', './img/quinoa.webp', './img/menestras.webp',
 ];
 
