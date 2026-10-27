@@ -16,8 +16,26 @@
    - lo que solo escribe el cron (avisos ya mandados) si va en un archivo unico:
      tiene un solo escritor cada 5 minutos, muy lejos de la ventana del problema.
 */
-const { put, get, list, del } = require('@vercel/blob');
 const crypto = require('crypto');
+
+/* DESDE EL 27-OCT-2026 EL ALMACEN NO ES VERCEL BLOB: es un servicio propio en el
+   A1 (servidor-datos/servidor.js), porque el plan Hobby SUSPENDIO el blob el
+   8-set por exceso de operaciones y durante siete semanas ninguna escritura
+   llego -- ni marcas, ni suscripciones push -- con la app callada. Mismas rutas,
+   mismas cuatro operaciones; el diseno de parches de abajo se queda igual. */
+const DATOS = (process.env.DATOS_URL || '').replace(/\/$/, '');
+const cab = () => ({ 'x-secreto': process.env.DATOS_SECRETO || '' });
+async function pedir(metodo, ruta, cuerpo) {
+  const r = await fetch(`${DATOS}/o?r=${encodeURIComponent(ruta)}`, { method: metodo, headers: cab(), body: cuerpo });
+  if (!r.ok && !(metodo === 'GET' && r.status === 404)) throw new Error(`almacen ${metodo} ${r.status}`);
+  return r;
+}
+async function list({ prefix }) {
+  const r = await fetch(`${DATOS}/l?p=${encodeURIComponent(prefix)}`, { headers: cab() });
+  if (!r.ok) throw new Error(`almacen list ${r.status}`);
+  return r.json();
+}
+const del = rutas => Promise.all([].concat(rutas).map(x => pedir('DELETE', x)));
 
 const BASE = 'datos/base.json';
 const DELTAS = 'datos/d/';
@@ -27,22 +45,13 @@ const PLAN = 'datos/plan.json';
 const TOPE_PARCHES = 25;   // pasado esto se compacta la base
 
 async function leerJSON(ruta, porDefecto) {
-  try {
-    const r = await get(ruta, { access: 'private' });
-    if (!r || r.statusCode !== 200) return porDefecto;
-    const trozos = [];
-    for await (const t of r.stream) trozos.push(t);
-    return JSON.parse(Buffer.concat(trozos).toString('utf8'));
-  } catch (e) {
-    return porDefecto;   // todavia no existe
-  }
+  const r = await pedir('GET', ruta);   // un almacen caido revienta: no se lee como "vacio"
+  if (r.status === 404) return porDefecto;   // todavia no existe
+  try { return JSON.parse(await r.text()); } catch (e) { return porDefecto; }
 }
 
 function escribirJSON(ruta, dato) {
-  return put(ruta, JSON.stringify(dato), {
-    access: 'private', contentType: 'application/json',
-    allowOverwrite: true, addRandomSuffix: false, cacheControlMaxAge: 0,
-  });
+  return pedir('PUT', ruta, JSON.stringify(dato));
 }
 
 /* Merge por ultima escritura, el mismo criterio que usa el navegador */
