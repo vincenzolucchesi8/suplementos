@@ -217,7 +217,17 @@ async function cloudPull(){
   const r = await fetch(`${API}/estado`, { headers: cabeceras(), cache:'no-store' });
   if(r.status===401) throw Object.assign(new Error('sin clave'), {sinClave:true});
   if(!r.ok) throw new Error('pull '+r.status);
-  return await r.json();
+  const remoto = await r.json();
+  /* "Borra todo, empiezo de nuevo": el servidor manda la hora del reinicio y
+     este aparato borra SUS marcas una sola vez (si no, las volveria a subir).
+     Se conservan el plan, los avisos y la clave: no son claves con fecha. */
+  const rein = remoto.__reinicio; delete remoto.__reinicio;
+  if(rein && localStorage.getItem('reinicio_aplicado') !== rein.v){
+    Object.keys(localStorage).filter(k=>DKEY.test(k)).forEach(k=>localStorage.removeItem(k));
+    metaSave({});
+    localStorage.setItem('reinicio_aplicado', rein.v);
+  }
+  return remoto;
 }
 async function cloudPush(state){
   const r = await fetch(`${API}/estado`, {

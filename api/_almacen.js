@@ -96,6 +96,18 @@ async function compactar() {
   return { compactados: rutas.length };
 }
 
+/* Reinicio: "borra todo, empiezo de nuevo" (27-oct-2026). Guarda la hora del
+   reinicio; lo marcado ANTES de esa hora ya no se acepta ni se devuelve, asi un
+   telefono con la version vieja no puede volver a subir lo borrado. */
+const REINICIO = 'datos/reinicio.json';
+const leerReinicio = () => leerJSON(REINICIO, null);
+const despuesDe = (estado, r) => {
+  if (!r || !r.ts) return estado;
+  const out = {};
+  Object.entries(estado || {}).forEach(([k, x]) => { if (x && x.t >= r.ts) out[k] = x; });
+  return out;
+};
+
 // ---------------- Suscripciones push ----------------
 
 const idDeEndpoint = e => crypto.createHash('sha1').update(e).digest('hex').slice(0, 20);
@@ -137,7 +149,7 @@ const leerCuerpo = req => new Promise(res => {
 });
 
 module.exports = {
-  leerEstado, guardarParche, compactar, fusionar,
+  leerEstado, guardarParche, compactar, fusionar, leerReinicio, despuesDe,
   listarSubs, guardarSub, borrarSub,
   leerTick, guardarTick, leerPlan, guardarPlan,
   autorizado, leerCuerpo,
