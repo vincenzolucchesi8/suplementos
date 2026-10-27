@@ -75,10 +75,36 @@
       };
     }
 
-    return {
+    return topePalta({
       dia, desayuno, almuerzo, cena,
       mediaManana: base.mediaManana, merienda: base.merienda, postre: base.postre,
-    };
+    });
+  }
+
+  /* "1 porcion de palta = ½ unidad pequeña" AL DIA (pagina 10). Desayuno,
+     almuerzo y omelette de la cena la traen cada uno por su lado, asi que el
+     dia podia sumar una palta entera. La primera toma se la queda; las
+     siguientes pasan a la otra grasa que el propio plan ofrece en esa comida. */
+  const PALTA = 'palta';
+  const conPalta = ing => (ing || []).some(([c]) => c === PALTA);
+  function topePalta(d) {
+    let usada = conPalta(d.desayuno.ing);
+    if (conPalta(d.almuerzo.ing)) {
+      if (usada) {
+        d.almuerzo = Object.assign({}, d.almuerzo, {
+          grasa: '6 a 8 aceitunas',
+          ing: d.almuerzo.ing.filter(([c]) => c !== PALTA).concat([['aceituna', 1]]),
+        });
+      }
+      usada = true;
+    }
+    if (d.cena.tipo === 'omelette' && conPalta(d.cena.ing) && usada) {
+      d.cena = Object.assign({}, d.cena, {
+        detalle: (d.cena.detalle || '').replace(/media palta pequeña/i, '2 lonchas de mozzarella'),
+        ing: d.cena.ing.filter(([c]) => c !== PALTA).concat([['mozzarella', 2]]),
+      });
+    }
+    return d;
   }
 
   /* Lo que se compra no siempre se mide como se cocina. "108 cucharadas de

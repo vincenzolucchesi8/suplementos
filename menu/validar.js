@@ -108,6 +108,19 @@ for (let i = 1; i < cadena.length; i++) {
   }
 }
 
+// 12. Palta: 1 porcion al dia = media unidad pequeña. 13. Chocolate: maximo 2.
+// Se mide sobre el dia RESUELTO (lo que la app muestra), no sobre el menu
+// base: el tope de la palta lo aplica resolverDia, y es ahi donde tiene que
+// cumplirse, tambien despues de que Vinz cambie un plato.
+const MenuLib = require('../menu-lib.js');
+dias.forEach(b => {
+  const d = MenuLib.resolverDia(M, b.dia, () => 0);
+  const suma = clave => ['desayuno', 'mediaManana', 'almuerzo', 'merienda', 'cena', 'postre']
+    .reduce((t, k) => t + (d[k].ing || []).filter(([c]) => c === clave).reduce((s, [, q]) => s + q, 0), 0);
+  if (suma('palta') > 0.5) falla('Palta 1 porcion al dia', `dia ${b.dia} suma ${suma('palta')} paltas`);
+  if (suma('chocolate') > 2) falla('Chocolate maximo 2', `dia ${b.dia} suma ${suma('chocolate')}`);
+});
+
 // ---- Informe
 console.log('\nMENU DE 28 DIAS · auditoria contra el plan de Alexia Macher\n');
 notas.forEach(n => console.log('  ' + n));
@@ -118,4 +131,4 @@ if (fallas.length) {
   console.log('');
   process.exit(1);
 }
-console.log('  PASA las 11 reglas en las 4 semanas.\n');
+console.log('  PASA las 13 reglas en las 4 semanas.\n');
